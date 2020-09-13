@@ -10,34 +10,34 @@ func main() {
 	otra()
 	otra()
 
-	func(){
+	func() {
 		fmt.Println("Funciona anónima sin parametros")
 	}()
 
-	func(x int,y int){
+	func(x int, y int) {
 		fmt.Println("Función anónima con parametros: ", x, y)
-	}(100,1000)
-	
+	}(100, 1000)
+
 	//Asigno una expersion a una variable
-	f := func(x int,y int){
+	f := func(x int, y int) {
 		fmt.Println("Función a una variable con parametros: ", x, y)
 	}
-	
+
 	//uso f
-	f(200,2002)
-	fmt.Printf("Funcion: - %T\n\n",  f)
-	
+	f(200, 2002)
+	fmt.Printf("Funcion: - %T\n\n", f)
+
 	//Asigno una funcion que retorna una función
 	f2 := bar()
 	//Y corre
-	fmt.Printf("Funcion2: - %T - resultado: %v\n\n",  f2, f2())
+	fmt.Printf("Funcion2: - %T - resultado: %v\n\n", f2, f2())
 	//O lo mismo de otra manera
 	fmt.Println("Funcion2:", bar()())
-	
+
 	//Callback
-	suma_5 := uso_callback(sum, 3,4,5,6,7,8,9,10,15)
+	suma_5 := uso_callback(sum, 3, 4, 5, 6, 7, 8, 9, 10, 15)
 	fmt.Println("La suma callback", suma_5)
-	
+
 	//Recursion
 	fa := factorial(4)
 	fmt.Println("factorial", fa)
@@ -51,28 +51,28 @@ func otra() {
 	fmt.Println("esta es otra funcion")
 }
 
-func bar()  func() int {
-	return func() int{
-			return 90001
-		}
+func bar() func() int {
+	return func() int {
+		return 90001
+	}
 }
 
-func uso_callback( s func(x ...int) int, y ...int) int{
+func uso_callback(s func(x ...int) int, y ...int) int {
 	fmt.Println("Hago inicio -------------")
-	
-	var parcial [] int
-	for _,v := range y {
+
+	var parcial []int
+	for _, v := range y {
 		if v%5 == 0 {
-			parcial=append(parcial,v)
+			parcial = append(parcial, v)
 		}
 	}
 	fmt.Println("Hago fin -------------")
 	return s(parcial...)
 }
 
-func sum(xi ...int) int{
-	total := 0 
-	for _,v := range xi{
+func sum(xi ...int) int {
+	total := 0
+	for _, v := range xi {
 		total += v
 	}
 	return total
