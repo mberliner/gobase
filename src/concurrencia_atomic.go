@@ -4,23 +4,24 @@ import (
 	"fmt"
 	"runtime"
 	"sync"
+	"sync/atomic"
+	_ "time"
 )
 
 var concurr sync.WaitGroup
 
 type Trabajo struct{
-	Contador int
+	Contador int64
 }
 
 type Control struct{
-	Bloqueo sync.Mutex
+	Bloqueo int64
 }
 
 var miTrabajo = Trabajo{
-		Contador: 0,
+	Contador: 0,
 }
 
-var miControl = Control{}
 
 func main(){
 	fmt.Println("OS       ", runtime.GOOS)
@@ -30,18 +31,19 @@ func main(){
 	
 	fmt.Println("\nGoroutine", runtime.NumGoroutine())
 	
-	//Trabajo concurrente con estructuras comunes (race conditions sobre miTrabajo) y mutex para evitarlas
+	//Trabajo concurrente con estructuras comunes (race conditions sobre miTrabajo) y contador atomic para evitarlas
 	rp := reparte()
 	concurr.Add(rp)
 	
 	for i:=rp; i>0 ;i-- {
 		fmt.Println("Paquete: ", i)
 		go trabaja(i)
+		fmt.Println("Goroutine", runtime.NumGoroutine(), "Contador Concurrente: ", atomic.LoadInt64(&miTrabajo.Contador)) //Concurrencia aqui de lectura
 	}
-	
+		
 	concurr.Wait()
 	fmt.Println("Goroutine", runtime.NumGoroutine())
-	fmt.Println("Goroutine", runtime.NumGoroutine(), "Contador: ", miTrabajo.Contador)
+	fmt.Println("Goroutine", runtime.NumGoroutine(), "Contador: ", miTrabajo.Contador) //ya no hay concurrencia aqui
 }
 
 func reparte() int{
@@ -50,12 +52,10 @@ func reparte() int{
 }
 
 func trabaja(i int){
-	miControl.Bloqueo.Lock()
-	v := miTrabajo.Contador
 	fmt.Println("Proceso cada paquete por rutinas concurrentes, paquete: ", i)
+	//time.Sleep(2*time.Second)
 	runtime.Gosched()
-	v++
-	miTrabajo.Contador = v
-	miControl.Bloqueo.Unlock()
+	atomic.AddInt64(&miTrabajo.Contador, 1)
+	
 	concurr.Done()
 }

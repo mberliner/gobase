@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"runtime"
 	"sync"
-	"time"
 )
 
 var concurr sync.WaitGroup
@@ -34,11 +33,11 @@ func main(){
 
 func reparte() int{
 	fmt.Println("Selecciono y envio paquetes a procesar")
-	return 20
+	return 100
 }
 
 func trabaja(i int){
 	fmt.Println("Proceso cada paquete por rutinas concurrentes, paquete: ", i)
-	time.Sleep(2*time.Second)
+	runtime.Gosched()
 	concurr.Done()
 }
