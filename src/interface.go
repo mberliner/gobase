@@ -38,6 +38,12 @@ func main() {
 	juan.speak()
 	james.speak()
 
+	//Es posible usar un puntero si el receiver es un tipo (al reveés no es posible)
+	//Esto es porque asi están definidos los "method sets"
+	pJames := &james
+	fmt.Println("Ejemplo Probando Method Sets. Llamo con puntero: ")
+	pJames.speak()
+
 	//Llamamos desde afuera
 	fmt.Println("\nEjemplo Polimorfismo--------------------------")
 	quien(juan)
@@ -46,7 +52,7 @@ func main() {
 }
 
 func (a agente) speak() {
-	fmt.Printf("Soy un %T ", a)
+	fmt.Printf("Soy un %T\n", a)
 	fmt.Println("Me gusta tirar tiros")
 }
 
