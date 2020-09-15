@@ -6,7 +6,9 @@ import (
 )
 
 func main() {
-	s := `password123`
+	s := `abcasda`
+
+	//Hay que instalar el paquete 
 	bs, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.MinCost)
 	if err != nil {
 		fmt.Println(err)
@@ -14,7 +16,7 @@ func main() {
 	fmt.Println(s)
 	fmt.Println(bs)
 
-	loginPword1 := `password123`
+	loginPword1 := `abcasda`
 
 	err = bcrypt.CompareHashAndPassword(bs, []byte(loginPword1))
 	if err != nil {

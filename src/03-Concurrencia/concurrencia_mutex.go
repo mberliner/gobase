@@ -9,15 +9,15 @@ import (
 var concurr sync.WaitGroup
 
 type Trabajo struct {
-	Contador int
+	contador int
 }
 
 type Control struct {
-	Bloqueo sync.Mutex
+	bloqueo sync.Mutex
 }
 
 var miTrabajo = Trabajo{
-	Contador: 0,
+	contador: 0,
 }
 
 var miControl = Control{}
@@ -40,7 +40,7 @@ func main() {
 
 	concurr.Wait()
 	fmt.Println("Goroutine", runtime.NumGoroutine())
-	fmt.Println("Goroutine", runtime.NumGoroutine(), "Contador: ", miTrabajo.Contador)
+	fmt.Println("Goroutine", runtime.NumGoroutine(), "Contador: ", miTrabajo.contador)
 }
 
 func reparte() int {
@@ -49,12 +49,12 @@ func reparte() int {
 }
 
 func trabaja(i int) {
-	miControl.Bloqueo.Lock()
-	v := miTrabajo.Contador
+	miControl.bloqueo.Lock()
+	v := miTrabajo.contador
 	fmt.Println("Proceso cada paquete por rutinas concurrentes, paquete: ", i)
 	runtime.Gosched()
 	v++
-	miTrabajo.Contador = v
-	miControl.Bloqueo.Unlock()
+	miTrabajo.contador = v
+	miControl.bloqueo.Unlock()
 	concurr.Done()
 }

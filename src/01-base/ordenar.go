@@ -11,17 +11,17 @@ type Persona struct {
 	Edad     int
 }
 
-type PorEdad []Persona
+type porEdad []Persona
 
-func (a PorEdad) Len() int           { return len(a) }
-func (a PorEdad) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a PorEdad) Less(i, j int) bool { return a[i].Edad < a[j].Edad }
+func (a porEdad) Len() int           { return len(a) }
+func (a porEdad) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a porEdad) Less(i, j int) bool { return a[i].Edad < a[j].Edad }
 
-type PorApellido []Persona
+type porApellido []Persona
 
-func (a PorApellido) Len() int           { return len(a) }
-func (a PorApellido) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a PorApellido) Less(i, j int) bool { return a[i].Apellido < a[j].Apellido }
+func (a porApellido) Len() int           { return len(a) }
+func (a porApellido) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a porApellido) Less(i, j int) bool { return a[i].Apellido < a[j].Apellido }
 
 func main() {
 
@@ -46,11 +46,11 @@ func main() {
 	e := []Persona{p1, p2, p3}
 	fmt.Println(e)
 
-	sort.Sort(PorEdad(e))
+	sort.Sort(porEdad(e))
 
 	fmt.Println(e)
 
-	sort.Sort(PorApellido(e))
+	sort.Sort(porApellido(e))
 
 	fmt.Println(e)
 }
