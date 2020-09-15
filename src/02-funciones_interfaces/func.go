@@ -5,7 +5,11 @@ import (
 )
 
 func main() {
-	defer last() //Asegura que va al final, sirve para cerrar recursos o esperar threads
+
+	i := 10
+	defer ultima(i) //Asegura que va al final, sirve para cerrar recursos o esperar threads
+	//Y evalua sus parámetros al momento de su evaluación (no al final)
+	defer cierro(i) //Se ejecutan desde la última hasta la primera
 	otra()
 	otra()
 	otra()
@@ -41,10 +45,16 @@ func main() {
 	//Recursion
 	fa := factorial(4)
 	fmt.Println("factorial", fa)
+
+	i++ //aunque incremente i la funcion defer no lo tom en cuenta
 }
 
-func last() {
-	fmt.Println("\nEsta va a final de main porque es defer")
+func ultima(i int) {
+	fmt.Println("\nEsta va a final de main porque es defer, argumento: ", i)
+}
+
+func cierro(i int) {
+	fmt.Println("\nEsta va a final de main porque es defer cierro, argumento: ", i)
 }
 
 func otra() {
