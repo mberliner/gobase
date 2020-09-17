@@ -16,7 +16,7 @@ type persona struct {
 
 //Funciona igual que la estructura de arriba persona si los nombres de campos son iguales al json
 //Sino se pueden vincular los nombres asi:
-type personaJson struct {
+type personaJSON struct {
 	Apellido string `json:"ApellidoNuevo"`
 	Nombre   string `json:"Nombre"`
 	Edad     int    `json:"Edad"`
@@ -50,7 +50,7 @@ func main() {
 	fmt.Println("Json a Array:\n")
 	//De json a texto, notar "ApellidoNuevo"
 	jsontext := `[{"ApellidoNuevo":"Czardas","Nombre":"Fer","Edad":33},{"ApellidoNuevo":"Barolo","Nombre":"Raul","Edad":66}]`
-	var s []personaJson
+	var s []personaJSON
 
 	err = json.Unmarshal([]byte(jsontext), &s)
 	if nil != err {

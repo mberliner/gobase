@@ -8,19 +8,19 @@ import (
 
 var concurr sync.WaitGroup
 
-type Trabajo struct {
+type trabajo struct {
 	contador int
 }
 
-type Control struct {
+type control struct {
 	bloqueo sync.Mutex
 }
 
-var miTrabajo = Trabajo{
+var miTrabajo = trabajo{
 	contador: 0,
 }
 
-var miControl = Control{}
+var miControl = control{}
 
 func main() {
 	fmt.Println("OS       ", runtime.GOOS)

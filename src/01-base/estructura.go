@@ -65,6 +65,6 @@ func (p person) imprimir() {
 	fmt.Printf("Es una persona: %+v\n", p)
 }
 
-func (pPerson *person) actualizarApe(apellido string) {
-	pPerson.apellido = apellido
+func (p *person) actualizarApe(apellido string) {
+	p.apellido = apellido
 }

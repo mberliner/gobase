@@ -39,8 +39,8 @@ func main() {
 	fmt.Println("Funcion2:", bar()())
 
 	//Callback
-	suma_5 := uso_callback(sum, 3, 4, 5, 6, 7, 8, 9, 10, 15)
-	fmt.Println("La suma callback", suma_5)
+	suma5 := usoCallback(sum, 3, 4, 5, 6, 7, 8, 9, 10, 15)
+	fmt.Println("La suma callback", suma5)
 
 	//Recursion
 	fa := factorial(4)
@@ -67,7 +67,7 @@ func bar() func() int {
 	}
 }
 
-func uso_callback(s func(x ...int) int, y ...int) int {
+func usoCallback(s func(x ...int) int, y ...int) int {
 	fmt.Println("Hago inicio -------------")
 
 	var parcial []int

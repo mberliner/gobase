@@ -10,11 +10,11 @@ import (
 
 var concurr sync.WaitGroup
 
-type Trabajo struct {
+type trabajo struct {
 	contador int64
 }
 
-var miTrabajo = Trabajo{
+var miTrabajo = trabajo{
 	contador: 0,
 }
 

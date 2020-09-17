@@ -39,9 +39,6 @@ func recibir(par <-chan int, impar <-chan int, com <-chan bool) {
 			if !ok {
 				fmt.Println("Canal Comunicaciones:", msg)
 				return
-			} else {
-				fmt.Println("Canal Comunicaciones", msg)
-
 			}
 		}
 	}
