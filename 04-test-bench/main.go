@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"04-Test-Bench/auxiliar"
+	"github.com/mberliner/gobase/04-test-bench/auxiliar"
 	"strings"
 )
 
