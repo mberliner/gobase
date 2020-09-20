@@ -26,4 +26,11 @@ func main() {
 		fmt.Printf("%v - %v - %v - %#U\n", i, string(i), []byte(string(i)), i)
 	}
 
+	//Runes
+	fmt.Printf("%v - %v - %v - %#U - %v\n", 'A', string('A'), []byte(string('A')), 'A', rune(65))
+
+	if 'A' == rune('A') {
+		fmt.Println("Rune('C') == 'C' ")
+	}
+
 }
