@@ -21,4 +21,9 @@ func main() {
 	s = "ddd"
 	fmt.Println(s)
 
+	fmt.Println("Imprimo UTF-8:")
+	for i := 0; i < 1000; i++ {
+		fmt.Printf("%v - %v - %v - %#U\n", i, string(i), []byte(string(i)), i)
+	}
+
 }
