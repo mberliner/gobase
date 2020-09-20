@@ -3,7 +3,7 @@
 //go test -bench .
 //go test -cover
 //go test -coverprofile c.out
-//go tool cover -html=c.out 
+//go tool cover -html=c.out
 package auxiliar
 
 import (
@@ -29,7 +29,6 @@ func TestJoin(t *testing.T) {
 		t.Error("got", s, "want", result)
 	}
 }
-
 
 //Tiene sentido si va a ser paarte de un package
 func ExampleCat() {

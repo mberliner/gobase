@@ -3,11 +3,10 @@
 //go test -bench .
 //go test -cover
 //go test -coverprofile c.out
-//go tool cover -html=c.out 
+//go tool cover -html=c.out
 package auxiliar
 
 import "strings"
-
 
 //Cat recibe un slice de strings y los retorna separados por un separador
 //su uso aqui es a fin de verificar la performance con benchmark y Tests de go

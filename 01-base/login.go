@@ -8,7 +8,7 @@ import (
 func main() {
 	s := `abcasda`
 
-	//Hay que instalar el paquete 
+	//Hay que instalar el paquete
 	bs, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.MinCost)
 	if err != nil {
 		fmt.Println(err)
