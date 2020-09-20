@@ -10,9 +10,6 @@ func main() {
 	defer ultima(i) //Asegura que va al final, sirve para cerrar recursos o esperar threads
 	//Y evalua sus parámetros al momento de su evaluación (no al final)
 	defer cierro(i) //Se ejecutan desde la última hasta la primera
-	otra()
-	otra()
-	otra()
 
 	func() {
 		fmt.Println("Funciona anónima sin parametros")
@@ -22,25 +19,32 @@ func main() {
 		fmt.Println("Función anónima con parametros: ", x, y)
 	}(100, 1000)
 
-	//Asigno una expersion a una variable
+	//Asigno una expresion a una variable
 	f := func(x int, y int) {
-		fmt.Println("Función a una variable con parametros: ", x, y)
+		fmt.Println("Función asignada a una variable con parametros x int, y int los argumentos aún no están presentes")
 	}
 
-	//uso f
+	//uso f con argumentos
 	f(200, 2002)
 	fmt.Printf("Funcion: - %T\n\n", f)
+
+	mantiene := retornaFunc()
+	fmt.Println("Funcion que mantiene el valor por scope de variable en main:", mantiene())
+	fmt.Println("Funcion que mantiene el valor por scope de variable en main:", mantiene())
+
+	fmt.Println("Funcion que NO mantiene el valor por scope de función retornada:", retornaFunc()())
+	fmt.Println("Funcion que NO mantiene el valor por scope de función retornada:", retornaFunc()())
 
 	//Asigno una funcion que retorna una función
 	f2 := bar()
 	//Y corre
-	fmt.Printf("Funcion2: - %T - resultado: %v\n\n", f2, f2())
-	//O lo mismo de otra manera
+	fmt.Printf("\nFuncion2: - %T - resultado: %v\n\n", f2, f2())
+	//Lo mismo de otra manera
 	fmt.Println("Funcion2:", bar()())
 
 	//Callback
-	suma5 := usoCallback(sum, 3, 4, 5, 6, 7, 8, 9, 10, 15)
-	fmt.Println("La suma callback", suma5)
+	suma := usoCallback(sum, 3, 4, 5, 6, 7, 8, 9, 10, 15)
+	fmt.Println("La suma callback", suma)
 
 	//Recursion
 	fa := factorial(4)
@@ -55,10 +59,6 @@ func ultima(i int) {
 
 func cierro(i int) {
 	fmt.Println("\nEsta va a final de main porque es defer cierro, argumento: ", i)
-}
-
-func otra() {
-	fmt.Println("esta es otra funcion")
 }
 
 func bar() func() int {
@@ -81,6 +81,7 @@ func usoCallback(s func(x ...int) int, y ...int) int {
 }
 
 func sum(xi ...int) int {
+
 	total := 0
 	for _, v := range xi {
 		total += v
@@ -93,4 +94,16 @@ func factorial(n int) int {
 		return 1
 	}
 	return n * factorial(n-1)
+}
+
+func retornaFunc() func() int {
+
+	//Lo importante acá es notar que la variable "cont"
+	//se mantiene al ser invocada esta función y alojada en una varaible externa
+	cont := 0
+
+	return func() int {
+		cont++
+		return cont
+	}
 }
