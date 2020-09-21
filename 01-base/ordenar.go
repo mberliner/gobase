@@ -44,13 +44,19 @@ func main() {
 	}
 
 	e := []persona{p1, p2, p3}
-	fmt.Println(e)
+	fmt.Println("Original:", e)
+	fmt.Println("---------------------------------------------")
 
 	sort.Sort(porEdad(e))
 
-	fmt.Println(e)
+	fmt.Println("Ordenado por edad:", e)
 
 	sort.Sort(porApellido(e))
 
-	fmt.Println(e)
+	fmt.Println("Ordenado por apellido:", e)
+
+	//Ordenar Reversa
+	sort.Sort(sort.Reverse(porApellido(e)))
+
+	fmt.Println("Ordenado por apellido reversa:", e)
 }
