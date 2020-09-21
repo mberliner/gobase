@@ -30,6 +30,6 @@ func main() {
 		fmt.Println(v)
 	}
 
-	fmt.Printf("n%sn", auxiliar.Cat(xs, " "))
-	fmt.Printf("n%snn", auxiliar.Join(xs, " "))
+	fmt.Printf("%s\n\n", auxiliar.Cat(xs, " "))
+	fmt.Printf("%s\n\n", auxiliar.Join(xs, " "))
 }
