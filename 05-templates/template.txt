@@ -1,0 +1,25 @@
+{{$datos := .}}
+
+csv
+    {{range $datos.Persona}}
+    {{.Nombre}};{{.Apellido}};{{.Edad}}{{end}}
+    
+Col
+    {{range $i,$v := $datos.Num}}
+   {{$v}}; {{end}}
+    
+o
+Un slice sólo
+{{.Persona}}
+	
+o
+Todo junto estructura con 2 slices
+{{.}}
+
+El mapa
+{{$datos.Cosas}}
+
+Función Fomateo de Fecha
+{{$datos.Fecha}}
+Formateada:
+{{formatea $datos.Fecha}}
