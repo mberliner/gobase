@@ -9,10 +9,6 @@ import (
 
 var tpl *template.Template
 
-func init() {
-
-}
-
 func formateaFecha(t time.Time) string {
 	return t.Format("02-01-2006") //02=Dia 01=Mes 2006=Año
 }
@@ -56,6 +52,7 @@ func main() {
 		"Key2": "Elemento2",
 	}
 
+	//Paso un sólo dato pero puede agrupar todo lo que necesito
 	data := struct {
 		Persona []persona
 		Num     []int

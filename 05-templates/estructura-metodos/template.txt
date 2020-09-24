@@ -1,0 +1,8 @@
+todo
+{{.}}
+
+Metodo
+{{.TimeToDie}}
+
+Metodo con parámetros
+{{3.0 | .TimeToDieAvg}}
