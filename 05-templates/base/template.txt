@@ -23,3 +23,23 @@ Función Fomateo de Fecha
 {{$datos.Fecha}}
 Formateada:
 {{formatea $datos.Fecha}}
+
+Funciones internas disponibles
+
+Si tiene datos:
+{{if $datos.Persona}}
+   {{$datos.Persona}}
+ {{end}}
+
+Si un elemento tiene datos lo imprime:
+    {{range $datos.Persona}}  {{if .Nombre}}  	{{.Nombre}};{{.Apellido}};{{.Edad}}{{end}}
+    {{end}}
+
+
+Si un elemento tiene datos lo imprime Con and:
+    {{range $datos.Persona}}  {{if and .Nombre .Apellido}}  	{{.Nombre}};{{.Apellido}};{{.Edad}}{{end}}
+    {{end}}
+
+Compara por valores (mayor de 1oo años):
+    {{range $datos.Persona}}  {{if gt .Edad 100}}  	{{.Nombre}};{{.Apellido}};{{.Edad}}{{end}}
+    {{end}}
