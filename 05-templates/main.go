@@ -49,7 +49,19 @@ func main() {
 		Edad:     166,
 	}
 
-	personas := []persona{p1, p2, p3}
+	p4 := persona{
+		Nombre:   "",
+		Apellido: "Sin Nombre",
+		Edad:     1669,
+	}
+
+	p5 := persona{
+		Nombre:   "Sin Apellido",
+		Apellido: "",
+		Edad:     63,
+	}
+
+	personas := []persona{p1, p2, p3, p4, p5}
 	numeros := []int{100, 10000, 37}
 	mapa := map[string]string{
 		"Key1": "Elemento1",
