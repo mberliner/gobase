@@ -15,15 +15,23 @@ func main() {
 	}
 	defer conn.Close()
 
-	write(conn)
+	fmt.Println("Local Adrress:", conn.LocalAddr(), "Remote Address:", conn.RemoteAddr())
+
+	go write(conn)
+
+	scanner := bufio.NewScanner(conn)
+	for scanner.Scan() {
+		ln := scanner.Text()
+		fmt.Println(ln)
+	}
 }
 
 func write(conn net.Conn) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		ln := scanner.Text()
-		fmt.Println(ln)
 		fmt.Fprintf(conn, "%s\n", ln)
+
 	}
 
 }

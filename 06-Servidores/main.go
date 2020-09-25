@@ -18,22 +18,27 @@ func main() {
 	for {
 		conn, err := li.Accept()
 		if err != nil {
-			log.Println(err)
+			log.Println("Hubo error, pero continuo", err)
 			continue
 		}
-		go presenta(conn)
+		fmt.Println("Local Adrress:", conn.LocalAddr(), "Remote Address:", conn.RemoteAddr())
+		go comunica(conn)
 	}
+
+	fmt.Println("Saliendo del programa")
 }
 
-func presenta(conn net.Conn) {
+//Una por cada conexion aceptada
+func comunica(conn net.Conn) {
+	fmt.Println("\nNro of Goroutines", runtime.NumGoroutine())
+	defer conn.Close()
+
 	scanner := bufio.NewScanner(conn)
 	for scanner.Scan() {
 		ln := scanner.Text()
 		fmt.Println(ln)
-		fmt.Fprintf(conn, "Llego: %s\n", ln)
-		fmt.Println("\nGoroutine", runtime.NumGoroutine())
+		fmt.Fprintf(conn, "Soy tu server y me llego: %s\n", ln)
 	}
-	defer conn.Close()
 
 	fmt.Println("Saliendo de esta conexion particular, ya no hay canal")
 }
