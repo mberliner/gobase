@@ -21,7 +21,7 @@ func main() {
 			log.Println("Hubo error, pero continuo", err)
 			continue
 		}
-		fmt.Println("Local Adrress:", conn.LocalAddr(), "Remote Address:", conn.RemoteAddr())
+		fmt.Println("Local Address:", conn.LocalAddr(), "Remote Address:", conn.RemoteAddr())
 		go comunica(conn)
 	}
 
