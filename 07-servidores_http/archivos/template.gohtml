@@ -1,0 +1,10 @@
+<h1>Manejo de archivos</h1>
+
+<form  method="POST" enctype="multipart/form-data">
+        <input type="file" name="archivo" >
+        <input type="submit" name="submit-btn" value="upload">
+</form>
+
+{{if .  }}
+"El texto es:  {{.}}
+{{end}}
