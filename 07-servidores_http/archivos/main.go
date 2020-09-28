@@ -1,43 +1,59 @@
 package main
 
 import (
-	"fmt"
+	_ "fmt"
 	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 )
 
 func arch(res http.ResponseWriter, req *http.Request) {
 	tpl := template.Must(template.ParseFiles("template.gohtml"))
 
-	var s string
+	var texto string
 
 	if req.Method == http.MethodPost {
 
-		// open
-		file, h, err := req.FormFile("archivo")
+		//Abro archivo del post
+		file, head, err := req.FormFile("archivo")
 		if err != nil {
 			http.Error(res, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		defer file.Close()
 
-		fmt.Println("\nArchivo:", file, "\nheader:", h, "\nerr", err)
+		//		fmt.Println("\nArchivo:", file, "\nheader:", head, "\nerr", err)
 
-		// read
+		// leo datos
 		bs, err := ioutil.ReadAll(file)
 		if err != nil {
 			http.Error(res, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		s = string(bs)
+		texto = string(bs)
+
+		// guardo archivo
+		destino, err := os.Create(filepath.Join("./archivo_destino/", head.Filename))
+		if err != nil {
+			http.Error(res, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer destino.Close()
+
+		_, err = destino.Write(bs)
+		if err != nil {
+			http.Error(res, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 
 	res.Header().Set("Content-Type", "text/html; charset=utf-8")
-	err := tpl.ExecuteTemplate(res, "template.gohtml", s)
+	err := tpl.ExecuteTemplate(res, "template.gohtml", texto)
 	if err != nil {
-		log.Fatalln("error executing template", err)
+		log.Fatalln("Error al ejecutar template", err)
 	}
 
 }
