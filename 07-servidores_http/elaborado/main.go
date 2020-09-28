@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func mineral(res http.ResponseWriter, req *http.Request) {
@@ -37,7 +39,58 @@ func file(res http.ResponseWriter, req *http.Request) {
 	http.ServeFile(res, req, "file/dan.jpg")
 }
 
+func graboCookie(res http.ResponseWriter, req *http.Request) {
+	c := http.Cookie{
+		Name:  "cookie-nombre",
+		Value: "grabado-1",
+	}
+
+	//grabamos Cookie en navegador
+	http.SetCookie(res, &c)
+	io.WriteString(res, "Acabamos de grabar la cookie llamada: "+c.Name)
+}
+
+func leoCookie(res http.ResponseWriter, req *http.Request) {
+
+	//grabamos Cookie en navegador
+	c, err := req.Cookie("cookie-nombre")
+	if err != nil {
+		http.Error(res, err.Error(), http.StatusNotFound)
+		return
+	}
+	fmt.Println("La Cookie leida es: ", c)
+	io.WriteString(res, "Ya leimos su cookie gracias")
+}
+
+func grabaVisitas(res http.ResponseWriter, req *http.Request) {
+	c, err := req.Cookie("cookie-visitas")
+	//Si no existe la creo
+	if err == http.ErrNoCookie {
+		c = &http.Cookie{
+			Name:  "cookie-visitas",
+			Value: "0",
+			Path:  "/",
+		}
+	}
+	cont, err := strconv.Atoi(c.Value)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	cont++
+	c.Value = strconv.Itoa(cont)
+
+	//grabamos Cookie en navegador
+	http.SetCookie(res, c)
+	io.WriteString(res, "Visitas:"+c.Value)
+}
+
 func main() {
+
+	http.HandleFunc("/", grabaVisitas)
+
+	http.HandleFunc("/plantocookie", graboCookie)
+
+	http.HandleFunc("/leocookie", leoCookie)
 
 	//Con barra final toma todo path porterior
 	http.HandleFunc("/persona/", persona)
