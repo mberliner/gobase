@@ -2,27 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>Bienvenida</title>
 </head>
 <body>
-
-<form method="post">
-
-    <input type="email" name="usuario" placeholder="email"><br>
-    <input type="text" name="nombre" placeholder="first name"><br>
-    <input type="text" name="apellido" placeholder="last name"><br>
-    <input type="submit">
-
-</form>
 
 
 {{if .Usuario}}
 USER NAME {{.Usuario}}<br>
 Nombre {{.Nombre}}<br>
 Apellido {{.Apellido}}<br>
-{{end}}
-
 <br>
 <h2> <a href="/seccion">Ir a otra sección</a></h2>
+{{else}}
+<h2>Ud no ha ingresado</h2>
+<h2> <a href="/altausuario">Crear Usuario</a></h2>
+<h2><a href="/login">log in</a></h2>
+{{end}}
+
 </body>
 </html>

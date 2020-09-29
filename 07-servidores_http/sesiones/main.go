@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/satori/go.uuid"
+	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"net/http"
 )
@@ -10,6 +11,7 @@ type user struct {
 	Usuario  string
 	Nombre   string
 	Apellido string
+	Password []byte
 }
 
 var tpl *template.Template
@@ -23,52 +25,105 @@ func init() {
 func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/seccion", seccion)
+	http.HandleFunc("/altausuario", altaUser)
+	http.HandleFunc("/login", login)
 	http.Handle("/favicon.ico", http.NotFoundHandler())
 	http.ListenAndServe(":8080", nil)
 }
-
 func index(res http.ResponseWriter, req *http.Request) {
+	u := getUser(req)
+	tpl.ExecuteTemplate(res, "index.gohtml", u)
+}
 
-	c, err := req.Cookie("session")
-	if err != nil {
-		//Si no existe la cookie de sesion creo una nueva
+func altaUser(res http.ResponseWriter, req *http.Request) {
+
+	if estaLogueado(req) {
+		http.Redirect(res, req, "/", http.StatusSeeOther)
+		return
+	}
+
+	if req.Method == http.MethodPost {
+
+		usu := req.FormValue("usuario")
+		pass := req.FormValue("password")
+		nom := req.FormValue("nombre")
+		ape := req.FormValue("apellido")
+
+		if _, ok := dbUsers[usu]; ok {
+			http.Error(res, "El usuario ya existe, elija otro nombre", http.StatusForbidden)
+			return
+		}
+
 		sID, _ := uuid.NewV4()
-		c = &http.Cookie{
+		c := &http.Cookie{
 			Name:  "session",
 			Value: sID.String(),
 		}
 		http.SetCookie(res, c)
+		dbSessions[c.Value] = usu
+
+		encrPass, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.MinCost)
+		if err != nil {
+			http.Error(res, "No puedo encriptar pass", http.StatusInternalServerError)
+			return
+		}
+
+		u := user{usu, nom, ape, encrPass}
+		dbUsers[usu] = u
+
+		http.Redirect(res, req, "/", http.StatusSeeOther)
+		return
 	}
 
-	var u user
-	if un, ok := dbSessions[c.Value]; ok {
-		u = dbUsers[un]
-	}
-
-	if req.Method == http.MethodPost {
-		un := req.FormValue("usuario")
-		f := req.FormValue("nombre")
-		l := req.FormValue("apellido")
-		u = user{un, f, l}
-		dbSessions[c.Value] = un
-		dbUsers[un] = u
-	}
-
-	tpl.ExecuteTemplate(res, "index.gohtml", u)
+	tpl.ExecuteTemplate(res, "alta.gohtml", nil)
 }
 
 func seccion(res http.ResponseWriter, req *http.Request) {
 
-	c, err := req.Cookie("session")
-	if err != nil {
+	u := getUser(req)
+	if !estaLogueado(req) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
 	}
-	un, ok := dbSessions[c.Value]
-	if !ok {
-		http.Redirect(res, req, "/", http.StatusSeeOther)
-		return
-	}
-	u := dbUsers[un]
 	tpl.ExecuteTemplate(res, "seccion.gohtml", u)
+}
+
+func login(res http.ResponseWriter, req *http.Request) {
+
+	if estaLogueado(req) {
+		http.Redirect(res, req, "/", http.StatusSeeOther)
+		return
+	}
+
+	var u user
+
+	if req.Method == http.MethodPost {
+
+		usu := req.FormValue("usuario")
+		pass := req.FormValue("password")
+		u, ok := dbUsers[usu]
+		if !ok {
+			http.Error(res, "Usuario o Password inválidos", http.StatusForbidden)
+			return
+		}
+
+		err := bcrypt.CompareHashAndPassword(u.Password, []byte(pass))
+		if err != nil {
+			http.Error(res, "Usuario o Password inválidos", http.StatusForbidden)
+			return
+		}
+
+		sID, _ := uuid.NewV4()
+		c := &http.Cookie{
+			Name:  "session",
+			Value: sID.String(),
+		}
+		http.SetCookie(res, c)
+		dbSessions[c.Value] = usu
+
+		http.Redirect(res, req, "/", http.StatusSeeOther)
+		return
+	}
+
+	tpl.ExecuteTemplate(res, "login.gohtml", u)
 }
