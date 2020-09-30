@@ -20,6 +20,8 @@ var dbSessions = map[string]string{}
 
 func init() {
 	tpl = template.Must(template.ParseGlob("templates/*"))
+	bs, _ := bcrypt.GenerateFromPassword([]byte("password"), bcrypt.MinCost)
+	dbUsers["test@test.com"] = user{Usuario: "test@test.com", Password:  bs, Nombre:  "James", Apellido: "Bond"}
 }
 
 func main() {
@@ -27,20 +29,32 @@ func main() {
 	http.HandleFunc("/seccion", seccion)
 	http.HandleFunc("/altausuario", altaUser)
 	http.HandleFunc("/login", login)
+	http.HandleFunc("/logout", logout)
 	http.Handle("/favicon.ico", http.NotFoundHandler())
 	http.ListenAndServe(":8080", nil)
 }
 func index(res http.ResponseWriter, req *http.Request) {
-	u := getUser(req)
+	u := getUser(res, req)
 	tpl.ExecuteTemplate(res, "index.gohtml", u)
 }
 
-func altaUser(res http.ResponseWriter, req *http.Request) {
+func seccion(res http.ResponseWriter, req *http.Request) {
 
+	u := getUser(res, req)
+	if !estaLogueado(req) {
+		http.Redirect(res, req, "/", http.StatusSeeOther)
+		return
+	}
+	tpl.ExecuteTemplate(res, "seccion.gohtml", u)
+}
+
+func altaUser(res http.ResponseWriter, req *http.Request) {
 	if estaLogueado(req) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
 	}
+
+	var u user
 
 	if req.Method == http.MethodPost {
 
@@ -68,25 +82,16 @@ func altaUser(res http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		u := user{usu, nom, ape, encrPass}
+		u := user{Usuario: usu, Nombre: nom, Apellido: ape,  Password: encrPass}
 		dbUsers[usu] = u
 
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
 	}
 
-	tpl.ExecuteTemplate(res, "alta.gohtml", nil)
+	tpl.ExecuteTemplate(res, "alta.gohtml", u)
 }
 
-func seccion(res http.ResponseWriter, req *http.Request) {
-
-	u := getUser(req)
-	if !estaLogueado(req) {
-		http.Redirect(res, req, "/", http.StatusSeeOther)
-		return
-	}
-	tpl.ExecuteTemplate(res, "seccion.gohtml", u)
-}
 
 func login(res http.ResponseWriter, req *http.Request) {
 
@@ -126,4 +131,25 @@ func login(res http.ResponseWriter, req *http.Request) {
 	}
 
 	tpl.ExecuteTemplate(res, "login.gohtml", u)
+}
+
+func logout(res http.ResponseWriter, req *http.Request) {
+
+	if !estaLogueado(req) {
+		http.Redirect(res, req, "/", http.StatusSeeOther)
+		return
+	}
+
+	c, _ := req.Cookie("session")
+	delete(dbSessions, c.Value)
+
+	c = &http.Cookie{
+		Name:   "session",
+		Value:  "",
+		MaxAge: -1,
+	}
+	http.SetCookie(res, c)
+
+	http.Redirect(res, req, "/login", http.StatusSeeOther)
+
 }
