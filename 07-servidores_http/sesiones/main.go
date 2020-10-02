@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/satori/go.uuid"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"net/http"
@@ -66,7 +66,7 @@ func altaUser(res http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		sID, _ := uuid.NewV4()
+		sID := uuid.New()
 		c := &http.Cookie{
 			Name:  "session",
 			Value: sID.String(),
@@ -80,7 +80,7 @@ func altaUser(res http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		u := user{Usuario: usu, Nombre: nom, Apellido: ape,  Password: encrPass}
+		u := user{Usuario: usu, Nombre: nom, Apellido: ape, Password: encrPass}
 		dbUsers[usu] = u
 
 		http.Redirect(res, req, "/", http.StatusSeeOther)
@@ -89,7 +89,6 @@ func altaUser(res http.ResponseWriter, req *http.Request) {
 
 	tpl.ExecuteTemplate(res, "alta.gohtml", u)
 }
-
 
 func login(res http.ResponseWriter, req *http.Request) {
 
@@ -116,7 +115,7 @@ func login(res http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		sID, _ := uuid.NewV4()
+		sID := uuid.New()
 		c := &http.Cookie{
 			Name:  "session",
 			Value: sID.String(),
