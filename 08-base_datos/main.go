@@ -13,6 +13,7 @@ func main() {
 	db := iniciaBD()
 	defer db.Close()
 
+	p.crea(db)
 	personas := p.presentaTodo(db)
 	fmt.Println("traje Todas las Personas", personas)
 
