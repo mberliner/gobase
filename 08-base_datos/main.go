@@ -14,22 +14,38 @@ func main() {
 	defer db.Close()
 
 	p.crea(db)
-	personas := p.presentaTodo(db)
-	fmt.Println("traje Todas las Personas", personas)
-
-	fmt.Println("Voy a traer una persona id 1")
-	p1 := p.traePersonaPorID(db, 1)
-	fmt.Println("P1:", p1)
 
 	p.nombre = "George"
 	p.apellido = "Sansonin"
 	p.edad = 39
-	p.id = 3
+	p.id = 1
+	p1 := p.persiste(db)
+
+	p.nombre = "Falcon"
+	p.apellido = "Situs"
+	p.edad = 23
+	p.id = 2
 	p2 := p.persiste(db)
+
+	p.nombre = "Manual"
+	p.apellido = "Onargleb"
+	p.edad = 33
+	p.id = 3
+	p.persiste(db)
+
+	personas := p.presentaTodo(db)
+	fmt.Println("traje Todas las Personas", personas)
+
+	p1.nombre = "Jorge"
+	p1.actualiza(db)
+
+	fmt.Println("Voy a traer una persona id 1")
+	px := p.traePersonaPorID(db, 1)
+	fmt.Println("P1:", px)
 
 	fmt.Println("P2:", p2)
 	p2.operacionesComplejas(db)
-	fmt.Println("P2:", p.traePersonaPorID(db, 3))
+	fmt.Println("P2:", p.traePersonaPorID(db, 2))
 }
 
 func iniciaBD() *sql.DB {
