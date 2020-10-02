@@ -15,8 +15,6 @@ type persona struct {
 	id       int
 }
 
-var p persona
-
 /*
 Las parámetros van según la BD específica
 MySQL               PostgreSQL            Oracle
@@ -26,33 +24,37 @@ VALUES(?, ?, ?)     VALUES($1, $2, $3)    VALUES(:val1, :val2, :val3)
 */
 func main() {
 
-	db, err := sql.Open("mysql", "root:soygroot@tcp(localhost:3306)/go_test?charset=utf8")
-	check(err)
-	defer db.Close()
+	var p persona
 
-	err = db.Ping() //Veo si estoy conectado
-	check(err)
+	db := iniciaBD()
+	defer db.Close()
 
 	personas := p.presentaTodo(db)
 	fmt.Println("traje Todas las Personas", personas)
 
 	fmt.Println("Voy a traer una persona id 1")
-
 	p1 := p.traePersonaPorID(db, 1)
-
 	fmt.Println("P1:", p1)
 
 	p.nombre = "George"
 	p.apellido = "Sansonin"
 	p.edad = 39
 	p.id = 3
-	p.persiste(db)
+	p2 := p.persiste(db)
 
-	p2 := p.traePersonaPorID(db, 3)
-	fmt.Println("PT2:", p)
 	fmt.Println("P2:", p2)
+	p2.operacionesComplejas(db)
+	fmt.Println("P2:", p.traePersonaPorID(db, 3))
+}
 
-	operacionesComplejas(db, p)
+func iniciaBD() *sql.DB {
+	db, err := sql.Open("mysql", "root:soygroot@tcp(localhost:3306)/go_test?charset=utf8")
+	check(err)
+
+	err = db.Ping() //Veo si accedo bien
+	check(err)
+
+	return db
 }
 
 func check(err error) {
@@ -77,7 +79,7 @@ func (p persona) presentaTodo(db *sql.DB) []persona {
 }
 
 func (p persona) traePersonaPorID(db *sql.DB, id int) persona {
-
+	//Uso exclusivamente QueryRow que es para retornar sólo 1 registro
 	err := db.QueryRow("SELECT id, edad, nombre, apellido FROM persona WHERE id = ?;", id).
 		Scan(&p.id, &p.edad, &p.nombre, &p.apellido)
 	check(err)
@@ -101,7 +103,8 @@ func (p persona) persiste(db *sql.DB) persona {
 	return p
 }
 
-func operacionesComplejas(db *sql.DB, p persona) {
+//Sólo para mostrar una transacción con varias operaciones
+func (p persona) operacionesComplejas(db *sql.DB) {
 
 	ctx := context.Background()
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
