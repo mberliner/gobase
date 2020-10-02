@@ -20,8 +20,6 @@ var dbSessions = map[string]string{}
 
 func init() {
 	tpl = template.Must(template.ParseGlob("templates/*"))
-	bs, _ := bcrypt.GenerateFromPassword([]byte("password"), bcrypt.MinCost)
-	dbUsers["test@test.com"] = user{Usuario: "test@test.com", Password: bs, Nombre: "James", Apellido: "Bond"}
 }
 
 func main() {
