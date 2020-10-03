@@ -112,7 +112,13 @@ func check(err error) {
 }
 
 func (p persona) crea(db *sql.DB) {
-	stmt, err := db.Prepare(`CREATE OR REPLACE TABLE persona (
+	stmt, err := db.Prepare(`DROP TABLE IF EXISTS persona; `)
+	check(err)
+
+	_, err = stmt.Exec()
+	check(err)
+
+	stmt, err = db.Prepare(`CREATE TABLE IF NOT EXISTS persona (
 		id bigint(20) NOT NULL AUTO_INCREMENT,
 		nombre varchar(100) NOT NULL,
 		apellido varchar(100) DEFAULT NULL,
@@ -122,4 +128,5 @@ func (p persona) crea(db *sql.DB) {
 
 	_, err = stmt.Exec()
 	check(err)
+
 }
