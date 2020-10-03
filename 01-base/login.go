@@ -8,7 +8,8 @@ import (
 func main() {
 	s := `abcasda`
 
-	//Hay que instalar el paquete
+	//Hay que instalar el paquete previamente
+	//go get golang.org/x/crypto/bcrypt
 	bs, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.MinCost)
 	if err != nil {
 		fmt.Println(err)
@@ -20,9 +21,9 @@ func main() {
 
 	err = bcrypt.CompareHashAndPassword(bs, []byte(loginPword1))
 	if err != nil {
-		fmt.Println("YOU CAN'T LOGIN")
+		fmt.Println("No puede ingresar")
 		return
 	}
 
-	fmt.Println("You're logged in")
+	fmt.Println("Ingreso OK")
 }
