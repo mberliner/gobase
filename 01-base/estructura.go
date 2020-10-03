@@ -11,21 +11,21 @@ type direccion struct {
 	dpto   string
 }
 
-type person struct {
+type persona struct {
 	nombre   string
 	apellido string
 	direccion
 }
 
-type person1 struct {
+type personaSimple struct {
 	nombre   string
 	apellido string
 }
 
 func main() {
 
-	persona1 := person1{"Fer", "Jones"} // Asigna por el orden
-	persona2 := person{nombre: "Sergio",
+	persona1 := personaSimple{"Fer", "Jones"} // Asigna por el orden
+	persona2 := persona{nombre: "Sergio",
 		apellido: "Renen",
 		direccion: direccion{
 			calle:  "Libertad",
@@ -42,29 +42,29 @@ func main() {
 		apellido: "Valvolatti",
 	}
 
-	fmt.Println(persona1)
+	fmt.Printf("Simple: %T - %v\n", persona1, persona1)
 
 	fmt.Println("1---------------------------")
 	persona2.apellido = "Rober"
 	persona2.imprimir()
 
 	fmt.Println("2---------------------------")
-	persona2.actualizarApe("Xxxxxxxxxxxxxxxx") //El compilado hace la traducción entre variable y su puntero dentro de la función
+	persona2.actualizarApe("Xxxxxxxxx") //El compilado hace la traducción entre variable y su puntero dentro de la función
 	persona2.imprimir()
 
 	//imprime c/u y los datos internos se promueven a la estructura exterior
-	fmt.Println("Imprimo valores internos: ", persona2.calle, persona2.numero)
+	fmt.Println("Imprimo algunos valores internos promovidos: ", persona2.calle, persona2.numero)
 
 	fmt.Println("3 struct anonima---------------------------")
 
-	fmt.Println(persona3)
+	fmt.Printf("Simple: %T - %v\n", persona3, persona3)
 
 }
 
-func (p person) imprimir() {
-	fmt.Printf("Es una persona: %+v\n", p)
+func (p persona) imprimir() {
+	fmt.Printf("Es una persona:  %T - %+v\n", p, p)
 }
 
-func (p *person) actualizarApe(apellido string) {
+func (p *persona) actualizarApe(apellido string) {
 	p.apellido = apellido
 }
