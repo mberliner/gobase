@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func main() {
 	s := "Hola Mundo, esto es un acento: ó"
@@ -18,11 +21,8 @@ func main() {
 		fmt.Println(i, l)
 	}
 
-	s = "ddd"
-	fmt.Println(s)
-
 	fmt.Println("Imprimo UTF-8:")
-	for i := 0; i < 1000; i++ {
+	for i := 128; i < 200; i++ {
 		fmt.Printf("%v - %v - %v - %#U\n", i, string(i), []byte(string(i)), i)
 	}
 
@@ -33,4 +33,7 @@ func main() {
 		fmt.Println("Rune('C') == 'C' ")
 	}
 
+	fmt.Println("Buscando en string:", strings.Contains(s, "ó"))
+	separado := strings.Split(s, " ")
+	fmt.Printf("Separo por blancos: %T - %v\n", separado, separado)
 }
