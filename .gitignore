@@ -1,3 +1,5 @@
 Test.txt
 c.out
 *.exe
+*.pem
+*.key
