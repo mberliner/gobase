@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba Ajax</title>
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        h1 {
+            font-size: 5vw;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+
+<h1>click para demostrar Ajax</h1>
+<h2 id="idh21">hola</h2>
+
+<script>
+    document.querySelector('h1').onclick = makeRequest;
+
+    function makeRequest() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/asinc', true);
+        xhr.onreadystatechange = function() {
+            if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
+                var b = document.querySelector('body');
+                var myHeadingOne = document.createElement('h1');
+                var myHeadingOneText = document.createTextNode(xhr.responseText);
+                myHeadingOne.appendChild(myHeadingOneText);
+                b.appendChild(myHeadingOne);
+				
+				document.getElementById("idh21").textContent = xhr.responseText;
+            }
+        };
+
+        xhr.send();
+    }
+
+</script>
+
+</body>
+</html>
