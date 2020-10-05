@@ -43,9 +43,9 @@ func main() {
 	px := p.traePersonaPorID(db, 1)
 	fmt.Println("P1:", px)
 
-	fmt.Println("P2:", p2)
+	fmt.Println("Voy a hacer una transación con:", p2)
 	p2.operacionesComplejas(db)
-	fmt.Println("P2:", p.traePersonaPorID(db, 2))
+	fmt.Println("Resultado:", p.presentaTodo(db))
 }
 
 func iniciaBD() *sql.DB {
