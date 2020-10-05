@@ -7,15 +7,16 @@ import (
 	"os"
 )
 
-//Si no están en mayuscula no lo codifica a json!!
+//Si no están en mayuscula no lo codifica a json
+//porque deb poder exportarse
 type persona struct {
 	Apellido string
 	Nombre   string
 	Edad     int
 }
 
-//Funciona igual que la estructura de arriba persona si los nombres de campos son iguales al json
-//Sino se pueden vincular los nombres asi:
+//En caso de que los nombres de campos no sean iguales al json
+//se pueden vincular los nombres con "tags" asi:
 type personaJSON struct {
 	Apellido string `json:"ApellidoNuevo"`
 	Nombre   string `json:"Nombre"`
