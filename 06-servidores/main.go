@@ -24,8 +24,6 @@ func main() {
 		fmt.Println("Local Address:", conn.LocalAddr(), "Remote Address:", conn.RemoteAddr())
 		go comunica(conn)
 	}
-
-	fmt.Println("Saliendo del programa")
 }
 
 //Una por cada conexion aceptada
