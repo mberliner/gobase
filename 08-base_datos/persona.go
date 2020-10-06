@@ -14,9 +14,18 @@ type persona struct {
 	id       int
 }
 
-func (p persona) presentaTodo(db *sql.DB) []persona {
+type personaRepository struct {
+	db *sql.DB
+}
 
-	rows, err := db.Query("SELECT id, edad, nombre, apellido FROM persona;")
+func newPersonaRepository(db *sql.DB) *personaRepository {
+	return &personaRepository{db}
+}
+
+func (pR personaRepository) presentaTodo() []persona {
+
+	var p persona
+	rows, err := pR.db.Query("SELECT id, edad, nombre, apellido FROM persona;")
 	check(err)
 	defer rows.Close()
 
@@ -29,9 +38,10 @@ func (p persona) presentaTodo(db *sql.DB) []persona {
 	return rP
 }
 
-func (p persona) traePersonaPorID(db *sql.DB, id int) persona {
+func (pR personaRepository) findByID(id int) persona {
+	var p persona
 	//Uso exclusivamente QueryRow que es para retornar sólo 1 registro
-	err := db.QueryRow("SELECT id, edad, nombre, apellido FROM persona WHERE id = ?;", id).
+	err := pR.db.QueryRow("SELECT id, edad, nombre, apellido FROM persona WHERE id = ?;", id).
 		Scan(&p.id, &p.edad, &p.nombre, &p.apellido)
 	if err != sql.ErrNoRows {
 		check(err)
@@ -40,8 +50,8 @@ func (p persona) traePersonaPorID(db *sql.DB, id int) persona {
 	return p
 }
 
-func (p persona) persiste(db *sql.DB) persona {
-	stmt, err := db.Prepare("INSERT into persona(nombre,apellido,edad) VALUES(?,?,?);")
+func (pR personaRepository) persiste(p persona) persona {
+	stmt, err := pR.db.Prepare("INSERT into persona(nombre,apellido,edad) VALUES(?,?,?);")
 	check(err)
 
 	res, err := stmt.Exec(p.nombre, p.apellido, p.edad)
@@ -55,7 +65,7 @@ func (p persona) persiste(db *sql.DB) persona {
 	return p
 }
 
-func (p persona) actualiza(db *sql.DB) persona {
+func (pR personaRepository) actualiza(p persona) persona {
 	/*
 	   Las parámetros van según la BD específica
 	   MySQL               PostgreSQL            Oracle
@@ -64,7 +74,7 @@ func (p persona) actualiza(db *sql.DB) persona {
 	   VALUES(?, ?, ?)     VALUES($1, $2, $3)    VALUES(:val1, :val2, :val3)
 	*/
 
-	stmt, err := db.Prepare("UPDATE persona set nombre = ?, apellido = ?, edad = ? WHERE id = ?;")
+	stmt, err := pR.db.Prepare("UPDATE persona set nombre = ?, apellido = ?, edad = ? WHERE id = ?;")
 	check(err)
 
 	res, err := stmt.Exec(p.nombre, p.apellido, p.edad, p.id)
@@ -79,10 +89,9 @@ func (p persona) actualiza(db *sql.DB) persona {
 }
 
 //Sólo para mostrar una transacción con varias operaciones
-func (p persona) operacionesComplejas(db *sql.DB) {
-
+func (pR personaRepository) operacionesComplejas(p persona) {
 	ctx := context.Background()
-	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	tx, err := pR.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	check(err)
 
 	_, execErr := tx.ExecContext(ctx, "UPDATE persona set edad = ? WHERE id = ?;", (p.edad + 10), p.id)
@@ -111,14 +120,14 @@ func check(err error) {
 	}
 }
 
-func (p persona) crea(db *sql.DB) {
-	stmt, err := db.Prepare(`DROP TABLE IF EXISTS persona; `)
+func (pR personaRepository) crea() {
+	stmt, err := pR.db.Prepare(`DROP TABLE IF EXISTS persona; `)
 	check(err)
 
 	_, err = stmt.Exec()
 	check(err)
 
-	stmt, err = db.Prepare(`CREATE TABLE IF NOT EXISTS persona (
+	stmt, err = pR.db.Prepare(`CREATE TABLE IF NOT EXISTS persona (
 		id bigint(20) NOT NULL AUTO_INCREMENT,
 		nombre varchar(100) NOT NULL,
 		apellido varchar(100) DEFAULT NULL,
@@ -128,5 +137,4 @@ func (p persona) crea(db *sql.DB) {
 
 	_, err = stmt.Exec()
 	check(err)
-
 }
