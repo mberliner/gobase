@@ -51,7 +51,7 @@ func main() {
 }
 
 func iniciaBD() *sql.DB {
-	db, err := sql.Open("mysql", "root:soygroot@tcp(localhost:3306)/go_test?charset=utf8")
+	db, err := sql.Open("mysql", "test:test987@tcp(localhost:3306)/go_test?charset=utf8")
 	check(err)
 
 	err = db.Ping() //Veo si accedo bien
