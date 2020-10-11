@@ -5,4 +5,5 @@ nombre varchar(100) NOT NULL,
 apellido varchar(100) DEFAULT NULL,
 edad int(10) DEFAULT NULL,
 password varchar(100) DEFAULT NULL,
+UNIQUE KEY (usuario),
 PRIMARY KEY (id));

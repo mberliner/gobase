@@ -70,8 +70,8 @@ func altaUser(res http.ResponseWriter, req *http.Request) {
 		nom := req.FormValue("nombre")
 		ape := req.FormValue("apellido")
 
-		_, err := repository.UR.BuscaPorUsuario(usu)
-		if err != nil {
+		sU, err := repository.UR.BuscaPorUsuario(usu)
+		if err != nil || len(sU) > 0 {
 			http.Error(res, "El usuario ya existe, elija otro nombre", http.StatusForbidden)
 			return
 		}
@@ -141,11 +141,8 @@ func login(res http.ResponseWriter, req *http.Request) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
 	}
-	//TODO revisar
-	if len(sU) == 0 {
-		sU[0] = repository.User{}
-	}
-	tpl.ExecuteTemplate(res, "login.gohtml", repository.User(sU[0]))
+
+	tpl.ExecuteTemplate(res, "login.gohtml", sU[0])
 }
 
 func logout(res http.ResponseWriter, req *http.Request) {

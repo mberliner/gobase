@@ -6,17 +6,18 @@
 </head>
 <body>
 
+{{ template "Menu" }}
+<h2> Puede crear un usuario para este Sitio </h2>
+
 <form method="post">
 
     <input type="email" name="usuario" placeholder="email"><br>
     <input type="text" name="password" placeholder="password"><br>
     <input type="text" name="nombre" placeholder="Nombre"><br>
     <input type="text" name="apellido" placeholder="Apellido"><br>
-    <input type="submit">
+    <input type="submit" value="Crear">
 
 </form>
-
-<h2> <a href="/logout">Logout</a></h2>
 
 </body>
 </html>

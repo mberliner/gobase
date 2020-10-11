@@ -4,6 +4,8 @@ import (
 	"database/sql"
 )
 
+//TODO agregar los null
+//y unique a Usuario en BD
 type User struct {
 	Id       int
 	Usuario  string
