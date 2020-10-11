@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/google/uuid"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository"
 	"net/http"
 )
@@ -14,21 +13,13 @@ func getUser(res http.ResponseWriter, req *http.Request) repository.User {
 
 	c, err := req.Cookie("session")
 	if err != nil {
-		sID := uuid.New()
-		c = &http.Cookie{
-			Name:  "session",
-			Value: sID.String(),
-		}
+		return u
 	}
-	http.SetCookie(res, c)
-
-	fmt.Println("user:------------------geUser2-------------------------", u, c, err)
-
 	// Si existe lo tomo de la sesion
 	if usu, ok := dbSessions[c.Value]; ok {
 		sU, err := repository.UR.BuscaPorUsuario(usu)
 		fmt.Println("user:------------------getUser3-------------------------", sU, err)
-		if err != nil {
+		if err != nil || len(sU) == 0 {
 			//TODO log y revisar
 			return u
 		}
