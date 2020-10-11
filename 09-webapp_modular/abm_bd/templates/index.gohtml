@@ -6,13 +6,13 @@
 </head>
 <body>
 {{ template "Menu" }}
+<br>
+<br>
 {{if .Usuario}}
-
-<br>
-USER NAME {{.Usuario}}<br>
-Nombre {{.Nombre}}<br>
-Apellido {{.Apellido}}<br>
-<br>
+    Usuario {{.Usuario}}<br>
+    Nombre {{.Nombre}}<br>
+    Apellido {{.Apellido}}<br>
+    Edad {{.Edad}}<br>
 {{else}}
 <h2>Ud no ha ingresado aún</h2>
 <a href="/login">Login</a>
