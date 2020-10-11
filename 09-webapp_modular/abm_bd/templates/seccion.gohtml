@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Otra Sección</title>
+</head>
+<body>
+
+{{ template "Menu" }}
+
+<h1>Esta sección es sólo para usuarios amigos</h1>
+
+{{if .Usuario}}
+    Usuario {{.Usuario}}<br>
+    Nombre {{.Nombre}}<br>
+    Apellido {{.Apellido}}<br>
+{{end}}
+
+</body>
+</html>

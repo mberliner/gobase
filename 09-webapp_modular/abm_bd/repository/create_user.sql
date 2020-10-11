@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS user (
+id bigint(20) NOT NULL AUTO_INCREMENT,
+usuario varchar(100) NOT NULL,
+nombre varchar(100) NOT NULL,
+apellido varchar(100) DEFAULT NULL,
+edad int(10) DEFAULT NULL,
+password varchar(100) DEFAULT NULL,
+PRIMARY KEY (id));
