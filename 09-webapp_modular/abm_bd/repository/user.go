@@ -7,7 +7,7 @@ import (
 //TODO agregar los null
 //y unique a Usuario en BD
 type User struct {
-	Id       int
+	ID       int
 	Usuario  string
 	Nombre   string
 	Apellido string
@@ -49,7 +49,7 @@ func (uR UserRepository) BuscaPorUsuario(usu string) ([]User, error) {
 
 	var rU []User
 	for rows.Next() {
-		err = rows.Scan(&u.Id, &u.Edad, &u.Nombre, &u.Apellido, &pass)
+		err = rows.Scan(&u.ID, &u.Edad, &u.Nombre, &u.Apellido, &pass)
 		if err != nil {
 			return []User{}, err
 		}

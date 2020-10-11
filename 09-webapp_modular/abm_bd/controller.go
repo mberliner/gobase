@@ -1,10 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"github.com/google/uuid"
+	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/business"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository"
-	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"net/http"
 )
@@ -53,31 +52,9 @@ func altaUser(res http.ResponseWriter, req *http.Request) {
 		nom := req.FormValue("nombre")
 		ape := req.FormValue("apellido")
 
-		sU, err := repository.UR.BuscaPorUsuario(usu)
-		if err != nil || len(sU) > 0 {
-			http.Error(res, "El usuario ya existe, elija otro nombre", http.StatusForbidden)
-			return
-		}
-/*
-		sID := uuid.New()
-		c := &http.Cookie{
-			Name:  sessionCookie,
-			Value: sID.String(),
-		}
-		http.SetCookie(res, c)
-		dbSessions[c.Value] = usu
-*/
-		encrPass, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.MinCost)
+		_, err := business.CreaUsuario(usu, pass, nom, ape)
 		if err != nil {
-			http.Error(res, "No puedo encriptar pass", http.StatusInternalServerError)
-			return
-		}
-
-		u := repository.User{Usuario: usu, Nombre: nom, Apellido: ape, Password: encrPass}
-		_, err = repository.UR.Persiste(u)
-		if err != nil {
-			fmt.Println("err persiste:", err)
-			http.Error(res, "No persiste", http.StatusInternalServerError)
+			http.Error(res, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
@@ -100,21 +77,10 @@ func login(res http.ResponseWriter, req *http.Request) {
 		usu := req.FormValue("usuario")
 		pass := req.FormValue("password")
 
-		// ------------------------------Business ------------------------------
-		sU, err := repository.UR.BuscaPorUsuario(usu)
-		if err != nil || len(sU) == 0 {
-			fmt.Println("user:------------------entra2-------------------------", sU, err)
+		if !business.Autentica(usu, pass) {
 			http.Error(res, "Usuario o Password inválidos", http.StatusForbidden)
 			return
 		}
-
-		err = bcrypt.CompareHashAndPassword(sU[0].Password, []byte(pass))
-		if err != nil {
-			fmt.Println("user:------------------entra3-------------------------", sU, err, pass, sU[0].Password)
-			http.Error(res, "Usuario o Password inválidos", http.StatusForbidden)
-			return
-		}
-		// ------------------------------Business ------------------------------
 
 		sID := uuid.New()
 		c := &http.Cookie{

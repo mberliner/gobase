@@ -42,6 +42,5 @@ func estaLogueado(req *http.Request) bool {
 	if err != nil || len(sU) == 0 {
 		return false
 	}
-	//	_, ok := dbUsers[un]
 	return true
 }
