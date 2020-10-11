@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+const sessionCookie string = "session"
+
 var dbSessions = map[string]string{}
 
 func getUser(res http.ResponseWriter, req *http.Request) repository.User {

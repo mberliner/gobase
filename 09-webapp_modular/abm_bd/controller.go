@@ -58,15 +58,15 @@ func altaUser(res http.ResponseWriter, req *http.Request) {
 			http.Error(res, "El usuario ya existe, elija otro nombre", http.StatusForbidden)
 			return
 		}
-
+/*
 		sID := uuid.New()
 		c := &http.Cookie{
-			Name:  "session",
+			Name:  sessionCookie,
 			Value: sID.String(),
 		}
 		http.SetCookie(res, c)
 		dbSessions[c.Value] = usu
-
+*/
 		encrPass, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.MinCost)
 		if err != nil {
 			http.Error(res, "No puedo encriptar pass", http.StatusInternalServerError)
@@ -81,7 +81,7 @@ func altaUser(res http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		http.Redirect(res, req, "/", http.StatusSeeOther)
+		http.Redirect(res, req, "/login", http.StatusSeeOther)
 		return
 	}
 
@@ -99,6 +99,8 @@ func login(res http.ResponseWriter, req *http.Request) {
 	if req.Method == http.MethodPost {
 		usu := req.FormValue("usuario")
 		pass := req.FormValue("password")
+
+		// ------------------------------Business ------------------------------
 		sU, err := repository.UR.BuscaPorUsuario(usu)
 		if err != nil || len(sU) == 0 {
 			fmt.Println("user:------------------entra2-------------------------", sU, err)
@@ -112,10 +114,11 @@ func login(res http.ResponseWriter, req *http.Request) {
 			http.Error(res, "Usuario o Password inválidos", http.StatusForbidden)
 			return
 		}
+		// ------------------------------Business ------------------------------
 
 		sID := uuid.New()
 		c := &http.Cookie{
-			Name:  "session",
+			Name:  sessionCookie,
 			Value: sID.String(),
 		}
 		http.SetCookie(res, c)
@@ -135,11 +138,11 @@ func logout(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	c, _ := req.Cookie("session")
+	c, _ := req.Cookie(sessionCookie)
 	delete(dbSessions, c.Value)
 
 	c = &http.Cookie{
-		Name:   "session",
+		Name:   sessionCookie,
 		Value:  "",
 		MaxAge: -1,
 	}
