@@ -2,20 +2,19 @@ package business
 
 import (
 	"errors"
-	"fmt"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 )
 
 func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 
 	sU, err := repository.UR.BuscaPorUsuario(usu)
-	fmt.Println("Crea Usuario:-------------------------------------------", sU, err, len(sU))
 	if err != nil || len(sU) > 0 {
 		mU := model.User{}
 		mU.Error = errors.New("El usuario ya existe, elija otro nombre ")
-		fmt.Println("Crea Usuario1:-------------------------------------------", mU, err, len(sU))
+		log.Println("El usuario ya existe, elija otro nombre:---------", mU, err, len(sU))
 		return mU
 	}
 	encrPass, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.MinCost)
@@ -28,8 +27,7 @@ func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 	u := repository.User{Usuario: usu, Nombre: nom, Apellido: ape, Password: encrPass}
 	u, err = repository.UR.Persiste(u)
 	if err != nil {
-		//TODO log
-		fmt.Println("err persiste:", err)
+		log.Println("Error persiste:", err)
 		mU := model.User{}
 		mU.Error = err
 		return mU
@@ -41,7 +39,7 @@ func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 		Apellido: u.Apellido,
 		Edad:     u.Edad,
 		Password: string(u.Password),
-		Mensaje:  "Usuario creado con éxito",
+		Mensaje:  "Usuario creado con éxito, ya puede ir al login",
 		Error:    nil}
 	return mU
 }
@@ -49,18 +47,16 @@ func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 func Autentica(usu string, pass string) (model.User, bool) {
 	sU, err := repository.UR.BuscaPorUsuario(usu)
 	if err != nil || len(sU) == 0 {
-		fmt.Println("user:------------------entra2-------------------------", sU, err)
+		log.Println("BuscaporUsuario:", sU, err)
 		mU := model.User{}
-		mU.Error = errors.New("El usuario o password es incorrecto " + err.Error())
+		mU.Error = errors.New("El usuario o password es incorrecto ")
 		return mU, false
 	}
 
 	err = bcrypt.CompareHashAndPassword(sU[0].Password, []byte(pass))
 	if err != nil {
-		fmt.Println("user:------------------entra3-------------------------", sU, err, pass, sU[0].Password)
 		mU := model.User{}
-		//TODO eliminar error
-		mU.Error = errors.New("El usuario o password es incorrecto " + err.Error())
+		mU.Error = errors.New("El usuario o password es incorrecto ")
 		return mU, false
 
 	}
@@ -80,11 +76,9 @@ func Autentica(usu string, pass string) (model.User, bool) {
 func BuscaPorUsuario(usu string) model.User {
 
 	sU, err := repository.UR.BuscaPorUsuario(usu)
-	fmt.Println("user:------------------getUser3-------------------------", sU, err)
 	if err != nil || len(sU) == 0 {
 		mU := model.User{}
-		//TODO eliminar error
-		mU.Error = errors.New("Usuario no encontrado " + err.Error())
+		mU.Error = errors.New("Usuario no encontrado")
 		return mU
 		//TODO log y revisar
 	}

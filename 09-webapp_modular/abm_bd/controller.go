@@ -91,7 +91,7 @@ func login(res http.ResponseWriter, req *http.Request) {
 			http.Redirect(res, req, "/login", http.StatusSeeOther)
 			return
 		}
-		log.Println("Login autentuica: ", u)
+		log.Println("Login autentica: ", u)
 		sID := uuid.New()
 		c := &http.Cookie{
 			Name:  sessionCookie,
