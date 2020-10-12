@@ -1,0 +1,9 @@
+{{define "User"}}
+{{if .Usuario}}
+    <b>Usuario:</b> {{.Usuario}}<br>
+    <b>Nombre:</b> {{.Nombre}}<br>
+    <b>Apellido:</b> {{.Apellido}}<br>
+    {{if .Edad.Valid}} <b>Edad:</b> {{.Edad}} {{end}}<br>
+{{end}}
+{{end}}
+
