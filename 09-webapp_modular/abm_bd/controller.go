@@ -3,10 +3,10 @@ package main
 import (
 	"github.com/google/uuid"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/business"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository"
+	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
 	"html/template"
-	"net/http"
 	"log"
+	"net/http"
 )
 
 func init() {
@@ -17,7 +17,7 @@ var tpl *template.Template
 
 func index(res http.ResponseWriter, req *http.Request) {
 	u := getUser(res, req)
-	if err:= tpl.ExecuteTemplate(res, "index.gohtml", u); err!=nil {
+	if err := tpl.ExecuteTemplate(res, "index.gohtml", u); err != nil {
 		log.Println("Error en index:", err)
 	}
 
@@ -29,19 +29,18 @@ func seccion(res http.ResponseWriter, req *http.Request) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
 	}
-	if err:= tpl.ExecuteTemplate(res, "seccion.gohtml", u); err!=nil {
+	if err := tpl.ExecuteTemplate(res, "seccion.gohtml", u); err != nil {
 		log.Println("Error en seccion:", err)
 	}
-	
+
 }
 
 func abmPersona(res http.ResponseWriter, req *http.Request) {
-	u := getUser(res, req)
 	if !estaLogueado(req) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
 	}
-	if err:= tpl.ExecuteTemplate(res, "abmPersona.gohtml", u); err!=nil {
+	if err := tpl.ExecuteTemplate(res, "abmPersona.gohtml", nil); err != nil {
 		log.Println("Error en abmPersona:", err)
 	}
 }
@@ -52,7 +51,7 @@ func altaUser(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	var u repository.User
+	var u model.User
 
 	if req.Method == http.MethodPost {
 
@@ -61,17 +60,17 @@ func altaUser(res http.ResponseWriter, req *http.Request) {
 		nom := req.FormValue("nombre")
 		ape := req.FormValue("apellido")
 
-		_, err := business.CreaUsuario(usu, pass, nom, ape)
-		if err != nil {
-			http.Error(res, err.Error(), http.StatusInternalServerError)
+		u = business.CreaUsuario(usu, pass, nom, ape)
+		if u.Error != nil {
+			if err := tpl.ExecuteTemplate(res, "altaUser.gohtml", u); err != nil {
+				log.Println("Error en altaUser:", err)
+			}
 			return
 		}
 
-		http.Redirect(res, req, "/login", http.StatusSeeOther)
-		return
 	}
 
-	if err:= tpl.ExecuteTemplate(res, "altaUser.gohtml", u); err!=nil {
+	if err := tpl.ExecuteTemplate(res, "altaUser.gohtml", u); err != nil {
 		log.Println("Error en altaUser:", err)
 	}
 }
@@ -83,16 +82,16 @@ func login(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	//TODO Revisar
-	var sU = make([]repository.User, 1)
+	var u model.User
 	if req.Method == http.MethodPost {
 		usu := req.FormValue("usuario")
 		pass := req.FormValue("password")
-
-		if !business.Autentica(usu, pass) {
-			http.Error(res, "Usuario o Password inválidos", http.StatusForbidden)
+		u, ok := business.Autentica(usu, pass)
+		if !ok {
+			http.Redirect(res, req, "/login", http.StatusSeeOther)
 			return
 		}
-
+		log.Println("Login autentuica: ", u)
 		sID := uuid.New()
 		c := &http.Cookie{
 			Name:  sessionCookie,
@@ -101,11 +100,13 @@ func login(res http.ResponseWriter, req *http.Request) {
 		http.SetCookie(res, c)
 		dbSessions[c.Value] = usu
 
-		http.Redirect(res, req, "/", http.StatusSeeOther)
+		if err := tpl.ExecuteTemplate(res, "index.gohtml", u); err != nil {
+			log.Println("Error en index:", err)
+		}
 		return
 	}
 
-	if err:= tpl.ExecuteTemplate(res, "login.gohtml", sU[0]); err!=nil {
+	if err := tpl.ExecuteTemplate(res, "login.gohtml", u); err != nil {
 		log.Println("Error en login:", err)
 	}
 }

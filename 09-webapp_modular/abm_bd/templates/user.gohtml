@@ -1,5 +1,14 @@
 {{define "User"}}
+{{if .Error}}
+	{{.Error}}<br>
+{{end}}
+
+{{if .Mensaje}}
+	{{.Mensaje}}<br>
+{{end}}
+
 {{if .Usuario}}
+	
     <b>Usuario:</b> {{.Usuario}}<br>
     <b>Nombre:</b> {{.Nombre}}<br>
     <b>Apellido:</b> {{.Apellido}}<br>

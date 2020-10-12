@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/business"
+	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository"
 	"net/http"
 )
@@ -10,8 +12,8 @@ const sessionCookie string = "session"
 
 var dbSessions = map[string]string{}
 
-func getUser(res http.ResponseWriter, req *http.Request) repository.User {
-	var u repository.User
+func getUser(res http.ResponseWriter, req *http.Request) model.User {
+	var u model.User
 
 	c, err := req.Cookie("session")
 	if err != nil {
@@ -19,13 +21,7 @@ func getUser(res http.ResponseWriter, req *http.Request) repository.User {
 	}
 	// Si existe lo tomo de la sesion
 	if usu, ok := dbSessions[c.Value]; ok {
-		sU, err := repository.UR.BuscaPorUsuario(usu)
-		fmt.Println("user:------------------getUser3-------------------------", sU, err)
-		if err != nil || len(sU) == 0 {
-			//TODO log y revisar
-			return u
-		}
-		u = sU[0]
+		u = business.BuscaPorUsuario(usu)
 	}
 	return u
 }
