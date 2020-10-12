@@ -14,22 +14,22 @@
         <td>ID</td>
         <td>Nombre</td>
         <td>Apellido</td>
-        <td>Edad</td>
+        <td>Fecha Nacimiento</td>
         <td>Ver</td>
         <td>Editar</td>
         <td>Borrar</td>
       </tr>
        </thead>
        <tbody>
-    {{ range . }}
+    {{ range .PersonasM }}
       <tr>
-        <td>{{ .Id }}</td>
+        <td>{{ .ID }}</td>
         <td>{{ .Nombre }}</td>
         <td>{{ .Apellido }}</td> 
-        <td>{{ .Edad }} </td>
-        <td><a href="/persona/ver?id={{ .Id }}">ver</a></td>
-        <td><a href="/persona/editar?id={{ .Id }}">editar</a></td>
-        <td><a href="/persona/borrar?id={{ .Id }}">borrar</a><td>
+        <td>{{ .FechaNacimiento }} </td>
+        <td><a href="/persona/ver?id={{ .ID }}">ver</a></td>
+        <td><a href="/persona/editar?id={{ .ID }}">editar</a></td>
+        <td><a href="/persona/borrar?id={{ .ID }}">borrar</a><td>
       </tr>
     {{ end }}
       </tbody>

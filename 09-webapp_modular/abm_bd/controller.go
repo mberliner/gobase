@@ -35,16 +35,6 @@ func seccion(res http.ResponseWriter, req *http.Request) {
 
 }
 
-func abmPersona(res http.ResponseWriter, req *http.Request) {
-	if !estaLogueado(req) {
-		http.Redirect(res, req, "/", http.StatusSeeOther)
-		return
-	}
-	if err := tpl.ExecuteTemplate(res, "abmPersona.gohtml", nil); err != nil {
-		log.Println("Error en abmPersona:", err)
-	}
-}
-
 func altaUser(res http.ResponseWriter, req *http.Request) {
 	if estaLogueado(req) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)

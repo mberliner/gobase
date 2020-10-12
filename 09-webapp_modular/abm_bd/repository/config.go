@@ -8,6 +8,7 @@ import (
 
 var db *sql.DB
 var UR *UserRepository
+var PR *PersonaRepository
 
 func init() {
 	var err error
@@ -22,5 +23,6 @@ func init() {
 	fmt.Println("Conectado a Mysql")
 
 	UR = NewUserRepository(db)
+	PR = NewPersonaRepository(db)
 
 }
