@@ -6,6 +6,7 @@ import (
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository"
 	"html/template"
 	"net/http"
+	"log"
 )
 
 func init() {
@@ -16,7 +17,10 @@ var tpl *template.Template
 
 func index(res http.ResponseWriter, req *http.Request) {
 	u := getUser(res, req)
-	tpl.ExecuteTemplate(res, "index.gohtml", u)
+	if err:= tpl.ExecuteTemplate(res, "index.gohtml", u); err!=nil {
+		log.Println("Error en index:", err)
+	}
+
 }
 
 func seccion(res http.ResponseWriter, req *http.Request) {
@@ -25,7 +29,10 @@ func seccion(res http.ResponseWriter, req *http.Request) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
 	}
-	tpl.ExecuteTemplate(res, "seccion.gohtml", u)
+	if err:= tpl.ExecuteTemplate(res, "seccion.gohtml", u); err!=nil {
+		log.Println("Error en seccion:", err)
+	}
+	
 }
 
 func abmPersona(res http.ResponseWriter, req *http.Request) {
@@ -34,7 +41,9 @@ func abmPersona(res http.ResponseWriter, req *http.Request) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
 	}
-	tpl.ExecuteTemplate(res, "abmPersona.gohtml", u)
+	if err:= tpl.ExecuteTemplate(res, "abmPersona.gohtml", u); err!=nil {
+		log.Println("Error en abmPersona:", err)
+	}
 }
 
 func altaUser(res http.ResponseWriter, req *http.Request) {
@@ -62,7 +71,9 @@ func altaUser(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	tpl.ExecuteTemplate(res, "altaUser.gohtml", u)
+	if err:= tpl.ExecuteTemplate(res, "altaUser.gohtml", u); err!=nil {
+		log.Println("Error en altaUser:", err)
+	}
 }
 
 func login(res http.ResponseWriter, req *http.Request) {
@@ -94,7 +105,9 @@ func login(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	tpl.ExecuteTemplate(res, "login.gohtml", sU[0])
+	if err:= tpl.ExecuteTemplate(res, "login.gohtml", sU[0]); err!=nil {
+		log.Println("Error en login:", err)
+	}
 }
 
 func logout(res http.ResponseWriter, req *http.Request) {
