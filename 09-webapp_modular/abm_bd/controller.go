@@ -60,12 +60,6 @@ func altaUser(res http.ResponseWriter, req *http.Request) {
 		ape := req.FormValue("apellido")
 
 		u = business.CreaUsuario(usu, pass, nom, ape)
-		if u.Error != nil {
-			if err := tpl.ExecuteTemplate(res, "altaUser.gohtml", u); err != nil {
-				log.Println("Error en altaUser:", err)
-			}
-			return
-		}
 
 	}
 
