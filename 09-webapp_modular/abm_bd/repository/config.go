@@ -12,7 +12,7 @@ var PR *PersonaRepository
 
 func init() {
 	var err error
-	db, err = sql.Open("mysql", "test:test987@tcp(localhost:3306)/go_test?charset=utf8")
+	db, err = sql.Open("mysql", "test:test987@tcp(localhost:3306)/go_test?charset=utf8&parseTime=true")
 	if err != nil {
 		panic(err)
 	}

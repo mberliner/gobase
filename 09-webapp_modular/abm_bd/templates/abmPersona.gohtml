@@ -26,7 +26,7 @@
         <td>{{ .ID }}</td>
         <td>{{ .Nombre }}</td>
         <td>{{ .Apellido }}</td> 
-        <td>{{ .FechaNacimiento }} </td>
+        <td>{{ if .FechaNacimiento.Valid}}{{ formateaFecha .FechaNacimiento.Time  }}{{end}} </td>
         <td><a href="/persona/ver?id={{ .ID }}">ver</a></td>
         <td><a href="/persona/editar?id={{ .ID }}">editar</a></td>
         <td><a href="/persona/borrar?id={{ .ID }}">borrar</a><td>

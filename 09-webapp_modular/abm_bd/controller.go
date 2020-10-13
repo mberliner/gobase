@@ -7,13 +7,22 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 )
 
 func init() {
-	tpl = template.Must(template.ParseGlob("templates/*"))
+	var fm = template.FuncMap{
+		"formateaFecha": formateaFecha,
+	}
+
+	tpl = template.Must(template.New("").Funcs(fm).ParseGlob("templates/*.gohtml"))
 }
 
 var tpl *template.Template
+
+func formateaFecha(t time.Time) string {
+	return t.Format("02-01-2006") //02=Dia 01=Mes 2006=Año
+}
 
 func index(res http.ResponseWriter, req *http.Request) {
 	u := getUser(res, req)
