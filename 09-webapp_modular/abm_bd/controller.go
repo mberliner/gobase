@@ -87,7 +87,9 @@ func login(res http.ResponseWriter, req *http.Request) {
 		pass := req.FormValue("password")
 		u, ok := business.Autentica(usu, pass)
 		if !ok {
-			http.Redirect(res, req, "/login", http.StatusSeeOther)
+			if err := tpl.ExecuteTemplate(res, "login.gohtml", u); err != nil {
+				log.Println("Error en login:", err)
+			}
 			return
 		}
 		log.Println("Login autentica: ", u)

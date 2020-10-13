@@ -11,10 +11,16 @@ import (
 func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 
 	sU, err := repository.UR.BuscaPorUsuario(usu)
-	if err != nil || len(sU) > 0 {
+	if len(sU) > 0 {
 		mU := model.User{}
 		mU.Error = errors.New("El usuario ya existe, elija otro nombre ")
-		log.Println("El usuario ya existe, elija otro nombre:---------", mU, err, len(sU))
+		return mU
+	}
+	if err != nil {
+		mU := model.User{}
+		//TODO poner error de negocio
+		mU.Error = err
+		log.Println("Error al buscar usuario", mU, err, len(sU))
 		return mU
 	}
 	encrPass, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.MinCost)
@@ -46,8 +52,13 @@ func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 
 func Autentica(usu string, pass string) (model.User, bool) {
 	sU, err := repository.UR.BuscaPorUsuario(usu)
-	if err != nil || len(sU) == 0 {
+	if err != nil {
 		log.Println("BuscaporUsuario:", sU, err)
+		mU := model.User{}
+		mU.Error = err
+		return mU, false
+	}
+	if len(sU) == 0 {
 		mU := model.User{}
 		mU.Error = errors.New("El usuario o password es incorrecto ")
 		return mU, false

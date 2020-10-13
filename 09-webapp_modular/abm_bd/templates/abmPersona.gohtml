@@ -7,7 +7,16 @@
 <body>
 
     {{ template "Menu" }}
+	
     <h2> Personas </h2>
+	
+	{{if .Error}}
+		{{.Error}}<br>
+	{{end}}
+
+	{{if .Mensaje}}
+		{{.Mensaje}}<br>
+	{{end}}
     <table border="1">
       <thead>
       <tr>
