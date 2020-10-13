@@ -60,3 +60,29 @@ func BuscaTodo() model.Personas {
 
 	return mP
 }
+
+func BorraPersona(id int) model.Personas {
+
+	err := repository.PR.Borra(id)
+	if err != nil {
+		log.Println("Error borraPersona:", err)
+		mP := model.Personas{}
+		mP.Error = err
+		return mP
+	}
+	personas := []model.Persona{}
+	per := model.Persona{ID: id,
+		Nombre:   "",
+		Apellido: "",
+	}
+
+	personas = append(personas, per)
+
+	mP := model.Personas{
+		PersonasM: personas,
+		Error:     nil,
+		Mensaje:   "Borrado ok",
+	}
+
+	return mP
+}

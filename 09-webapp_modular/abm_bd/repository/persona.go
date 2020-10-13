@@ -35,6 +35,21 @@ func (pR PersonaRepository) Persiste(p Persona) (Persona, error) {
 	return p, nil
 }
 
+func (pR PersonaRepository) Borra(id int) error {
+
+	stmt, err := pR.db.Prepare("DELETE FROM persona WHERE id = ?;")
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (pR PersonaRepository) BuscaTodo() ([]Persona, error) {
 
 	rows, err := pR.db.Query("SELECT id, nombre, apellido, fecha_nacimiento FROM persona;")

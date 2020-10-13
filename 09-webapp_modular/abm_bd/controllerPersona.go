@@ -6,6 +6,7 @@ import (
 	_ "html/template"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func abmPersona(res http.ResponseWriter, req *http.Request) {
@@ -47,5 +48,25 @@ func altaPersona(res http.ResponseWriter, req *http.Request) {
 
 	if err := tpl.ExecuteTemplate(res, "altapersona.gohtml", p); err != nil {
 		log.Println("Error en altapersona:", err)
+	}
+}
+
+func borraPersona(res http.ResponseWriter, req *http.Request) {
+	if !estaLogueado(req) {
+		http.Redirect(res, req, "/", http.StatusSeeOther)
+		return
+	}
+
+	idT := req.FormValue("id")
+	id, _ := strconv.Atoi(idT)
+	mP1 := business.BorraPersona(id)
+
+	mP := business.BuscaTodo()
+	if mP.Error == nil {
+		mP.Error = mP1.Error
+		mP.Mensaje = mP1.Mensaje
+	}
+	if err := tpl.ExecuteTemplate(res, "abmPersona.gohtml", mP); err != nil {
+		log.Println("Error en abmPersona al borrar:", err)
 	}
 }
