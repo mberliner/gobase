@@ -10,20 +10,26 @@ import (
 
 func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
 
-	fecha, err := time.Parse("02-01-2006", fechaNacimiento)
-	if err != nil {
-		log.Println("Error persiste Persona con fecha:", err)
-		mP := model.Personas{}
-		mP.Error = err
-		return mP
-	}
+	//Inicio como nulo, si no lo es lo cambio
 	fechaNull := sql.NullTime{
-		Time:  fecha,
-		Valid: true,
+		Valid: false,
+	}
+	if fechaNacimiento != "" {
+		fecha, err := time.Parse("02-01-2006", fechaNacimiento)
+		if err != nil {
+			log.Println("Error persiste Persona con fecha:", err)
+			mP := model.Personas{}
+			mP.Error = err
+			return mP
+		}
+		fechaNull = sql.NullTime{
+			Time:  fecha,
+			Valid: true,
+		}
 	}
 
 	p := repository.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNull}
-	p, err = repository.PR.Persiste(p)
+	p, err := repository.PR.Persiste(p)
 	if err != nil {
 		log.Println("Error persiste Pesona:", err)
 		mP := model.Personas{}
