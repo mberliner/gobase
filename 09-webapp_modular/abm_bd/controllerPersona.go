@@ -22,13 +22,13 @@ func abmPersona(res http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func altaPersona(res http.ResponseWriter, req *http.Request) {
+func crearPersona(res http.ResponseWriter, req *http.Request) {
 	if !estaLogueado(req) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
 	}
 
-	var p model.Personas
+	var mP model.Personas
 
 	if req.Method == http.MethodPost {
 
@@ -36,22 +36,34 @@ func altaPersona(res http.ResponseWriter, req *http.Request) {
 		ape := req.FormValue("apellido")
 		fecha := req.FormValue("fechaNacimiento")
 
-		p = business.CreaPersona(nom, ape, fecha)
-		if p.Error != nil {
-			if err := tpl.ExecuteTemplate(res, "altaPersona.gohtml", p); err != nil {
-				log.Println("Error en altaUser:", err)
+		mP1 := business.CreaPersona(nom, ape, fecha)
+		//TODO Revisar si eliminar
+		if mP.Error != nil {
+			if err := tpl.ExecuteTemplate(res, "crearPersona.gohtml", mP1); err != nil {
+				log.Println("Error en crearPersona:", err)
 			}
 			return
 		}
 
+		mP = business.BuscaTodo()
+		if mP.Error == nil {
+			mP.Error = mP1.Error
+			mP.Mensaje = mP1.Mensaje
+		}
+
+		if err := tpl.ExecuteTemplate(res, "abmPersona.gohtml", mP); err != nil {
+			log.Println("Error en abmPersona:", err)
+		}
+		return
+
 	}
 
-	if err := tpl.ExecuteTemplate(res, "altapersona.gohtml", p); err != nil {
-		log.Println("Error en altapersona:", err)
+	if err := tpl.ExecuteTemplate(res, "crearPersona.gohtml", mP); err != nil {
+		log.Println("Error en crearPersona:", err)
 	}
 }
 
-func borraPersona(res http.ResponseWriter, req *http.Request) {
+func borrarPersona(res http.ResponseWriter, req *http.Request) {
 	if !estaLogueado(req) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
@@ -70,3 +82,20 @@ func borraPersona(res http.ResponseWriter, req *http.Request) {
 		log.Println("Error en abmPersona al borrar:", err)
 	}
 }
+
+/*
+func buscaPersona(res http.ResponseWriter, req *http.Request) {
+	if !estaLogueado(req) {
+		http.Redirect(res, req, "/", http.StatusSeeOther)
+		return
+	}
+
+	idT := req.FormValue("id")
+	id, _ := strconv.Atoi(idT)
+	mP := business.BuscaPorId(id)
+
+	if err := tpl.ExecuteTemplate(res, "crearPersona.gohtml", mP); err != nil {
+		log.Println("Error en buscarPersona:", err)
+	}
+}
+*/

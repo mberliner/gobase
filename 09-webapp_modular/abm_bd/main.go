@@ -11,9 +11,9 @@ func main() {
 	http.HandleFunc("/altausuario", altaUser)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/logout", logout)
-	http.HandleFunc("/altapersona", altaPersona)
+	http.HandleFunc("/persona/crear", crearPersona)
 	http.HandleFunc("/abmpersona", abmPersona)
-	http.HandleFunc("/persona/borrar", borraPersona)
+	http.HandleFunc("/persona/borrar", borrarPersona)
 	http.Handle("/favicon.ico", http.NotFoundHandler())
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {

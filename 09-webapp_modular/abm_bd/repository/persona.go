@@ -22,12 +22,12 @@ func NewPersonaRepository(db *sql.DB) *PersonaRepository {
 }
 
 func (pR PersonaRepository) Persiste(p Persona) (Persona, error) {
-	stmt, err := pR.db.Prepare("INSERT into persona(nombre, apellido, fechanacimiento) VALUES(?,?,?);")
+	stmt, err := pR.db.Prepare("INSERT into persona(nombre, apellido, fecha_nacimiento) VALUES(?,?,?);")
 	if err != nil {
 		return Persona{}, err
 	}
 
-	_, err = stmt.Exec(p.Nombre, p.Apellido, nil)
+	_, err = stmt.Exec(p.Nombre, p.Apellido, p.FechaNacimiento)
 	if err != nil {
 		return Persona{}, err
 	}

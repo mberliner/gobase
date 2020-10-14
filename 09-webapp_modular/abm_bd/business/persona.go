@@ -1,16 +1,29 @@
 package business
 
 import (
-	//	"errors"
+	"database/sql"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository"
 	"log"
+	"time"
 )
 
 func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
 
-	p := repository.Persona{Nombre: nom, Apellido: ape}
-	p, err := repository.PR.Persiste(p)
+	fecha, err := time.Parse("02-01-2006", fechaNacimiento)
+	if err != nil {
+		log.Println("Error persiste Persona con fecha:", err)
+		mP := model.Personas{}
+		mP.Error = err
+		return mP
+	}
+	fechaNull := sql.NullTime{
+		Time:  fecha,
+		Valid: true,
+	}
+
+	p := repository.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNull}
+	p, err = repository.PR.Persiste(p)
 	if err != nil {
 		log.Println("Error persiste Pesona:", err)
 		mP := model.Personas{}
@@ -28,7 +41,7 @@ func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas 
 	mP := model.Personas{
 		PersonasM: personas,
 		Error:     nil,
-		Mensaje:   "Persona Creada ok",
+		Mensaje:   "Persona Creada Ok",
 	}
 	return mP
 }
