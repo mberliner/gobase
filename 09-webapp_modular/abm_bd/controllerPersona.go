@@ -78,24 +78,53 @@ func borrarPersona(res http.ResponseWriter, req *http.Request) {
 		mP.Error = mP1.Error
 		mP.Mensaje = mP1.Mensaje
 	}
+
 	if err := tpl.ExecuteTemplate(res, "abmPersona.gohtml", mP); err != nil {
 		log.Println("Error en abmPersona al borrar:", err)
 	}
 }
 
-/*
-func buscaPersona(res http.ResponseWriter, req *http.Request) {
+func actualizarPersona(res http.ResponseWriter, req *http.Request) {
 	if !estaLogueado(req) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
 	}
 
+	var mP model.Personas
 	idT := req.FormValue("id")
-	id, _ := strconv.Atoi(idT)
-	mP := business.BuscaPorId(id)
 
-	if err := tpl.ExecuteTemplate(res, "crearPersona.gohtml", mP); err != nil {
-		log.Println("Error en buscarPersona:", err)
+	if req.Method == http.MethodPost {
+
+		//id := req.FormValue("id")
+		nom := req.FormValue("nombre")
+		ape := req.FormValue("apellido")
+		fecha := req.FormValue("fechaNacimiento")
+
+		mP1 := business.ActualizaPersona(idT, nom, ape, fecha)
+		if mP.Error != nil {
+			if err := tpl.ExecuteTemplate(res, "editarPersona.gohtml", mP1); err != nil {
+				log.Println("Error en editarPersona:", err)
+			}
+			return
+		}
+
+		mP = business.BuscaTodo()
+		if mP.Error == nil {
+			mP.Error = mP1.Error
+			mP.Mensaje = mP1.Mensaje
+		}
+
+		if err := tpl.ExecuteTemplate(res, "abmPersona.gohtml", mP); err != nil {
+			log.Println("Error en abmPersona:", err)
+		}
+		return
+
+	}
+
+	id, _ := strconv.Atoi(idT)
+	mP = business.BuscaPersona(id)
+
+	if err := tpl.ExecuteTemplate(res, "editarPersona.gohtml", mP); err != nil {
+		log.Println("Error en editarPersona:", err)
 	}
 }
-*/
