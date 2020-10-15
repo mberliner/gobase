@@ -1,14 +1,10 @@
 package model
 
-import (
-	"database/sql"
-)
-
 type Persona struct {
 	ID              int
 	Nombre          string
 	Apellido        string
-	FechaNacimiento sql.NullTime
+	FechaNacimiento string
 }
 
 type Personas struct {

@@ -37,10 +37,17 @@ func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas 
 		mP.Error = err
 		return mP
 	}
+
+	var fecha string
+	if p.FechaNacimiento.Valid == true {
+		fecha = p.FechaNacimiento.Time.Format("02-01-2006")
+	} else {
+		fecha = ""
+	}
 	per := model.Persona{ID: p.ID,
 		Nombre:          p.Nombre,
 		Apellido:        p.Apellido,
-		FechaNacimiento: p.FechaNacimiento,
+		FechaNacimiento: fecha,
 	}
 
 	personas := []model.Persona{per}
@@ -63,12 +70,19 @@ func BuscaTodo() model.Personas {
 		return mP
 	}
 	personas := []model.Persona{}
+	var fecha string
 	for _, p := range ps {
+
+		if p.FechaNacimiento.Valid == true {
+			fecha = p.FechaNacimiento.Time.Format("02-01-2006")
+		} else {
+			fecha = ""
+		}
 
 		per := model.Persona{ID: p.ID,
 			Nombre:          p.Nombre,
 			Apellido:        p.Apellido,
-			FechaNacimiento: p.FechaNacimiento,
+			FechaNacimiento: fecha,
 		}
 		personas = append(personas, per)
 	}
@@ -118,10 +132,17 @@ func BuscaPersona(id int) model.Personas {
 		return mP
 	}
 	personas := []model.Persona{}
+
+	var fecha string
+	if p.FechaNacimiento.Valid == true {
+		fecha = p.FechaNacimiento.Time.Format("02-01-2006")
+	} else {
+		fecha = ""
+	}
 	per := model.Persona{ID: p.ID,
 		Nombre:          p.Nombre,
 		Apellido:        p.Apellido,
-		FechaNacimiento: p.FechaNacimiento,
+		FechaNacimiento: fecha,
 	}
 	personas = append(personas, per)
 
@@ -163,10 +184,17 @@ func ActualizaPersona(id string, nom string, ape string, fechaNacimiento string)
 		mP.Error = err
 		return mP
 	}
+
+	var fecha string
+	if p.FechaNacimiento.Valid == true {
+		fecha = p.FechaNacimiento.Time.Format("02-01-2006")
+	} else {
+		fecha = ""
+	}
 	per := model.Persona{ID: p.ID,
 		Nombre:          p.Nombre,
 		Apellido:        p.Apellido,
-		FechaNacimiento: p.FechaNacimiento,
+		FechaNacimiento: fecha,
 	}
 
 	personas := []model.Persona{per}
