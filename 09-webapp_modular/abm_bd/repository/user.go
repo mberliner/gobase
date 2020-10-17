@@ -7,7 +7,7 @@ import (
 
 //TODO agregar los null
 //y unique a Usuario en BD
-type User struct {
+type user struct {
 	ID       int
 	Usuario  string
 	Nombre   string
@@ -39,7 +39,6 @@ func (uR UserRepository) Persiste(u model.User) (model.User, error) {
 }
 
 func (uR UserRepository) BuscaPorUsuario(usu string) ([]model.User, error) {
-	var u User
 	rows, err := uR.db.Query("SELECT id, usuario, edad, nombre, apellido, password  FROM user WHERE usuario = ?;", usu)
 	if err != nil {
 		return []model.User{}, err
@@ -47,6 +46,7 @@ func (uR UserRepository) BuscaPorUsuario(usu string) ([]model.User, error) {
 	defer rows.Close()
 
 	var rU []model.User
+	var u user
 	for rows.Next() {
 		err = rows.Scan(&u.ID, &u.Usuario, &u.Edad, &u.Nombre, &u.Apellido, &u.Password)
 		if err != nil {
