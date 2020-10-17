@@ -25,12 +25,12 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 }
 
 func (uR UserRepository) Persiste(u model.User) (model.User, error) {
-	stmt, err := uR.db.Prepare("INSERT into user(usuario, nombre, apellido, edad, password) VALUES(?,?,?,?);")
+	stmt, err := uR.db.Prepare("INSERT into user(usuario, nombre, apellido, edad, password) VALUES(?,?,?,?, ?);")
 	if err != nil {
 		return model.User{}, err
 	}
 
-	_, err = stmt.Exec(u.Usuario, u.Nombre, u.Apellido, u.Password, u.Password)
+	_, err = stmt.Exec(u.Usuario, u.Nombre, u.Apellido, u.Edad, u.Password)
 	if err != nil {
 		return model.User{}, err
 	}
