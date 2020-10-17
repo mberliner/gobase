@@ -1,9 +1,5 @@
 package model
 
-import (
-//"database/sql"
-)
-
 type User struct {
 	ID       string
 	Usuario  string
