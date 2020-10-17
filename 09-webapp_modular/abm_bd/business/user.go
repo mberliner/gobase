@@ -30,7 +30,7 @@ func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 		return mU
 	}
 
-	u := repository.User{Usuario: usu, Nombre: nom, Apellido: ape, Password: encrPass}
+	u := model.User{Usuario: usu, Nombre: nom, Apellido: ape, Password: string(encrPass)}
 	u, err = repository.UR.Persiste(u)
 	if err != nil {
 		log.Println("Error persiste:", err)
@@ -44,8 +44,8 @@ func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 		Nombre:   u.Nombre,
 		Apellido: u.Apellido,
 		Edad:     u.Edad,
-		Password: string(u.Password),
-		Mensaje:  "Usuario creado con éxito, ya puede ir al login",
+		Password: u.Password,
+		Mensaje:  "Usuario creado con éxito, ya puede ir al login", //al controller?
 		Error:    nil}
 	return mU
 }
@@ -64,7 +64,7 @@ func Autentica(usu string, pass string) (model.User, bool) {
 		return mU, false
 	}
 
-	err = bcrypt.CompareHashAndPassword(sU[0].Password, []byte(pass))
+	err = bcrypt.CompareHashAndPassword([]byte(sU[0].Password), []byte(pass))
 	if err != nil {
 		mU := model.User{}
 		mU.Error = errors.New("El usuario o password es incorrecto ")
@@ -77,7 +77,7 @@ func Autentica(usu string, pass string) (model.User, bool) {
 		Nombre:   sU[0].Nombre,
 		Apellido: sU[0].Apellido,
 		Edad:     sU[0].Edad,
-		Password: string(sU[0].Password),
+		Password: sU[0].Password,
 		Mensaje:  "Autenticación exitosa",
 		Error:    nil}
 
@@ -99,7 +99,7 @@ func BuscaPorUsuario(usu string) model.User {
 		Nombre:   sU[0].Nombre,
 		Apellido: sU[0].Apellido,
 		Edad:     sU[0].Edad,
-		Password: string(sU[0].Password),
+		Password: sU[0].Password,
 		Mensaje:  "Usuario OK",
 		Error:    nil}
 

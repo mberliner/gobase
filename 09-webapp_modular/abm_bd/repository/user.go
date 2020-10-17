@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
 )
 
 //TODO agregar los null
@@ -12,7 +13,7 @@ type User struct {
 	Nombre   string
 	Apellido string
 	Edad     sql.NullInt64
-	Password []byte
+	Password string
 }
 
 type UserRepository struct {
@@ -23,40 +24,43 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{db}
 }
 
-func (uR UserRepository) Persiste(u User) (User, error) {
-	stmt, err := uR.db.Prepare("INSERT into user(usuario, nombre, apellido, password) VALUES(?,?,?,?);")
+func (uR UserRepository) Persiste(u model.User) (model.User, error) {
+	stmt, err := uR.db.Prepare("INSERT into user(usuario, nombre, apellido, edad, password) VALUES(?,?,?,?);")
 	if err != nil {
-		return User{}, err
+		return model.User{}, err
 	}
 
-	_, err = stmt.Exec(u.Usuario, u.Nombre, u.Apellido, string(u.Password))
+	_, err = stmt.Exec(u.Usuario, u.Nombre, u.Apellido, u.Password, u.Password)
 	if err != nil {
-		return User{}, err
+		return model.User{}, err
 	}
 
 	return u, nil
 }
 
-func (uR UserRepository) BuscaPorUsuario(usu string) ([]User, error) {
+func (uR UserRepository) BuscaPorUsuario(usu string) ([]model.User, error) {
 	var u User
-	rows, err := uR.db.Query("SELECT id, edad, nombre, apellido, password  FROM user WHERE usuario = ?;", usu)
+	rows, err := uR.db.Query("SELECT id, usuario, edad, nombre, apellido, password  FROM user WHERE usuario = ?;", usu)
 	if err != nil {
-		return []User{}, err
+		return []model.User{}, err
 	}
 	defer rows.Close()
 
-	var pass string
-
-	var rU []User
+	var rU []model.User
 	for rows.Next() {
-		err = rows.Scan(&u.ID, &u.Edad, &u.Nombre, &u.Apellido, &pass)
+		err = rows.Scan(&u.ID, &u.Usuario, &u.Edad, &u.Nombre, &u.Apellido, &u.Password)
 		if err != nil {
-			return []User{}, err
+			return []model.User{}, err
 		}
-		//TODO Revisar
-		u.Password = []byte(pass)
-		u.Usuario = usu
-		rU = append(rU, u)
+		uM := model.User{
+			ID:       u.ID,
+			Usuario:  u.Usuario,
+			Nombre:   u.Nombre,
+			Apellido: u.Apellido,
+			Edad:     u.Edad,
+			Password: u.Password,
+			Error:    nil}
+		rU = append(rU, uM)
 	}
 	return rU, nil
 }
