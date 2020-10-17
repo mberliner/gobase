@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+
+{{ template "Menu" }}
+
+<h2> Por favor indentifiquese para entrar:</h2>
+
+{{template "User" . }}
+<form method="post">
+
+    <input type="email" name="usuario" placeholder="email"><br>
+    <input type="password" name="password" placeholder="password"><br>
+    <input type="submit" value="Login">
+
+</form>
+
+</body>
+</html>

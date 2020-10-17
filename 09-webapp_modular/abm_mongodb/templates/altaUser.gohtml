@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alta de usuario</title>
+</head>
+<body>
+
+{{ template "Menu" }}
+
+{{if and .Usuario .Mensaje}}
+<a href="/login">Login</a>
+{{end}}
+
+<h2> Puede crear un usuario para este Sitio </h2>
+
+{{template "User" . }}
+
+
+<form method="post">
+
+    <input type="email" name="usuario" placeholder="email"><br>
+    <input type="text" name="password" placeholder="password"><br>
+    <input type="text" name="nombre" placeholder="Nombre"><br>
+    <input type="text" name="apellido" placeholder="Apellido"><br>
+    <input type="submit" value="Crear">
+
+</form>
+
+</body>
+</html>

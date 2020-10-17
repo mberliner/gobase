@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bienvenida</title>
+</head>
+<body>
+{{ template "Menu" }}
+<br>
+
+{{template "User" . }}
+
+{{if not .Usuario}}
+<h2>Hola Hello, daddy no ha ingresado aún</h2>
+<a href="/login">Login</a>
+{{end}}
+
+</body>
+</html>
+
