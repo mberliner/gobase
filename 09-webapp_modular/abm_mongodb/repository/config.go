@@ -8,7 +8,7 @@ import (
 var db *mgo.Database
 var UR *UserRepository
 
-//var PR *PersonaRepository
+var PR *PersonaRepository
 
 func init() {
 
@@ -28,6 +28,6 @@ func init() {
 	fmt.Println("Conectado a Mongodb")
 
 	UR = NewUserRepository(db)
-	//	PR = NewPersonaRepository(db)
+	PR = NewPersonaRepository(db)
 
 }

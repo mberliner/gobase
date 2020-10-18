@@ -1,10 +1,9 @@
 package business
 
 import (
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository"
+	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/model"
+	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/repository"
 	"log"
-	"strconv"
 )
 
 func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
@@ -47,7 +46,7 @@ func BuscaTodo() model.Personas {
 	return mP
 }
 
-func BorraPersona(id int) model.Personas {
+func BorraPersona(id string) model.Personas {
 
 	err := repository.PR.Borra(id)
 	if err != nil {
@@ -73,7 +72,7 @@ func BorraPersona(id int) model.Personas {
 	return mP
 }
 
-func BuscaPersona(id int) model.Personas {
+func BuscaPersona(id string) model.Personas {
 
 	p, err := repository.PR.BuscaPorId(id)
 	log.Println("Error en editarPersona1-------:", id, p, err)
@@ -95,8 +94,7 @@ func BuscaPersona(id int) model.Personas {
 
 func ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas {
 
-	idd, _ := strconv.Atoi(id)
-	p := model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento, ID: idd}
+	p := model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento, ID: id}
 	p, err := repository.PR.Actualiza(p)
 	log.Println("Error actualiza Persona con fecha:", p, err)
 	if err != nil {

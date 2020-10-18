@@ -1,51 +1,37 @@
 package repository
 
 import (
-	"database/sql"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
+	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/model"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 	"log"
-	"time"
 )
 
-//TODO agregar los null
-//y unique a Usuario en BD
-type Persona struct {
-	ID              int
-	Nombre          string
-	Apellido        string
-	FechaNacimiento sql.NullTime
+type persona struct {
+	ID              bson.ObjectId //`json:"ID" bson:"_id"`
+	Nombre          string //`json:"Nombre" bson:"Nombre"`
+	Apellido        string //`json:"Apellido" bson:"Apellido"`
+	FechaNacimiento string //`json:"FechaNacimiento" bson:"FechaNacimiento"`
 }
 
 type PersonaRepository struct {
-	db *sql.DB
+	db  *mgo.Database
 }
 
-func NewPersonaRepository(db *sql.DB) *PersonaRepository {
+func NewPersonaRepository(db  *mgo.Database) *PersonaRepository {
 	return &PersonaRepository{db}
 }
 
 func (pR PersonaRepository) Persiste(p model.Persona) (model.Persona, error) {
-	//Inicio como nulo, si no lo es lo cambio
-	fechaNull := sql.NullTime{
-		Valid: false,
-	}
-	if p.FechaNacimiento != "" {
-		fecha, err := time.Parse("02-01-2006", p.FechaNacimiento)
-		if err != nil {
-			log.Println("Error persiste Persona con fecha:", err)
-			return model.Persona{}, err
-		}
-		fechaNull = sql.NullTime{
-			Time:  fecha,
-			Valid: true,
-		}
-	}
-	stmt, err := pR.db.Prepare("INSERT into persona(nombre, apellido, fecha_nacimiento) VALUES(?,?,?);")
-	if err != nil {
-		return model.Persona{}, err
-	}
 
-	_, err = stmt.Exec(p.Nombre, p.Apellido, fechaNull)
+log.Println("ObjectId:", bson.NewObjectId())
+
+	pL := persona{ID: bson.NewObjectId(),
+		Nombre:   p.Nombre,
+		Apellido: p.Apellido,
+		FechaNacimiento: p.FechaNacimiento,
+	}
+	err := db.C("persona").Insert(pL)
 	if err != nil {
 		return model.Persona{}, err
 	}
@@ -53,14 +39,9 @@ func (pR PersonaRepository) Persiste(p model.Persona) (model.Persona, error) {
 	return p, nil
 }
 
-func (pR PersonaRepository) Borra(id int) error {
+func (pR PersonaRepository) Borra(id string) error {
 
-	stmt, err := pR.db.Prepare("DELETE FROM persona WHERE id = ?;")
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(id)
+	err := db.C("persona").Remove(bson.M{"_id": id})
 	if err != nil {
 		return err
 	}
@@ -70,32 +51,18 @@ func (pR PersonaRepository) Borra(id int) error {
 
 func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 
-	rows, err := pR.db.Query("SELECT id, nombre, apellido, fecha_nacimiento FROM persona;")
+	personas := []persona{}
+	err := db.C("persona").Find(bson.M{}).All(&personas)
 	if err != nil {
 		return []model.Persona{}, err
 	}
-	defer rows.Close()
 
 	var rP []model.Persona
-	var p Persona
-
-	var fecha string
-	for rows.Next() {
-		err = rows.Scan(&p.ID, &p.Nombre, &p.Apellido, &p.FechaNacimiento)
-		if err != nil {
-			return []model.Persona{}, err
-		}
-
-		if p.FechaNacimiento.Valid == true {
-			fecha = p.FechaNacimiento.Time.Format("02-01-2006")
-		} else {
-			fecha = ""
-		}
-
-		per := model.Persona{ID: p.ID,
+	for _, p := range personas {
+		per := model.Persona{ID: p.ID.String(),
 			Nombre:          p.Nombre,
 			Apellido:        p.Apellido,
-			FechaNacimiento: fecha,
+			FechaNacimiento: p.FechaNacimiento,
 		}
 
 		rP = append(rP, per)
@@ -104,55 +71,37 @@ func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 	return rP, nil
 }
 
-func (pR PersonaRepository) BuscaPorId(id int) (model.Persona, error) {
-	var p Persona
-	err := pR.db.QueryRow("SELECT id, nombre, apellido, fecha_nacimiento FROM persona WHERE id = ?;", id).
-		Scan(&p.ID, &p.Nombre, &p.Apellido, &p.FechaNacimiento)
+func (pR PersonaRepository) BuscaPorId(id string) (model.Persona, error) {
+	p := persona{}
+	err := db.C("persona").Find(bson.M{"ID": id}).One(&p)
+	if err != nil && err.Error() == "not found" {
+		return model.Persona{}, nil
+	}
 	if err != nil {
 		return model.Persona{}, err
 	}
 
-	var fecha string
-	if p.FechaNacimiento.Valid == true {
-		fecha = p.FechaNacimiento.Time.Format("02-01-2006")
-	} else {
-		fecha = ""
-	}
-	perM := model.Persona{ID: p.ID,
+	perM := model.Persona{ID: p.ID.String(),
 		Nombre:          p.Nombre,
 		Apellido:        p.Apellido,
-		FechaNacimiento: fecha,
+		FechaNacimiento: p.FechaNacimiento,
 	}
 	return perM, nil
 }
 
 func (pR PersonaRepository) Actualiza(p model.Persona) (model.Persona, error) {
 
-	//Inicio como nulo, si no lo es lo cambio
-	fechaNull := sql.NullTime{
-		Valid: false,
-	}
-	if p.FechaNacimiento != "" {
-		fecha, err := time.Parse("02-01-2006", p.FechaNacimiento)
-		if err != nil {
-			log.Println("Error actualiza Persona con fecha:", err)
-			return model.Persona{}, err
-		}
-		fechaNull = sql.NullTime{
-			Time:  fecha,
-			Valid: true,
-		}
-	}
+	pL := persona{ID: bson.ObjectId(p.ID),
+			Nombre: p.Nombre,
+			Apellido: p.Apellido,
+			FechaNacimiento: p.FechaNacimiento,
+			}
 
-	stmt, err := pR.db.Prepare("Update persona SET nombre=?, apellido=?, fecha_nacimiento=? WHERE id=?;")
+	err := db.C("persona").Update(bson.M{"ID": p.ID}, &pL)
 	if err != nil {
 		return model.Persona{}, err
 	}
 
-	_, err = stmt.Exec(p.Nombre, p.Apellido, fechaNull, p.ID)
-	if err != nil {
-		return model.Persona{}, err
-	}
 
 	return p, nil
 }
