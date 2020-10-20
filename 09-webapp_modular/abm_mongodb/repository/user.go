@@ -1,13 +1,13 @@
 package repository
 
 import (
+	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/model"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type user struct {
-	ID       bson.ObjectId //`json:"_id" bson:"_id"`
+	ID       bson.ObjectId //`json:"id" bson:"id"`
 	Usuario  string        //`json:"Usuario" bson:"Usuario"`
 	Nombre   string        //`json:"Nombre" bson:"Nombre"`
 	Apellido string        //`json:"Apellido" bson:"Apellido"`

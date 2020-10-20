@@ -1,15 +1,14 @@
 package repository
 
 import (
+	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/model"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
-	"log"
 	"strings"
 )
 
 type persona struct {
-	Id              bson.ObjectId //`json:"Id" bson:"_Id"`
+	Id              bson.ObjectId //`json:"Id" bson:"Id"`
 	Nombre          string        //`json:"Nombre" bson:"Nombre"`
 	Apellido        string        //`json:"Apellido" bson:"Apellido"`
 	FechaNacimiento string        //`json:"FechaNacimiento" bson:"FechaNacimiento"`
@@ -60,8 +59,6 @@ func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 	var rP []model.Persona
 	for _, p := range personas {
 
-		log.Println("rangeo:", p)
-
 		idd := strings.Split(p.Id.String(), `"`)
 
 		per := model.Persona{ID: idd[1],
@@ -81,7 +78,6 @@ func (pR PersonaRepository) BuscaPorId(id string) (model.Persona, error) {
 	id1 := bson.ObjectIdHex(id)
 
 	err := db.C("persona").Find(bson.M{"id": id1}).One(&p)
-	log.Println("busca por ID:", p, err)
 	if err != nil && err.Error() == "not found" {
 		return model.Persona{}, nil
 	}

@@ -2,7 +2,7 @@ package repository
 
 import (
 	"fmt"
-	"gopkg.in/mgo.v2"
+	"github.com/globalsign/mgo"
 )
 
 var db *mgo.Database
