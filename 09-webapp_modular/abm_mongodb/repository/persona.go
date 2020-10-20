@@ -5,30 +5,29 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"log"
+	"strings"
 )
 
 type persona struct {
-	ID              bson.ObjectId //`json:"ID" bson:"_id"`
-	Nombre          string //`json:"Nombre" bson:"Nombre"`
-	Apellido        string //`json:"Apellido" bson:"Apellido"`
-	FechaNacimiento string //`json:"FechaNacimiento" bson:"FechaNacimiento"`
+	Id              bson.ObjectId //`json:"Id" bson:"_Id"`
+	Nombre          string        //`json:"Nombre" bson:"Nombre"`
+	Apellido        string        //`json:"Apellido" bson:"Apellido"`
+	FechaNacimiento string        //`json:"FechaNacimiento" bson:"FechaNacimiento"`
 }
 
 type PersonaRepository struct {
-	db  *mgo.Database
+	db *mgo.Database
 }
 
-func NewPersonaRepository(db  *mgo.Database) *PersonaRepository {
+func NewPersonaRepository(db *mgo.Database) *PersonaRepository {
 	return &PersonaRepository{db}
 }
 
 func (pR PersonaRepository) Persiste(p model.Persona) (model.Persona, error) {
 
-log.Println("ObjectId:", bson.NewObjectId())
-
-	pL := persona{ID: bson.NewObjectId(),
-		Nombre:   p.Nombre,
-		Apellido: p.Apellido,
+	pL := persona{Id: bson.NewObjectId(),
+		Nombre:          p.Nombre,
+		Apellido:        p.Apellido,
 		FechaNacimiento: p.FechaNacimiento,
 	}
 	err := db.C("persona").Insert(pL)
@@ -41,7 +40,8 @@ log.Println("ObjectId:", bson.NewObjectId())
 
 func (pR PersonaRepository) Borra(id string) error {
 
-	err := db.C("persona").Remove(bson.M{"_id": id})
+	id1 := bson.ObjectIdHex(id)
+	err := db.C("persona").Remove(bson.M{"id": id1})
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,12 @@ func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 
 	var rP []model.Persona
 	for _, p := range personas {
-		per := model.Persona{ID: p.ID.String(),
+
+		log.Println("rangeo:", p)
+
+		idd := strings.Split(p.Id.String(), `"`)
+
+		per := model.Persona{ID: idd[1],
 			Nombre:          p.Nombre,
 			Apellido:        p.Apellido,
 			FechaNacimiento: p.FechaNacimiento,
@@ -73,15 +78,18 @@ func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 
 func (pR PersonaRepository) BuscaPorId(id string) (model.Persona, error) {
 	p := persona{}
-	err := db.C("persona").Find(bson.M{"ID": id}).One(&p)
+	id1 := bson.ObjectIdHex(id)
+
+	err := db.C("persona").Find(bson.M{"id": id1}).One(&p)
+	log.Println("busca por ID:", p, err)
 	if err != nil && err.Error() == "not found" {
 		return model.Persona{}, nil
 	}
 	if err != nil {
 		return model.Persona{}, err
 	}
-
-	perM := model.Persona{ID: p.ID.String(),
+	idd := strings.Split(p.Id.String(), `"`)
+	perM := model.Persona{ID: idd[1],
 		Nombre:          p.Nombre,
 		Apellido:        p.Apellido,
 		FechaNacimiento: p.FechaNacimiento,
@@ -91,17 +99,16 @@ func (pR PersonaRepository) BuscaPorId(id string) (model.Persona, error) {
 
 func (pR PersonaRepository) Actualiza(p model.Persona) (model.Persona, error) {
 
-	pL := persona{ID: bson.ObjectId(p.ID),
-			Nombre: p.Nombre,
-			Apellido: p.Apellido,
-			FechaNacimiento: p.FechaNacimiento,
-			}
+	pL := persona{Id: bson.ObjectIdHex(p.ID),
+		Nombre:          p.Nombre,
+		Apellido:        p.Apellido,
+		FechaNacimiento: p.FechaNacimiento,
+	}
 
-	err := db.C("persona").Update(bson.M{"ID": p.ID}, &pL)
+	err := db.C("persona").Update(bson.M{"id": pL.Id}, &pL)
 	if err != nil {
 		return model.Persona{}, err
 	}
-
 
 	return p, nil
 }
