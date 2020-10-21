@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
+	"strconv"
 )
 
 //TODO agregar los null
@@ -25,12 +26,28 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 }
 
 func (uR UserRepository) Persiste(u model.User) (model.User, error) {
+
+	edadNull := sql.NullInt64{
+		Valid: false,
+	}
+	if u.Edad != "" {
+		edadI, err := strconv.Atoi(u.Edad)
+		if err != nil {
+			//log.Println("Error edad debe ser numerico:", err)
+			return model.User{}, err
+		}
+		edadNull = sql.NullInt64{
+			Int64: int64(edadI),
+			Valid: true,
+		}
+	}
+
 	stmt, err := uR.db.Prepare("INSERT into user(usuario, nombre, apellido, edad, password) VALUES(?,?,?,?, ?);")
 	if err != nil {
 		return model.User{}, err
 	}
 
-	_, err = stmt.Exec(u.Usuario, u.Nombre, u.Apellido, u.Edad, u.Password)
+	_, err = stmt.Exec(u.Usuario, u.Nombre, u.Apellido, edadNull, u.Password)
 	if err != nil {
 		return model.User{}, err
 	}
@@ -47,17 +64,25 @@ func (uR UserRepository) BuscaPorUsuario(usu string) ([]model.User, error) {
 
 	var rU []model.User
 	var u user
+	var edad string
 	for rows.Next() {
 		err = rows.Scan(&u.ID, &u.Usuario, &u.Edad, &u.Nombre, &u.Apellido, &u.Password)
 		if err != nil {
 			return []model.User{}, err
 		}
+
+		if u.Edad.Valid == true {
+			edad = strconv.Itoa(int(u.Edad.Int64))
+		} else {
+			edad = ""
+		}
+
 		uM := model.User{
 			ID:       u.ID,
 			Usuario:  u.Usuario,
 			Nombre:   u.Nombre,
 			Apellido: u.Apellido,
-			Edad:     u.Edad,
+			Edad:     edad,
 			Password: u.Password,
 			Error:    nil}
 		rU = append(rU, uM)

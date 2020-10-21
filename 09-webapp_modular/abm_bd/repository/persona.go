@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
 	"log"
-	"time"
 	"strconv"
+	"time"
 )
 
 //TODO agregar los null
@@ -92,7 +92,7 @@ func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 		} else {
 			fecha = ""
 		}
-		
+
 		per := model.Persona{ID: strconv.Itoa(p.ID),
 			Nombre:          p.Nombre,
 			Apellido:        p.Apellido,
