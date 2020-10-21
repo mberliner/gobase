@@ -6,7 +6,6 @@ import (
 	_ "html/template"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 func abmPersona(res http.ResponseWriter, req *http.Request) {
@@ -37,7 +36,6 @@ func crearPersona(res http.ResponseWriter, req *http.Request) {
 		fecha := req.FormValue("fechaNacimiento")
 
 		mP1 := business.CreaPersona(nom, ape, fecha)
-		//TODO Revisar si eliminar
 		if mP.Error != nil {
 			if err := tpl.ExecuteTemplate(res, "crearPersona.gohtml", mP1); err != nil {
 				log.Println("Error en crearPersona:", err)
@@ -69,8 +67,7 @@ func borrarPersona(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	idT := req.FormValue("id")
-	id, _ := strconv.Atoi(idT)
+	id := req.FormValue("id")
 	mP1 := business.BorraPersona(id)
 
 	mP := business.BuscaTodo()
@@ -91,7 +88,7 @@ func actualizarPersona(res http.ResponseWriter, req *http.Request) {
 	}
 
 	var mP model.Personas
-	idT := req.FormValue("id")
+	id := req.FormValue("id")
 
 	if req.Method == http.MethodPost {
 
@@ -100,7 +97,7 @@ func actualizarPersona(res http.ResponseWriter, req *http.Request) {
 		ape := req.FormValue("apellido")
 		fecha := req.FormValue("fechaNacimiento")
 
-		mP1 := business.ActualizaPersona(idT, nom, ape, fecha)
+		mP1 := business.ActualizaPersona(id, nom, ape, fecha)
 		if mP.Error != nil {
 			if err := tpl.ExecuteTemplate(res, "editarPersona.gohtml", mP1); err != nil {
 				log.Println("Error en editarPersona:", err)
@@ -121,7 +118,6 @@ func actualizarPersona(res http.ResponseWriter, req *http.Request) {
 
 	}
 
-	id, _ := strconv.Atoi(idT)
 	mP = business.BuscaPersona(id)
 
 	if err := tpl.ExecuteTemplate(res, "editarPersona.gohtml", mP); err != nil {

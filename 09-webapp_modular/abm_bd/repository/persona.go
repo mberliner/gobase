@@ -5,6 +5,7 @@ import (
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
 	"log"
 	"time"
+	"strconv"
 )
 
 //TODO agregar los null
@@ -53,7 +54,7 @@ func (pR PersonaRepository) Persiste(p model.Persona) (model.Persona, error) {
 	return p, nil
 }
 
-func (pR PersonaRepository) Borra(id int) error {
+func (pR PersonaRepository) Borra(id string) error {
 
 	stmt, err := pR.db.Prepare("DELETE FROM persona WHERE id = ?;")
 	if err != nil {
@@ -91,8 +92,8 @@ func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 		} else {
 			fecha = ""
 		}
-
-		per := model.Persona{ID: p.ID,
+		
+		per := model.Persona{ID: strconv.Itoa(p.ID),
 			Nombre:          p.Nombre,
 			Apellido:        p.Apellido,
 			FechaNacimiento: fecha,
@@ -104,7 +105,7 @@ func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 	return rP, nil
 }
 
-func (pR PersonaRepository) BuscaPorId(id int) (model.Persona, error) {
+func (pR PersonaRepository) BuscaPorId(id string) (model.Persona, error) {
 	var p Persona
 	err := pR.db.QueryRow("SELECT id, nombre, apellido, fecha_nacimiento FROM persona WHERE id = ?;", id).
 		Scan(&p.ID, &p.Nombre, &p.Apellido, &p.FechaNacimiento)
@@ -118,7 +119,7 @@ func (pR PersonaRepository) BuscaPorId(id int) (model.Persona, error) {
 	} else {
 		fecha = ""
 	}
-	perM := model.Persona{ID: p.ID,
+	perM := model.Persona{ID: strconv.Itoa(p.ID),
 		Nombre:          p.Nombre,
 		Apellido:        p.Apellido,
 		FechaNacimiento: fecha,

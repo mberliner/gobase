@@ -1,7 +1,7 @@
 package model
 
 type Persona struct {
-	ID              int
+	ID              string
 	Nombre          string
 	Apellido        string
 	FechaNacimiento string
