@@ -1,14 +1,13 @@
-package main
+package controller
 
 import (
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/business"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
-	_ "html/template"
 	"log"
 	"net/http"
 )
 
-func abmPersona(res http.ResponseWriter, req *http.Request) {
+func AbmPersona(res http.ResponseWriter, req *http.Request) {
 	if !estaLogueado(req) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
@@ -21,7 +20,7 @@ func abmPersona(res http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func crearPersona(res http.ResponseWriter, req *http.Request) {
+func CrearPersona(res http.ResponseWriter, req *http.Request) {
 	if !estaLogueado(req) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
@@ -61,7 +60,7 @@ func crearPersona(res http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func borrarPersona(res http.ResponseWriter, req *http.Request) {
+func BorrarPersona(res http.ResponseWriter, req *http.Request) {
 	if !estaLogueado(req) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
@@ -81,7 +80,7 @@ func borrarPersona(res http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func actualizarPersona(res http.ResponseWriter, req *http.Request) {
+func ActualizarPersona(res http.ResponseWriter, req *http.Request) {
 	if !estaLogueado(req) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
