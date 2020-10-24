@@ -22,7 +22,7 @@ func NewPersonaRepository(db *mgo.Database) *PersonaRepository {
 	return &PersonaRepository{db}
 }
 
-func (pR PersonaRepository) Persiste(p model.Persona) (model.Persona, error) {
+func (pR PersonaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
 
 	pL := persona{Id: bson.NewObjectId(),
 		Nombre:          p.Nombre,
@@ -31,7 +31,7 @@ func (pR PersonaRepository) Persiste(p model.Persona) (model.Persona, error) {
 	}
 	err := db.C("persona").Insert(pL)
 	if err != nil {
-		return model.Persona{}, err
+		return &model.Persona{}, err
 	}
 
 	return p, nil
@@ -73,16 +73,16 @@ func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 	return rP, nil
 }
 
-func (pR PersonaRepository) BuscaPorId(id string) (model.Persona, error) {
+func (pR PersonaRepository) BuscaPorId(id string) (*model.Persona, error) {
 	p := persona{}
 	id1 := bson.ObjectIdHex(id)
 
 	err := db.C("persona").Find(bson.M{"id": id1}).One(&p)
 	if err != nil && err.Error() == "not found" {
-		return model.Persona{}, nil
+		return &model.Persona{}, nil
 	}
 	if err != nil {
-		return model.Persona{}, err
+		return &model.Persona{}, err
 	}
 	idd := strings.Split(p.Id.String(), `"`)
 	perM := model.Persona{ID: idd[1],
@@ -90,10 +90,10 @@ func (pR PersonaRepository) BuscaPorId(id string) (model.Persona, error) {
 		Apellido:        p.Apellido,
 		FechaNacimiento: p.FechaNacimiento,
 	}
-	return perM, nil
+	return &perM, nil
 }
 
-func (pR PersonaRepository) Actualiza(p model.Persona) (model.Persona, error) {
+func (pR PersonaRepository) Actualiza(p *model.Persona) (*model.Persona, error) {
 
 	pL := persona{Id: bson.ObjectIdHex(p.ID),
 		Nombre:          p.Nombre,
@@ -103,7 +103,7 @@ func (pR PersonaRepository) Actualiza(p model.Persona) (model.Persona, error) {
 
 	err := db.C("persona").Update(bson.M{"id": pL.Id}, &pL)
 	if err != nil {
-		return model.Persona{}, err
+		return &model.Persona{}, err
 	}
 
 	return p, nil

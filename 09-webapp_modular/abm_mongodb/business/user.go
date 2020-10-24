@@ -11,7 +11,6 @@ import (
 func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 
 	sU, err := repository.UR.BuscaPorUsuario(usu)
-	log.Println("BBBBBuscar usuario", sU, err, len(sU))
 	if len(sU) > 0 {
 		mU := model.User{}
 		mU.Error = errors.New("El usuario ya existe, elija otro nombre ")
@@ -31,9 +30,8 @@ func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 		return mU
 	}
 
-	u := model.User{Usuario: usu, Nombre: nom, Apellido: ape, Password: string(encrPass)}
+	u := &model.User{Usuario: usu, Nombre: nom, Apellido: ape, Password: string(encrPass)}
 	u, err = repository.UR.Persiste(u)
-	log.Println("BBBBBuscar usuario2", u, err)
 	if err != nil {
 		log.Println("Error persiste:", err)
 		mU := model.User{}

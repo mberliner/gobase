@@ -23,7 +23,7 @@ func NewUserRepository(db *mgo.Database) *UserRepository {
 	return &UserRepository{db}
 }
 
-func (uR UserRepository) Persiste(u model.User) (model.User, error) {
+func (uR UserRepository) Persiste(u *model.User) (*model.User, error) {
 
 	uL := user{ID: bson.NewObjectId(),
 		Usuario:  u.Usuario,
@@ -34,7 +34,7 @@ func (uR UserRepository) Persiste(u model.User) (model.User, error) {
 	}
 	err := db.C("user").Insert(uL)
 	if err != nil {
-		return model.User{}, err
+		return &model.User{}, err
 	}
 
 	return u, nil
