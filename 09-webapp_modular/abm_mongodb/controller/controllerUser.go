@@ -1,4 +1,4 @@
-package main
+package controller
 
 import (
 	"github.com/google/uuid"
@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func altaUser(res http.ResponseWriter, req *http.Request) {
+func AltaUser(res http.ResponseWriter, req *http.Request) {
 	if estaLogueado(req) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
 		return
@@ -32,7 +32,7 @@ func altaUser(res http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func login(res http.ResponseWriter, req *http.Request) {
+func Login(res http.ResponseWriter, req *http.Request) {
 
 	if estaLogueado(req) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
@@ -70,7 +70,7 @@ func login(res http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func logout(res http.ResponseWriter, req *http.Request) {
+func Logout(res http.ResponseWriter, req *http.Request) {
 
 	if !estaLogueado(req) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)

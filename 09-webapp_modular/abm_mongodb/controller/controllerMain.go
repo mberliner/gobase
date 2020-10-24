@@ -1,4 +1,4 @@
-package main
+package controller
 
 import (
 	"html/template"
@@ -21,7 +21,7 @@ func formateaFecha(t time.Time) string {
 	return t.Format("02-01-2006") //02=Dia 01=Mes 2006=Año
 }
 
-func index(res http.ResponseWriter, req *http.Request) {
+func Index(res http.ResponseWriter, req *http.Request) {
 	u := getUser(res, req)
 	if err := tpl.ExecuteTemplate(res, "index.gohtml", u); err != nil {
 		log.Println("Error en index:", err)
@@ -29,7 +29,7 @@ func index(res http.ResponseWriter, req *http.Request) {
 
 }
 
-func seccion(res http.ResponseWriter, req *http.Request) {
+func Seccion(res http.ResponseWriter, req *http.Request) {
 	u := getUser(res, req)
 	if !estaLogueado(req) {
 		http.Redirect(res, req, "/", http.StatusSeeOther)
