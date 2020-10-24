@@ -30,7 +30,7 @@ func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 		return mU
 	}
 
-	u := model.User{Usuario: usu, Nombre: nom, Apellido: ape, Password: string(encrPass)}
+	u := &model.User{Usuario: usu, Nombre: nom, Apellido: ape, Password: string(encrPass)}
 	u, err = repository.UR.Persiste(u)
 	if err != nil {
 		log.Println("Error persiste:", err)

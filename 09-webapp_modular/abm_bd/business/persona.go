@@ -8,7 +8,7 @@ import (
 
 func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
 
-	p := model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento}
+	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento}
 	p, err := repository.PR.Persiste(p)
 	if err != nil {
 		log.Println("Error persiste Pesona:", err)
@@ -17,7 +17,7 @@ func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas 
 		return mP
 	}
 
-	personas := []model.Persona{p}
+	personas := []model.Persona{*p}
 
 	mP := model.Personas{
 		PersonasM: personas,
@@ -84,7 +84,7 @@ func BuscaPersona(id string) model.Personas {
 	}
 
 	mP := model.Personas{
-		PersonasM: []model.Persona{p},
+		PersonasM: []model.Persona{*p},
 		Error:     nil,
 		Mensaje:   "Busca ok",
 	}
@@ -94,7 +94,7 @@ func BuscaPersona(id string) model.Personas {
 
 func ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas {
 
-	p := model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento, ID: id}
+	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento, ID: id}
 	p, err := repository.PR.Actualiza(p)
 	log.Println("Error actualiza Persona con fecha:", p, err)
 	if err != nil {
@@ -105,7 +105,7 @@ func ActualizaPersona(id string, nom string, ape string, fechaNacimiento string)
 	}
 
 	mP := model.Personas{
-		PersonasM: []model.Persona{p},
+		PersonasM: []model.Persona{*p},
 		Error:     nil,
 		Mensaje:   "Persona Actualizada Ok",
 	}

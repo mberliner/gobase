@@ -91,7 +91,6 @@ func ActualizarPersona(res http.ResponseWriter, req *http.Request) {
 
 	if req.Method == http.MethodPost {
 
-		//id := req.FormValue("id")
 		nom := req.FormValue("nombre")
 		ape := req.FormValue("apellido")
 		fecha := req.FormValue("fechaNacimiento")

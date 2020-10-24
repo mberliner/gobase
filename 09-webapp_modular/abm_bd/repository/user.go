@@ -25,7 +25,7 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{db}
 }
 
-func (uR UserRepository) Persiste(u model.User) (model.User, error) {
+func (uR UserRepository) Persiste(u *model.User) (*model.User, error) {
 
 	edadNull := sql.NullInt64{
 		Valid: false,
@@ -34,7 +34,7 @@ func (uR UserRepository) Persiste(u model.User) (model.User, error) {
 		edadI, err := strconv.Atoi(u.Edad)
 		if err != nil {
 			//log.Println("Error edad debe ser numerico:", err)
-			return model.User{}, err
+			return &model.User{}, err
 		}
 		edadNull = sql.NullInt64{
 			Int64: int64(edadI),
@@ -44,12 +44,12 @@ func (uR UserRepository) Persiste(u model.User) (model.User, error) {
 
 	stmt, err := uR.db.Prepare("INSERT into user(usuario, nombre, apellido, edad, password) VALUES(?,?,?,?, ?);")
 	if err != nil {
-		return model.User{}, err
+		return &model.User{}, err
 	}
 
 	_, err = stmt.Exec(u.Usuario, u.Nombre, u.Apellido, edadNull, u.Password)
 	if err != nil {
-		return model.User{}, err
+		return &model.User{}, err
 	}
 
 	return u, nil

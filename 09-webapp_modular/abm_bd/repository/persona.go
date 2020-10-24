@@ -25,7 +25,7 @@ func NewPersonaRepository(db *sql.DB) *PersonaRepository {
 	return &PersonaRepository{db}
 }
 
-func (pR PersonaRepository) Persiste(p model.Persona) (model.Persona, error) {
+func (pR PersonaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
 	//Inicio como nulo, si no lo es lo cambio
 	fechaNull := sql.NullTime{
 		Valid: false,
@@ -34,7 +34,7 @@ func (pR PersonaRepository) Persiste(p model.Persona) (model.Persona, error) {
 		fecha, err := time.Parse("02-01-2006", p.FechaNacimiento)
 		if err != nil {
 			log.Println("Error persiste Persona con fecha:", err)
-			return model.Persona{}, err
+			return &model.Persona{}, err
 		}
 		fechaNull = sql.NullTime{
 			Time:  fecha,
@@ -43,12 +43,12 @@ func (pR PersonaRepository) Persiste(p model.Persona) (model.Persona, error) {
 	}
 	stmt, err := pR.db.Prepare("INSERT into persona(nombre, apellido, fecha_nacimiento) VALUES(?,?,?);")
 	if err != nil {
-		return model.Persona{}, err
+		return &model.Persona{}, err
 	}
 
 	_, err = stmt.Exec(p.Nombre, p.Apellido, fechaNull)
 	if err != nil {
-		return model.Persona{}, err
+		return &model.Persona{}, err
 	}
 
 	return p, nil
@@ -105,12 +105,12 @@ func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 	return rP, nil
 }
 
-func (pR PersonaRepository) BuscaPorId(id string) (model.Persona, error) {
+func (pR PersonaRepository) BuscaPorId(id string) (*model.Persona, error) {
 	var p Persona
 	err := pR.db.QueryRow("SELECT id, nombre, apellido, fecha_nacimiento FROM persona WHERE id = ?;", id).
 		Scan(&p.ID, &p.Nombre, &p.Apellido, &p.FechaNacimiento)
 	if err != nil {
-		return model.Persona{}, err
+		return &model.Persona{}, err
 	}
 
 	var fecha string
@@ -124,10 +124,10 @@ func (pR PersonaRepository) BuscaPorId(id string) (model.Persona, error) {
 		Apellido:        p.Apellido,
 		FechaNacimiento: fecha,
 	}
-	return perM, nil
+	return &perM, nil
 }
 
-func (pR PersonaRepository) Actualiza(p model.Persona) (model.Persona, error) {
+func (pR PersonaRepository) Actualiza(p *model.Persona) (*model.Persona, error) {
 
 	//Inicio como nulo, si no lo es lo cambio
 	fechaNull := sql.NullTime{
@@ -137,7 +137,7 @@ func (pR PersonaRepository) Actualiza(p model.Persona) (model.Persona, error) {
 		fecha, err := time.Parse("02-01-2006", p.FechaNacimiento)
 		if err != nil {
 			log.Println("Error actualiza Persona con fecha:", err)
-			return model.Persona{}, err
+			return &model.Persona{}, err
 		}
 		fechaNull = sql.NullTime{
 			Time:  fecha,
@@ -147,12 +147,12 @@ func (pR PersonaRepository) Actualiza(p model.Persona) (model.Persona, error) {
 
 	stmt, err := pR.db.Prepare("Update persona SET nombre=?, apellido=?, fecha_nacimiento=? WHERE id=?;")
 	if err != nil {
-		return model.Persona{}, err
+		return &model.Persona{}, err
 	}
 
 	_, err = stmt.Exec(p.Nombre, p.Apellido, fechaNull, p.ID)
 	if err != nil {
-		return model.Persona{}, err
+		return &model.Persona{}, err
 	}
 
 	return p, nil
