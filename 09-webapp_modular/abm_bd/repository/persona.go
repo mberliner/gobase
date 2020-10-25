@@ -46,10 +46,16 @@ func (pR PersonaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
 		return &model.Persona{}, err
 	}
 
-	_, err = stmt.Exec(p.Nombre, p.Apellido, fechaNull)
+	res, err := stmt.Exec(p.Nombre, p.Apellido, fechaNull)
 	if err != nil {
 		return &model.Persona{}, err
 	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		return &model.Persona{}, err
+	}
+	p.ID = strconv.Itoa(int(id))
 
 	return p, nil
 }
