@@ -13,7 +13,7 @@ func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas 
 	if err != nil {
 		log.Println("Error persiste Pesona:", err)
 		mP := model.Personas{}
-		mP.Error = err
+		mP.Error = *err
 		return mP
 	}
 
