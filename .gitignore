@@ -3,3 +3,4 @@ c.out
 *.exe
 *.pem
 *.key
+__debug_bin

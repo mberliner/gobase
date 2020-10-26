@@ -8,3 +8,4 @@ db.createUser(
   }
 )
 
+db.user.createIndex( { "usuario" : 1 }, { unique : true } )
