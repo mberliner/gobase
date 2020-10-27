@@ -2,10 +2,11 @@ package repository
 
 import (
 	"database/sql"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
 	"log"
 	"strconv"
 	"time"
+
+	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
 )
 
 //TODO agregar los null
@@ -25,7 +26,7 @@ func NewPersonaRepository(db *sql.DB) *PersonaRepository {
 	return &PersonaRepository{db}
 }
 
-func (pR PersonaRepository) Persiste(p *model.Persona) (*model.Persona, *error) {
+func (pR PersonaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
 	//Inicio como nulo, si no lo es lo cambio
 	fechaNull := sql.NullTime{
 		Valid: false,
@@ -34,7 +35,7 @@ func (pR PersonaRepository) Persiste(p *model.Persona) (*model.Persona, *error) 
 		fecha, err := time.Parse("02-01-2006", p.FechaNacimiento)
 		if err != nil {
 			log.Println("Error persiste Persona con fecha:", err)
-			return &model.Persona{}, &err
+			return &model.Persona{}, err
 		}
 		fechaNull = sql.NullTime{
 			Time:  fecha,
@@ -43,17 +44,17 @@ func (pR PersonaRepository) Persiste(p *model.Persona) (*model.Persona, *error) 
 	}
 	stmt, err := pR.db.Prepare("INSERT into persona(nombre, apellido, fecha_nacimiento) VALUES(?,?,?);")
 	if err != nil {
-		return &model.Persona{}, &err
+		return &model.Persona{}, err
 	}
 
 	res, err := stmt.Exec(p.Nombre, p.Apellido, fechaNull)
 	if err != nil {
-		return &model.Persona{}, &err
+		return &model.Persona{}, err
 	}
 
 	id, err := res.LastInsertId()
 	if err != nil {
-		return &model.Persona{}, &err
+		return &model.Persona{}, err
 	}
 	p.ID = strconv.Itoa(int(id))
 

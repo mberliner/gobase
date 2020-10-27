@@ -1,9 +1,10 @@
 package business
 
 import (
+	"log"
+
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository"
-	"log"
 )
 
 func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
@@ -13,7 +14,7 @@ func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas 
 	if err != nil {
 		log.Println("Error persiste Pesona:", err)
 		mP := model.Personas{}
-		mP.Error = *err
+		mP.Error = err
 		return mP
 	}
 
