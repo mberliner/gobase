@@ -11,7 +11,7 @@ import (
 
 //TODO agregar los null
 //y unique a Usuario en BD
-type Persona struct {
+type persona struct {
 	ID              int
 	Nombre          string
 	Apellido        string
@@ -85,7 +85,7 @@ func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 	defer rows.Close()
 
 	var rP []model.Persona
-	var p Persona
+	var p persona
 
 	var fecha string
 	for rows.Next() {
@@ -113,7 +113,7 @@ func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 }
 
 func (pR PersonaRepository) BuscaPorId(id string) (*model.Persona, error) {
-	var p Persona
+	var p persona
 	err := pR.db.QueryRow("SELECT id, nombre, apellido, fecha_nacimiento FROM persona WHERE id = ?;", id).
 		Scan(&p.ID, &p.Nombre, &p.Apellido, &p.FechaNacimiento)
 	if err != nil {
