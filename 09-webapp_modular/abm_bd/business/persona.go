@@ -10,7 +10,7 @@ import (
 func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
 
 	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento}
-	p, err := repository.PR.Persiste(p)
+	p, err := repository.PersonaRepo.Persiste(p)
 	if err != nil {
 		log.Println("Error persiste Pesona:", err)
 		mP := model.Personas{}
@@ -30,7 +30,7 @@ func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas 
 
 func BuscaTodo() model.Personas {
 
-	ps, err := repository.PR.BuscaTodo()
+	ps, err := repository.PersonaRepo.BuscaTodo()
 	if err != nil {
 		log.Println("Error buscaTodo:", err)
 		mP := model.Personas{}
@@ -49,7 +49,7 @@ func BuscaTodo() model.Personas {
 
 func BorraPersona(id string) model.Personas {
 
-	err := repository.PR.Borra(id)
+	err := repository.PersonaRepo.Borra(id)
 	if err != nil {
 		log.Println("Error borraPersona:", err)
 		mP := model.Personas{}
@@ -75,7 +75,7 @@ func BorraPersona(id string) model.Personas {
 
 func BuscaPersona(id string) model.Personas {
 
-	p, err := repository.PR.BuscaPorId(id)
+	p, err := repository.PersonaRepo.BuscaPorID(id)
 	log.Println("Error en editarPersona1-------:", id, p, err)
 	if err != nil {
 		log.Println("Error buscaPersona:", err)
@@ -96,7 +96,7 @@ func BuscaPersona(id string) model.Personas {
 func ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas {
 
 	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento, ID: id}
-	p, err := repository.PR.Actualiza(p)
+	p, err := repository.PersonaRepo.Actualiza(p)
 	log.Println("Error actualiza Persona con fecha:", p, err)
 	if err != nil {
 		log.Println("Error actualiza Pesona:", err)

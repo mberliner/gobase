@@ -3,12 +3,13 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+
 	_ "github.com/go-sql-driver/mysql" //Sólo para iniciar database/sql
 )
 
 var db *sql.DB
-var UR *UserRepository
-var PR *PersonaRepository
+var UserRepo UserRepository
+var PersonaRepo PersonaRepository
 
 func init() {
 	var err error
@@ -22,7 +23,7 @@ func init() {
 	}
 	fmt.Println("Conectado a Mysql")
 
-	UR = NewUserRepository(db)
-	PR = NewPersonaRepository(db)
+	UserRepo = NewUserRepository(db)
+	PersonaRepo = NewPersonaRepository(db)
 
 }

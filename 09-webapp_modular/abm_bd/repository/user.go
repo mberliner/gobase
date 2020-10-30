@@ -2,8 +2,9 @@ package repository
 
 import (
 	"database/sql"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
 	"strconv"
+
+	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
 )
 
 //TODO agregar los null
@@ -17,15 +18,20 @@ type user struct {
 	Password string
 }
 
-type UserRepository struct {
+type UserRepository interface {
+	Persiste(u *model.User) (*model.User, error)
+	BuscaPorUsuario(usu string) ([]model.User, error)
+}
+
+type userRepository struct {
 	db *sql.DB
 }
 
-func NewUserRepository(db *sql.DB) *UserRepository {
-	return &UserRepository{db}
+func NewUserRepository(db *sql.DB) UserRepository {
+	return &userRepository{db}
 }
 
-func (uR UserRepository) Persiste(u *model.User) (*model.User, error) {
+func (uR userRepository) Persiste(u *model.User) (*model.User, error) {
 
 	edadNull := sql.NullInt64{
 		Valid: false,
@@ -55,7 +61,7 @@ func (uR UserRepository) Persiste(u *model.User) (*model.User, error) {
 	return u, nil
 }
 
-func (uR UserRepository) BuscaPorUsuario(usu string) ([]model.User, error) {
+func (uR userRepository) BuscaPorUsuario(usu string) ([]model.User, error) {
 	rows, err := uR.db.Query("SELECT id, usuario, edad, nombre, apellido, password  FROM user WHERE usuario = ?;", usu)
 	if err != nil {
 		return []model.User{}, err

@@ -18,15 +18,23 @@ type persona struct {
 	FechaNacimiento sql.NullTime
 }
 
-type PersonaRepository struct {
+type PersonaRepository interface {
+	Persiste(p *model.Persona) (*model.Persona, error)
+	Borra(id string) error
+	BuscaTodo() ([]model.Persona, error)
+	BuscaPorID(id string) (*model.Persona, error)
+	Actualiza(p *model.Persona) (*model.Persona, error)
+}
+
+type personaRepository struct {
 	db *sql.DB
 }
 
-func NewPersonaRepository(db *sql.DB) *PersonaRepository {
-	return &PersonaRepository{db}
+func NewPersonaRepository(db *sql.DB) PersonaRepository {
+	return &personaRepository{db}
 }
 
-func (pR PersonaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
+func (pR personaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
 	//Inicio como nulo, si no lo es lo cambio
 	fechaNull := sql.NullTime{
 		Valid: false,
@@ -61,7 +69,7 @@ func (pR PersonaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
 	return p, nil
 }
 
-func (pR PersonaRepository) Borra(id string) error {
+func (pR personaRepository) Borra(id string) error {
 
 	stmt, err := pR.db.Prepare("DELETE FROM persona WHERE id = ?;")
 	if err != nil {
@@ -76,7 +84,7 @@ func (pR PersonaRepository) Borra(id string) error {
 	return nil
 }
 
-func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
+func (pR personaRepository) BuscaTodo() ([]model.Persona, error) {
 
 	rows, err := pR.db.Query("SELECT id, nombre, apellido, fecha_nacimiento FROM persona;")
 	if err != nil {
@@ -112,7 +120,7 @@ func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 	return rP, nil
 }
 
-func (pR PersonaRepository) BuscaPorId(id string) (*model.Persona, error) {
+func (pR personaRepository) BuscaPorID(id string) (*model.Persona, error) {
 	var p persona
 	err := pR.db.QueryRow("SELECT id, nombre, apellido, fecha_nacimiento FROM persona WHERE id = ?;", id).
 		Scan(&p.ID, &p.Nombre, &p.Apellido, &p.FechaNacimiento)
@@ -134,7 +142,7 @@ func (pR PersonaRepository) BuscaPorId(id string) (*model.Persona, error) {
 	return &perM, nil
 }
 
-func (pR PersonaRepository) Actualiza(p *model.Persona) (*model.Persona, error) {
+func (pR personaRepository) Actualiza(p *model.Persona) (*model.Persona, error) {
 
 	//Inicio como nulo, si no lo es lo cambio
 	fechaNull := sql.NullTime{
