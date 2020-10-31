@@ -27,7 +27,7 @@ type personaRepository struct {
 	db *mgo.Database
 }
 
-func NewPersonaRepository(db *mgo.Database) *personaRepository {
+func NewPersonaRepository(db *mgo.Database) PersonaRepository {
 	return &personaRepository{db}
 }
 

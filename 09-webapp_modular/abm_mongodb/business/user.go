@@ -2,15 +2,32 @@ package business
 
 import (
 	"errors"
+	"log"
+
 	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/model"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/repository"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 )
 
-func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
+type UserBusiness interface {
+	CreaUsuario(usu string, pass string, nom string, ape string) model.User
+	Autentica(usu string, pass string) (model.User, bool)
+	BuscaPorUsuario(usu string) model.User
+}
 
-	sU, err := repository.UserRepo.BuscaPorUsuario(usu)
+type userService struct {
+	userRepo repository.UserRepository
+}
+
+func NewUserBusiness(uR repository.UserRepository) UserBusiness {
+	return &userService{
+		userRepo: uR,
+	}
+}
+
+func (userS userService) CreaUsuario(usu string, pass string, nom string, ape string) model.User {
+
+	sU, err := userS.userRepo.BuscaPorUsuario(usu)
 	if len(sU) > 0 {
 		mU := model.User{}
 		mU.Error = errors.New("El usuario ya existe, elija otro nombre ")
@@ -50,8 +67,8 @@ func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 	return mU
 }
 
-func Autentica(usu string, pass string) (model.User, bool) {
-	sU, err := repository.UserRepo.BuscaPorUsuario(usu)
+func (userS userService) Autentica(usu string, pass string) (model.User, bool) {
+	sU, err := userS.userRepo.BuscaPorUsuario(usu)
 	if err != nil {
 		log.Println("BuscaporUsuario:", sU, err)
 		mU := model.User{}
@@ -84,9 +101,9 @@ func Autentica(usu string, pass string) (model.User, bool) {
 	return mU, true
 }
 
-func BuscaPorUsuario(usu string) model.User {
+func (userS userService) BuscaPorUsuario(usu string) model.User {
 
-	sU, err := repository.UserRepo.BuscaPorUsuario(usu)
+	sU, err := userS.userRepo.BuscaPorUsuario(usu)
 	if err != nil || len(sU) == 0 {
 		mU := model.User{}
 		mU.Error = errors.New("Usuario no encontrado")

@@ -1,11 +1,12 @@
 package controller
 
 import (
+	"log"
+	"net/http"
+
 	"github.com/google/uuid"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/business"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/model"
-	"log"
-	"net/http"
 )
 
 func AltaUser(res http.ResponseWriter, req *http.Request) {
@@ -23,7 +24,7 @@ func AltaUser(res http.ResponseWriter, req *http.Request) {
 		nom := req.FormValue("nombre")
 		ape := req.FormValue("apellido")
 
-		u = business.CreaUsuario(usu, pass, nom, ape)
+		u = business.UserB.CreaUsuario(usu, pass, nom, ape)
 
 	}
 
@@ -43,7 +44,7 @@ func Login(res http.ResponseWriter, req *http.Request) {
 	if req.Method == http.MethodPost {
 		usu := req.FormValue("usuario")
 		pass := req.FormValue("password")
-		u, ok := business.Autentica(usu, pass)
+		u, ok := business.UserB.Autentica(usu, pass)
 		if !ok {
 			if err := tpl.ExecuteTemplate(res, "login.gohtml", u); err != nil {
 				log.Println("Error en login:", err)
