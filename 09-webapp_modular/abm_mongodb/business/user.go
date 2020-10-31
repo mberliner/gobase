@@ -10,7 +10,7 @@ import (
 
 func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 
-	sU, err := repository.UR.BuscaPorUsuario(usu)
+	sU, err := repository.UserRepo.BuscaPorUsuario(usu)
 	if len(sU) > 0 {
 		mU := model.User{}
 		mU.Error = errors.New("El usuario ya existe, elija otro nombre ")
@@ -31,7 +31,7 @@ func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 	}
 
 	u := &model.User{Usuario: usu, Nombre: nom, Apellido: ape, Password: string(encrPass)}
-	u, err = repository.UR.Persiste(u)
+	u, err = repository.UserRepo.Persiste(u)
 	if err != nil {
 		log.Println("Error persiste:", err)
 		mU := model.User{}
@@ -51,7 +51,7 @@ func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 }
 
 func Autentica(usu string, pass string) (model.User, bool) {
-	sU, err := repository.UR.BuscaPorUsuario(usu)
+	sU, err := repository.UserRepo.BuscaPorUsuario(usu)
 	if err != nil {
 		log.Println("BuscaporUsuario:", sU, err)
 		mU := model.User{}
@@ -86,7 +86,7 @@ func Autentica(usu string, pass string) (model.User, bool) {
 
 func BuscaPorUsuario(usu string) model.User {
 
-	sU, err := repository.UR.BuscaPorUsuario(usu)
+	sU, err := repository.UserRepo.BuscaPorUsuario(usu)
 	if err != nil || len(sU) == 0 {
 		mU := model.User{}
 		mU.Error = errors.New("Usuario no encontrado")

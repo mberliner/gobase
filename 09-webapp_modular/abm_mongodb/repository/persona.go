@@ -15,15 +15,23 @@ type persona struct {
 	FechaNacimiento string        //`json:"FechaNacimiento" bson:"FechaNacimiento"`
 }
 
-type PersonaRepository struct {
+type PersonaRepository interface {
+	Persiste(p *model.Persona) (*model.Persona, error)
+	Borra(id string) error
+	BuscaTodo() ([]model.Persona, error)
+	BuscaPorID(id string) (*model.Persona, error)
+	Actualiza(p *model.Persona) (*model.Persona, error)
+}
+
+type personaRepository struct {
 	db *mgo.Database
 }
 
-func NewPersonaRepository(db *mgo.Database) *PersonaRepository {
-	return &PersonaRepository{db}
+func NewPersonaRepository(db *mgo.Database) *personaRepository {
+	return &personaRepository{db}
 }
 
-func (pR PersonaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
+func (pR personaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
 
 	pL := persona{ID: bson.NewObjectId(),
 		Nombre:          p.Nombre,
@@ -38,7 +46,7 @@ func (pR PersonaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
 	return p, nil
 }
 
-func (pR PersonaRepository) Borra(id string) error {
+func (pR personaRepository) Borra(id string) error {
 
 	id1 := bson.ObjectIdHex(id)
 	err := db.C("persona").Remove(bson.M{"id": id1})
@@ -49,7 +57,7 @@ func (pR PersonaRepository) Borra(id string) error {
 	return nil
 }
 
-func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
+func (pR personaRepository) BuscaTodo() ([]model.Persona, error) {
 
 	personas := []persona{}
 	err := db.C("persona").Find(bson.M{}).All(&personas)
@@ -74,7 +82,7 @@ func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 	return rP, nil
 }
 
-func (pR PersonaRepository) BuscaPorID(id string) (*model.Persona, error) {
+func (pR personaRepository) BuscaPorID(id string) (*model.Persona, error) {
 	p := persona{}
 	id1 := bson.ObjectIdHex(id)
 
@@ -94,7 +102,7 @@ func (pR PersonaRepository) BuscaPorID(id string) (*model.Persona, error) {
 	return &perM, nil
 }
 
-func (pR PersonaRepository) Actualiza(p *model.Persona) (*model.Persona, error) {
+func (pR personaRepository) Actualiza(p *model.Persona) (*model.Persona, error) {
 
 	pL := persona{ID: bson.ObjectIdHex(p.ID),
 		Nombre:          p.Nombre,

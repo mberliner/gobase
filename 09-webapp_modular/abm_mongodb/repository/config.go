@@ -2,13 +2,14 @@ package repository
 
 import (
 	"fmt"
+
 	"github.com/globalsign/mgo"
 )
 
 var db *mgo.Database
-var UR *UserRepository
+var UserRepo UserRepository
 
-var PR *PersonaRepository
+var PersonaRepo PersonaRepository
 
 func init() {
 
@@ -27,7 +28,7 @@ func init() {
 
 	fmt.Println("Conectado a Mongodb")
 
-	UR = NewUserRepository(db)
-	PR = NewPersonaRepository(db)
+	UserRepo = NewUserRepository(db)
+	PersonaRepo = NewPersonaRepository(db)
 
 }

@@ -15,15 +15,20 @@ type user struct {
 	Password string        //`json:"Password" bson:"Password"`
 }
 
-type UserRepository struct {
+type UserRepository interface {
+	Persiste(u *model.User) (*model.User, error)
+	BuscaPorUsuario(usu string) ([]model.User, error)
+}
+
+type userRepository struct {
 	db *mgo.Database
 }
 
-func NewUserRepository(db *mgo.Database) *UserRepository {
-	return &UserRepository{db}
+func NewUserRepository(db *mgo.Database) UserRepository {
+	return &userRepository{db}
 }
 
-func (uR UserRepository) Persiste(u *model.User) (*model.User, error) {
+func (uR userRepository) Persiste(u *model.User) (*model.User, error) {
 
 	uL := user{ID: bson.NewObjectId(),
 		Usuario:  u.Usuario,
@@ -40,7 +45,7 @@ func (uR UserRepository) Persiste(u *model.User) (*model.User, error) {
 	return u, nil
 }
 
-func (uR UserRepository) BuscaPorUsuario(usu string) ([]model.User, error) {
+func (uR userRepository) BuscaPorUsuario(usu string) ([]model.User, error) {
 
 	u := user{}
 	err := db.C("user").Find(bson.M{"usuario": usu}).One(&u)
