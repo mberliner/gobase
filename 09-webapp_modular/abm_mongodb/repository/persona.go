@@ -1,14 +1,15 @@
 package repository
 
 import (
+	"strings"
+
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/model"
-	"strings"
 )
 
 type persona struct {
-	Id              bson.ObjectId //`json:"Id" bson:"Id"`
+	ID              bson.ObjectId //`json:"Id" bson:"Id"`
 	Nombre          string        //`json:"Nombre" bson:"Nombre"`
 	Apellido        string        //`json:"Apellido" bson:"Apellido"`
 	FechaNacimiento string        //`json:"FechaNacimiento" bson:"FechaNacimiento"`
@@ -24,7 +25,7 @@ func NewPersonaRepository(db *mgo.Database) *PersonaRepository {
 
 func (pR PersonaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
 
-	pL := persona{Id: bson.NewObjectId(),
+	pL := persona{ID: bson.NewObjectId(),
 		Nombre:          p.Nombre,
 		Apellido:        p.Apellido,
 		FechaNacimiento: p.FechaNacimiento,
@@ -59,7 +60,7 @@ func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 	var rP []model.Persona
 	for _, p := range personas {
 
-		idd := strings.Split(p.Id.String(), `"`)
+		idd := strings.Split(p.ID.String(), `"`)
 
 		per := model.Persona{ID: idd[1],
 			Nombre:          p.Nombre,
@@ -73,7 +74,7 @@ func (pR PersonaRepository) BuscaTodo() ([]model.Persona, error) {
 	return rP, nil
 }
 
-func (pR PersonaRepository) BuscaPorId(id string) (*model.Persona, error) {
+func (pR PersonaRepository) BuscaPorID(id string) (*model.Persona, error) {
 	p := persona{}
 	id1 := bson.ObjectIdHex(id)
 
@@ -84,7 +85,7 @@ func (pR PersonaRepository) BuscaPorId(id string) (*model.Persona, error) {
 	if err != nil {
 		return &model.Persona{}, err
 	}
-	idd := strings.Split(p.Id.String(), `"`)
+	idd := strings.Split(p.ID.String(), `"`)
 	perM := model.Persona{ID: idd[1],
 		Nombre:          p.Nombre,
 		Apellido:        p.Apellido,
@@ -95,13 +96,13 @@ func (pR PersonaRepository) BuscaPorId(id string) (*model.Persona, error) {
 
 func (pR PersonaRepository) Actualiza(p *model.Persona) (*model.Persona, error) {
 
-	pL := persona{Id: bson.ObjectIdHex(p.ID),
+	pL := persona{ID: bson.ObjectIdHex(p.ID),
 		Nombre:          p.Nombre,
 		Apellido:        p.Apellido,
 		FechaNacimiento: p.FechaNacimiento,
 	}
 
-	err := db.C("persona").Update(bson.M{"id": pL.Id}, &pL)
+	err := db.C("persona").Update(bson.M{"id": pL.ID}, &pL)
 	if err != nil {
 		return &model.Persona{}, err
 	}

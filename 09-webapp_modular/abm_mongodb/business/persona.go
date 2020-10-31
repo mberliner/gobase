@@ -74,7 +74,7 @@ func BorraPersona(id string) model.Personas {
 
 func BuscaPersona(id string) model.Personas {
 
-	p, err := repository.PR.BuscaPorId(id)
+	p, err := repository.PR.BuscaPorID(id)
 	if err != nil {
 		log.Println("Error buscaPersona:", err)
 		mP := model.Personas{}
