@@ -19,8 +19,8 @@ type cirujano struct {
 
 //Damos comportamiento a los tipos
 //Usado para lograr polimorfismo
-type human interface {
-	speak()
+type humano interface {
+	hablar()
 }
 
 func main() {
@@ -36,34 +36,35 @@ func main() {
 	}
 
 	//Usamos comportamiento
-	juan.speak()
-	james.speak()
+	juan.hablar()
+	james.hablar()
 
 	//Es posible usar un puntero si el receiver es un tipo (al revés no es posible)
 	//Esto es porque asi están definidos los "method sets"
 	pJames := &james
 	fmt.Println("Ejemplo Probando Method Sets. Llamo con puntero: ")
-	pJames.speak()
+	pJames.hablar()
 
 	//Llamamos desde afuera
 	fmt.Println("\nEjemplo Polimorfismo--------------------------")
-	quien(juan)
-	quien(james)
+	quienHabla(juan)
+	quienHabla(james)
 
 }
 
-func (a agente) speak() {
+//Solo por implementar este método ya implementan la interface humano
+func (a agente) hablar() {
 	fmt.Printf("Soy un %T\n", a)
 	fmt.Println("Me gusta tirar tiros")
 }
 
-func (c cirujano) speak() {
+func (c cirujano) hablar() {
 	fmt.Printf("Soy un %T\n", c)
 	fmt.Println("Me gusta Operar")
 }
 
-func quien(h human) {
+func quienHabla(h humano) {
 	fmt.Printf("Soy un ---- %T\n", h)
-	fmt.Println(h, "Voy a polimorfar")
-	h.speak() //Esto es polimorfismo, puedo llamar a los humanos que quieran hablar incluso si hoy todavia no existen
+	fmt.Println(h, "Voy a hablar")
+	h.hablar() //Esto es polimorfismo, puedo llamar a los humanos que quieran hablar incluso si hoy todavia no existen
 }
