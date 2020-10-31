@@ -1,10 +1,11 @@
 package controller
 
 import (
-	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/business"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/model"
 	"log"
 	"net/http"
+
+	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/business"
+	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/model"
 )
 
 func AbmPersona(res http.ResponseWriter, req *http.Request) {
@@ -13,7 +14,7 @@ func AbmPersona(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	mP := business.BuscaTodo()
+	mP := business.PersonaB.BuscaTodo()
 
 	if err := tpl.ExecuteTemplate(res, "abmPersona.gohtml", mP); err != nil {
 		log.Println("Error en abmPersona:", err)
@@ -34,7 +35,7 @@ func CrearPersona(res http.ResponseWriter, req *http.Request) {
 		ape := req.FormValue("apellido")
 		fecha := req.FormValue("fechaNacimiento")
 
-		mP1 := business.CreaPersona(nom, ape, fecha)
+		mP1 := business.PersonaB.CreaPersona(nom, ape, fecha)
 		if mP.Error != nil {
 			if err := tpl.ExecuteTemplate(res, "crearPersona.gohtml", mP1); err != nil {
 				log.Println("Error en crearPersona:", err)
@@ -42,7 +43,7 @@ func CrearPersona(res http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		mP = business.BuscaTodo()
+		mP = business.PersonaB.BuscaTodo()
 		if mP.Error == nil {
 			mP.Error = mP1.Error
 			mP.Mensaje = mP1.Mensaje
@@ -67,9 +68,9 @@ func BorrarPersona(res http.ResponseWriter, req *http.Request) {
 	}
 
 	id := req.FormValue("id")
-	mP1 := business.BorraPersona(id)
+	mP1 := business.PersonaB.BorraPersona(id)
 
-	mP := business.BuscaTodo()
+	mP := business.PersonaB.BuscaTodo()
 	if mP.Error == nil {
 		mP.Error = mP1.Error
 		mP.Mensaje = mP1.Mensaje
@@ -95,7 +96,7 @@ func ActualizarPersona(res http.ResponseWriter, req *http.Request) {
 		ape := req.FormValue("apellido")
 		fecha := req.FormValue("fechaNacimiento")
 
-		mP1 := business.ActualizaPersona(id, nom, ape, fecha)
+		mP1 := business.PersonaB.ActualizaPersona(id, nom, ape, fecha)
 		if mP.Error != nil {
 			if err := tpl.ExecuteTemplate(res, "editarPersona.gohtml", mP1); err != nil {
 				log.Println("Error en editarPersona:", err)
@@ -103,7 +104,7 @@ func ActualizarPersona(res http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		mP = business.BuscaTodo()
+		mP = business.PersonaB.BuscaTodo()
 		if mP.Error == nil {
 			mP.Error = mP1.Error
 			mP.Mensaje = mP1.Mensaje
@@ -116,7 +117,7 @@ func ActualizarPersona(res http.ResponseWriter, req *http.Request) {
 
 	}
 
-	mP = business.BuscaPersona(id)
+	mP = business.PersonaB.BuscaPersona(id)
 
 	if err := tpl.ExecuteTemplate(res, "editarPersona.gohtml", mP); err != nil {
 		log.Println("Error en editarPersona:", err)

@@ -1,12 +1,28 @@
 package business
 
 import (
+	"log"
+
 	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/model"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/repository"
-	"log"
 )
 
-func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
+type personaBusiness struct {
+	personaRepo repository.PersonaRepository
+}
+
+type PersonaBusiness interface {
+	CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas
+	BuscaTodo() model.Personas
+	BorraPersona(id string) model.Personas
+	BuscaPersona(id string) model.Personas
+	ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas
+}
+
+func NewPersonaBusiness(pR repository.PersonaRepository) PersonaBusiness {
+	return &personaBusiness{pR}
+}
+func (pB personaBusiness) CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
 
 	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento}
 	p, err := repository.PersonaRepo.Persiste(p)
@@ -27,7 +43,7 @@ func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas 
 	return mP
 }
 
-func BuscaTodo() model.Personas {
+func (pB personaBusiness) BuscaTodo() model.Personas {
 
 	ps, err := repository.PersonaRepo.BuscaTodo()
 	if err != nil {
@@ -46,7 +62,7 @@ func BuscaTodo() model.Personas {
 	return mP
 }
 
-func BorraPersona(id string) model.Personas {
+func (pB personaBusiness) BorraPersona(id string) model.Personas {
 
 	err := repository.PersonaRepo.Borra(id)
 	if err != nil {
@@ -72,7 +88,7 @@ func BorraPersona(id string) model.Personas {
 	return mP
 }
 
-func BuscaPersona(id string) model.Personas {
+func (pB personaBusiness) BuscaPersona(id string) model.Personas {
 
 	p, err := repository.PersonaRepo.BuscaPorID(id)
 	if err != nil {
@@ -91,7 +107,7 @@ func BuscaPersona(id string) model.Personas {
 	return mP
 }
 
-func ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas {
+func (pB personaBusiness) ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas {
 
 	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento, ID: id}
 	p, err := repository.PersonaRepo.Actualiza(p)

@@ -5,9 +5,11 @@ import (
 )
 
 var UserB UserBusiness
+var PersonaB PersonaBusiness
 
 func init() {
 
 	UserB = NewUserBusiness(repository.UserRepo)
+	PersonaB = NewPersonaBusiness(repository.PersonaRepo)
 
 }
