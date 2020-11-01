@@ -37,7 +37,7 @@ func (uR userRepository) Persiste(u *model.User) (*model.User, error) {
 		Edad:     u.Edad,
 		Password: u.Password,
 	}
-	err := db.C("user").Insert(uL)
+	err := uR.db.C("user").Insert(uL)
 	if err != nil {
 		return &model.User{}, err
 	}
@@ -48,7 +48,7 @@ func (uR userRepository) Persiste(u *model.User) (*model.User, error) {
 func (uR userRepository) BuscaPorUsuario(usu string) ([]model.User, error) {
 
 	u := user{}
-	err := db.C("user").Find(bson.M{"usuario": usu}).One(&u)
+	err := uR.db.C("user").Find(bson.M{"usuario": usu}).One(&u)
 	if err != nil && err.Error() == "not found" {
 		return nil, nil
 	}

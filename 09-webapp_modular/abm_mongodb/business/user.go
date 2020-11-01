@@ -48,7 +48,7 @@ func (userS userService) CreaUsuario(usu string, pass string, nom string, ape st
 	}
 
 	u := &model.User{Usuario: usu, Nombre: nom, Apellido: ape, Password: string(encrPass)}
-	u, err = repository.UserRepo.Persiste(u)
+	u, err = userS.userRepo.Persiste(u)
 	if err != nil {
 		log.Println("Error persiste:", err)
 		mU := model.User{}

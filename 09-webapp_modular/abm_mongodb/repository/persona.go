@@ -38,7 +38,7 @@ func (pR personaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
 		Apellido:        p.Apellido,
 		FechaNacimiento: p.FechaNacimiento,
 	}
-	err := db.C("persona").Insert(pL)
+	err := pR.db.C("persona").Insert(pL)
 	if err != nil {
 		return &model.Persona{}, err
 	}
@@ -49,7 +49,7 @@ func (pR personaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
 func (pR personaRepository) Borra(id string) error {
 
 	id1 := bson.ObjectIdHex(id)
-	err := db.C("persona").Remove(bson.M{"id": id1})
+	err := pR.db.C("persona").Remove(bson.M{"id": id1})
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (pR personaRepository) Borra(id string) error {
 func (pR personaRepository) BuscaTodo() ([]model.Persona, error) {
 
 	personas := []persona{}
-	err := db.C("persona").Find(bson.M{}).All(&personas)
+	err := pR.db.C("persona").Find(bson.M{}).All(&personas)
 	if err != nil {
 		return []model.Persona{}, err
 	}
@@ -86,7 +86,7 @@ func (pR personaRepository) BuscaPorID(id string) (*model.Persona, error) {
 	p := persona{}
 	id1 := bson.ObjectIdHex(id)
 
-	err := db.C("persona").Find(bson.M{"id": id1}).One(&p)
+	err := pR.db.C("persona").Find(bson.M{"id": id1}).One(&p)
 	if err != nil && err.Error() == "not found" {
 		return &model.Persona{}, nil
 	}
@@ -110,7 +110,7 @@ func (pR personaRepository) Actualiza(p *model.Persona) (*model.Persona, error) 
 		FechaNacimiento: p.FechaNacimiento,
 	}
 
-	err := db.C("persona").Update(bson.M{"id": pL.ID}, &pL)
+	err := pR.db.C("persona").Update(bson.M{"id": pL.ID}, &pL)
 	if err != nil {
 		return &model.Persona{}, err
 	}

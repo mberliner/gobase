@@ -25,7 +25,7 @@ func NewPersonaBusiness(pR repository.PersonaRepository) PersonaBusiness {
 func (pB personaBusiness) CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
 
 	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento}
-	p, err := repository.PersonaRepo.Persiste(p)
+	p, err := pB.personaRepo.Persiste(p)
 	if err != nil {
 		log.Println("Error persiste Pesona:", err)
 		mP := model.Personas{}
@@ -45,7 +45,7 @@ func (pB personaBusiness) CreaPersona(nom string, ape string, fechaNacimiento st
 
 func (pB personaBusiness) BuscaTodo() model.Personas {
 
-	ps, err := repository.PersonaRepo.BuscaTodo()
+	ps, err := pB.personaRepo.BuscaTodo()
 	if err != nil {
 		log.Println("Error buscaTodo:", err)
 		mP := model.Personas{}
@@ -64,7 +64,7 @@ func (pB personaBusiness) BuscaTodo() model.Personas {
 
 func (pB personaBusiness) BorraPersona(id string) model.Personas {
 
-	err := repository.PersonaRepo.Borra(id)
+	err := pB.personaRepo.Borra(id)
 	if err != nil {
 		log.Println("Error borraPersona:", err)
 		mP := model.Personas{}
@@ -90,7 +90,7 @@ func (pB personaBusiness) BorraPersona(id string) model.Personas {
 
 func (pB personaBusiness) BuscaPersona(id string) model.Personas {
 
-	p, err := repository.PersonaRepo.BuscaPorID(id)
+	p, err := pB.personaRepo.BuscaPorID(id)
 	if err != nil {
 		log.Println("Error buscaPersona:", err)
 		mP := model.Personas{}
@@ -110,7 +110,7 @@ func (pB personaBusiness) BuscaPersona(id string) model.Personas {
 func (pB personaBusiness) ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas {
 
 	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento, ID: id}
-	p, err := repository.PersonaRepo.Actualiza(p)
+	p, err := pB.personaRepo.Actualiza(p)
 	log.Println("Error actualiza Persona con fecha:", p, err)
 	if err != nil {
 		log.Println("Error actualiza Pesona:", err)
