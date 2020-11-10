@@ -7,9 +7,13 @@ import (
 	_ "github.com/go-sql-driver/mysql" //Sólo para iniciar database/sql
 )
 
-var db *sql.DB
-var UserRepo UserRepository
-var PersonaRepo PersonaRepository
+var (
+	db *sql.DB
+	//UserRepo Repositorio para manejo de acceso a datos de usuario
+	UserRepo UserRepository
+	//PersonaRepo Repositorio para manejo de acceso a datos de persona
+	PersonaRepo PersonaRepository
+)
 
 func init() {
 	var err error

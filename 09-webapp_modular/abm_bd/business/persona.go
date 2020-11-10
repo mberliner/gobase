@@ -7,10 +7,28 @@ import (
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository"
 )
 
-func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
+type personaBusiness struct {
+	personaRepo repository.PersonaRepository
+}
+
+//PersonaBusiness interface para poder realizar tests del negocio de persona
+type PersonaBusiness interface {
+	CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas
+	BuscaTodo() model.Personas
+	BorraPersona(id string) model.Personas
+	BuscaPersona(id string) model.Personas
+	ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas
+}
+
+//NewPersonaBusiness para obtener megocio de forma ordenada
+func NewPersonaBusiness(pR repository.PersonaRepository) PersonaBusiness {
+	return &personaBusiness{pR}
+}
+
+func (pB personaBusiness) CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
 
 	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento}
-	p, err := repository.PersonaRepo.Persiste(p)
+	p, err := pB.personaRepo.Persiste(p)
 	if err != nil {
 		log.Println("Error persiste Pesona:", err)
 		mP := model.Personas{}
@@ -28,9 +46,9 @@ func CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas 
 	return mP
 }
 
-func BuscaTodo() model.Personas {
+func (pB personaBusiness) BuscaTodo() model.Personas {
 
-	ps, err := repository.PersonaRepo.BuscaTodo()
+	ps, err := pB.personaRepo.BuscaTodo()
 	if err != nil {
 		log.Println("Error buscaTodo:", err)
 		mP := model.Personas{}
@@ -47,9 +65,9 @@ func BuscaTodo() model.Personas {
 	return mP
 }
 
-func BorraPersona(id string) model.Personas {
+func (pB personaBusiness) BorraPersona(id string) model.Personas {
 
-	err := repository.PersonaRepo.Borra(id)
+	err := pB.personaRepo.Borra(id)
 	if err != nil {
 		log.Println("Error borraPersona:", err)
 		mP := model.Personas{}
@@ -73,10 +91,9 @@ func BorraPersona(id string) model.Personas {
 	return mP
 }
 
-func BuscaPersona(id string) model.Personas {
+func (pB personaBusiness) BuscaPersona(id string) model.Personas {
 
-	p, err := repository.PersonaRepo.BuscaPorID(id)
-	log.Println("Error en editarPersona1-------:", id, p, err)
+	p, err := pB.personaRepo.BuscaPorID(id)
 	if err != nil {
 		log.Println("Error buscaPersona:", err)
 		mP := model.Personas{}
@@ -89,15 +106,13 @@ func BuscaPersona(id string) model.Personas {
 		Error:     nil,
 		Mensaje:   "Busca ok",
 	}
-	log.Println("Error en editarPersona2-------:", mP)
 	return mP
 }
 
-func ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas {
+func (pB personaBusiness) ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas {
 
 	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento, ID: id}
-	p, err := repository.PersonaRepo.Actualiza(p)
-	log.Println("Error actualiza Persona con fecha:", p, err)
+	p, err := pB.personaRepo.Actualiza(p)
 	if err != nil {
 		log.Println("Error actualiza Pesona:", err)
 		mP := model.Personas{}

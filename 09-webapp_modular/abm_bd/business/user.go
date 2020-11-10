@@ -9,9 +9,27 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
+//UserBusiness interface para exponer manejo de User
+type UserBusiness interface {
+	CreaUsuario(usu string, pass string, nom string, ape string) model.User
+	Autentica(usu string, pass string) (model.User, bool)
+	BuscaPorUsuario(usu string) model.User
+}
 
-	sU, err := repository.UserRepo.BuscaPorUsuario(usu)
+//NewUserBusiness para obtener repositorio de manera ordenada
+func NewUserBusiness(uR repository.UserRepository) UserBusiness {
+	return &userBusiness{
+		userRepo: uR,
+	}
+}
+
+type userBusiness struct {
+	userRepo repository.UserRepository
+}
+
+func (uS userBusiness) CreaUsuario(usu string, pass string, nom string, ape string) model.User {
+
+	sU, err := uS.userRepo.BuscaPorUsuario(usu)
 	if len(sU) > 0 {
 		mU := model.User{}
 		mU.Error = errors.New("El usuario ya existe, elija otro nombre ")
@@ -51,8 +69,8 @@ func CreaUsuario(usu string, pass string, nom string, ape string) model.User {
 	return mU
 }
 
-func Autentica(usu string, pass string) (model.User, bool) {
-	sU, err := repository.UserRepo.BuscaPorUsuario(usu)
+func (uS userBusiness) Autentica(usu string, pass string) (model.User, bool) {
+	sU, err := uS.userRepo.BuscaPorUsuario(usu)
 	if err != nil {
 		log.Println("BuscaporUsuario:", sU, err)
 		mU := model.User{}
@@ -85,9 +103,9 @@ func Autentica(usu string, pass string) (model.User, bool) {
 	return mU, true
 }
 
-func BuscaPorUsuario(usu string) model.User {
+func (uS userBusiness) BuscaPorUsuario(usu string) model.User {
 
-	sU, err := repository.UserRepo.BuscaPorUsuario(usu)
+	sU, err := uS.userRepo.BuscaPorUsuario(usu)
 	if err != nil || len(sU) == 0 {
 		mU := model.User{}
 		mU.Error = errors.New("Usuario no encontrado")
