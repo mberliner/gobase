@@ -6,10 +6,17 @@ import (
 	"github.com/globalsign/mgo"
 )
 
-var db *mgo.Database
-var UserRepo UserRepository
-
-var PersonaRepo PersonaRepository
+var (
+	//Lamentablemente el driver de mongo no posee interfaces de forma que no podemos testear el repo de manera unitaria
+	//Para hacer tal cosa deberíamos generar un wrapper para cada objeto del driver de mgo y usarlo en nuestro desarrollo
+	//Esto hace que agregemos una capa más (agregando más posibles errores) con el único fin de test
+	//No vale la pena el esfuerzo, es preferible hacer test de integración/componentes con una BD Mongo real o en memoria
+	db *mgo.Database
+	//UserRepo Repositorio para manejo de acceso a datos de usuario
+	UserRepo UserRepository
+	//PersonaRepo Repositorio para manejo de acceso a datos de persona
+	PersonaRepo PersonaRepository
+)
 
 func init() {
 

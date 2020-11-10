@@ -11,6 +11,7 @@ type personaBusiness struct {
 	personaRepo repository.PersonaRepository
 }
 
+//PersonaBusiness interface para poder realizar tests del negocio de persona
 type PersonaBusiness interface {
 	CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas
 	BuscaTodo() model.Personas
@@ -19,6 +20,7 @@ type PersonaBusiness interface {
 	ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas
 }
 
+//NewPersonaBusiness para obtener megocio de forma ordenada
 func NewPersonaBusiness(pR repository.PersonaRepository) PersonaBusiness {
 	return &personaBusiness{pR}
 }
@@ -111,7 +113,6 @@ func (pB personaBusiness) ActualizaPersona(id string, nom string, ape string, fe
 
 	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento, ID: id}
 	p, err := pB.personaRepo.Actualiza(p)
-	log.Println("Error actualiza Persona con fecha:", p, err)
 	if err != nil {
 		log.Println("Error actualiza Pesona:", err)
 		mP := model.Personas{}

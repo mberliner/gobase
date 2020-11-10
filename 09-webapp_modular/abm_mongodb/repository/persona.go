@@ -15,6 +15,7 @@ type persona struct {
 	FechaNacimiento string        //`json:"FechaNacimiento" bson:"FechaNacimiento"`
 }
 
+//PersonaRepository interface para manejo de acceso a datos de Persona
 type PersonaRepository interface {
 	Persiste(p *model.Persona) (*model.Persona, error)
 	Borra(id string) error
@@ -23,12 +24,13 @@ type PersonaRepository interface {
 	Actualiza(p *model.Persona) (*model.Persona, error)
 }
 
-type personaRepository struct {
-	db *mgo.Database
-}
-
+//NewPersonaRepository para obtener repositorio de manera ordenada
 func NewPersonaRepository(db *mgo.Database) PersonaRepository {
 	return &personaRepository{db}
+}
+
+type personaRepository struct {
+	db *mgo.Database
 }
 
 func (pR personaRepository) Persiste(p *model.Persona) (*model.Persona, error) {

@@ -9,20 +9,22 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+//UserBusiness interface para exponer manejo de User
 type UserBusiness interface {
 	CreaUsuario(usu string, pass string, nom string, ape string) model.User
 	Autentica(usu string, pass string) (model.User, bool)
 	BuscaPorUsuario(usu string) model.User
 }
 
-type userService struct {
-	userRepo repository.UserRepository
-}
-
+//NewUserBusiness para obtener repositorio de manera ordenada
 func NewUserBusiness(uR repository.UserRepository) UserBusiness {
 	return &userService{
 		userRepo: uR,
 	}
+}
+
+type userService struct {
+	userRepo repository.UserRepository
 }
 
 func (userS userService) CreaUsuario(usu string, pass string, nom string, ape string) model.User {

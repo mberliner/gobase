@@ -15,17 +15,19 @@ type user struct {
 	Password string        //`json:"Password" bson:"Password"`
 }
 
+//UserRepository interface para acceso a datos de User
 type UserRepository interface {
 	Persiste(u *model.User) (*model.User, error)
 	BuscaPorUsuario(usu string) ([]model.User, error)
 }
 
-type userRepository struct {
-	db *mgo.Database
-}
-
+//NewUserRepository para obtener repositorio de manera ordenada
 func NewUserRepository(db *mgo.Database) UserRepository {
 	return &userRepository{db}
+}
+
+type userRepository struct {
+	db *mgo.Database
 }
 
 func (uR userRepository) Persiste(u *model.User) (*model.User, error) {
