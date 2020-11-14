@@ -24,7 +24,6 @@
         <td>Nombre</td>
         <td>Apellido</td>
         <td>Fecha Nacimiento</td>
-        <td>Ver</td>
         <td>Editar</td>
         <td>Borrar</td>
       </tr>
@@ -36,7 +35,6 @@
         <td>{{ .Nombre }}</td>
         <td>{{ .Apellido }}</td> 
         <td>{{ .FechaNacimiento  }}</td>
-        <td><a href="/persona/ver?id={{ .ID }}">ver</a></td>
         <td><a href="/persona/editar?id={{ .ID }}">editar</a></td>
         <td><a href="/persona/borrar?id={{ .ID }}">borrar</a><td>
       </tr>
