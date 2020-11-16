@@ -3,127 +3,79 @@ package service
 import (
 	"log"
 
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository"
+	"github.com/mberliner/gobase/10-servicios_rest/entities_service/domain"
+	"github.com/mberliner/gobase/10-servicios_rest/entities_service/repository"
 )
 
-type personaBusiness struct {
+type personaService struct {
 	personaRepo repository.PersonaRepository
 }
 
-//PersonaBusiness interface para poder realizar tests del negocio de persona
-type PersonaBusiness interface {
-	CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas
-	BuscaTodo() model.Personas
-	BorraPersona(id string) model.Personas
-	BuscaPersona(id string) model.Personas
-	ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas
+//PersonaService interface para poder realizar tests del negocio de persona
+type PersonaService interface {
+	CreaPersona(*domain.Persona) (*domain.Persona, error)
+	BuscaTodo() ([]domain.Persona, error)
+	Borra(id int) error
+	BuscaPersona(id int) (*domain.Persona, error)
+	Actualiza(*domain.Persona) (*domain.Persona, error)
 }
 
-//NewPersonaBusiness para obtener megocio de forma ordenada
-func NewPersonaBusiness(pR repository.PersonaRepository) PersonaBusiness {
-	return &personaBusiness{pR}
+//NewPersonaService para obtener megocio de forma ordenada
+func NewPersonaService(pR repository.PersonaRepository) PersonaService {
+	return &personaService{pR}
 }
 
-func (pB personaBusiness) CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
+func (pB personaService) CreaPersona(per *domain.Persona) (*domain.Persona, error) {
 
-	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento}
-	p, err := pB.personaRepo.Persiste(p)
+	p, err := pB.personaRepo.Persiste(per)
 	if err != nil {
 		log.Println("Error persiste Pesona:", err)
-		mP := model.Personas{}
-		mP.Error = err
-		return mP
+		return nil, err
 	}
 
-	personas := []model.Persona{*p}
-
-	mP := model.Personas{
-		PersonasM: personas,
-		Error:     nil,
-		Mensaje:   "Persona Creada Ok",
-	}
-	return mP
+	return p, nil
 }
 
-func (pB personaBusiness) BuscaTodo() model.Personas {
+func (pS personaService) BuscaTodo() ([]domain.Persona, error) {
 
-	ps, err := pB.personaRepo.BuscaTodo()
+	ps, err := pS.personaRepo.BuscaTodo()
 	if err != nil {
 		log.Println("Error buscaTodo:", err)
-		mP := model.Personas{}
-		mP.Error = err
-		return mP
+		return nil, err
 	}
 
-	mP := model.Personas{
-		PersonasM: ps,
-		Error:     nil,
-		Mensaje:   "Carga ok",
-	}
-
-	return mP
+	return ps, nil
 }
 
-func (pB personaBusiness) BorraPersona(id string) model.Personas {
+func (pS personaService) Borra(id int) error {
 
-	err := pB.personaRepo.Borra(id)
+	err := pS.personaRepo.Borra(id)
 	if err != nil {
-		log.Println("Error borraPersona:", err)
-		mP := model.Personas{}
-		mP.Error = err
-		return mP
-	}
-	personas := []model.Persona{}
-	per := model.Persona{ID: id,
-		Nombre:   "",
-		Apellido: "",
+		log.Println("Error borraPersona:", err, id)
+		return err
 	}
 
-	personas = append(personas, per)
-
-	mP := model.Personas{
-		PersonasM: personas,
-		Error:     nil,
-		Mensaje:   "Borrado ok",
-	}
-
-	return mP
+	return nil
 }
 
-func (pB personaBusiness) BuscaPersona(id string) model.Personas {
+func (pB personaService) BuscaPersona(id int) (*domain.Persona, error) {
 
 	p, err := pB.personaRepo.BuscaPorID(id)
 	if err != nil {
-		log.Println("Error buscaPersona:", err)
-		mP := model.Personas{}
-		mP.Error = err
-		return mP
+		log.Println("Error BuscaPersona:", err, "id:", id)
+		return nil, err
 	}
 
-	mP := model.Personas{
-		PersonasM: []model.Persona{*p},
-		Error:     nil,
-		Mensaje:   "Busca ok",
-	}
-	return mP
+	return p, nil
 }
 
-func (pB personaBusiness) ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas {
+func (pB personaService) Actualiza(per *domain.Persona) (*domain.Persona, error) {
 
-	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento, ID: id}
-	p, err := pB.personaRepo.Actualiza(p)
+	p, err := pB.personaRepo.Actualiza(per)
 	if err != nil {
-		log.Println("Error actualiza Pesona:", err)
-		mP := model.Personas{}
-		mP.Error = err
-		return mP
+		log.Println("Error actualiza Persona:", err)
+		return nil, err
 	}
 
-	mP := model.Personas{
-		PersonasM: []model.Persona{*p},
-		Error:     nil,
-		Mensaje:   "Persona Actualizada Ok",
-	}
-	return mP
+	return p, nil
 }

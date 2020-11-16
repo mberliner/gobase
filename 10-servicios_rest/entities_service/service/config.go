@@ -5,13 +5,13 @@ import "github.com/mberliner/gobase/10-servicios_rest/entities_service/repositor
 var (
 	//UserS para manejo del negocio de Usuario
 	UserS UserService
-	//PersonaB para manejo del negocio de Persona
-	PersonaB PersonaBusiness
+	//PersonaS para manejo del negocio de Persona
+	PersonaS PersonaService
 )
 
 func init() {
 
 	UserS = NewUserService(repository.UserRepo)
-	PersonaB = NewPersonaBusiness(repository.PersonaRepo)
+	PersonaS = NewPersonaService(repository.PersonaRepo)
 
 }

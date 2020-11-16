@@ -3,10 +3,9 @@ package repository
 import (
 	"database/sql"
 	"log"
-	"strconv"
 	"time"
 
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
+	"github.com/mberliner/gobase/10-servicios_rest/entities_service/domain"
 )
 
 //TODO agregar los null
@@ -19,11 +18,11 @@ type persona struct {
 }
 
 type PersonaRepository interface {
-	Persiste(p *model.Persona) (*model.Persona, error)
-	Borra(id string) error
-	BuscaTodo() ([]model.Persona, error)
-	BuscaPorID(id string) (*model.Persona, error)
-	Actualiza(p *model.Persona) (*model.Persona, error)
+	Persiste(p *domain.Persona) (*domain.Persona, error)
+	Borra(id int) error
+	BuscaTodo() ([]domain.Persona, error)
+	BuscaPorID(id int) (*domain.Persona, error)
+	Actualiza(p *domain.Persona) (*domain.Persona, error)
 }
 
 type personaRepository struct {
@@ -34,7 +33,7 @@ func NewPersonaRepository(db *sql.DB) PersonaRepository {
 	return &personaRepository{db}
 }
 
-func (pR personaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
+func (pR personaRepository) Persiste(p *domain.Persona) (*domain.Persona, error) {
 	//Inicio como nulo, si no lo es lo cambio
 	fechaNull := sql.NullTime{
 		Valid: false,
@@ -43,7 +42,7 @@ func (pR personaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
 		fecha, err := time.Parse("02-01-2006", p.FechaNacimiento)
 		if err != nil {
 			log.Println("Error persiste Persona con fecha:", err)
-			return &model.Persona{}, err
+			return nil, err
 		}
 		fechaNull = sql.NullTime{
 			Time:  fecha,
@@ -52,24 +51,24 @@ func (pR personaRepository) Persiste(p *model.Persona) (*model.Persona, error) {
 	}
 	stmt, err := pR.db.Prepare("INSERT into persona(nombre, apellido, fecha_nacimiento) VALUES(?,?,?);")
 	if err != nil {
-		return &model.Persona{}, err
+		return nil, err
 	}
 
 	res, err := stmt.Exec(p.Nombre, p.Apellido, fechaNull)
 	if err != nil {
-		return &model.Persona{}, err
+		return nil, err
 	}
 
 	id, err := res.LastInsertId()
 	if err != nil {
-		return &model.Persona{}, err
+		return nil, err
 	}
-	p.ID = strconv.Itoa(int(id))
+	p.ID = int(id)
 
 	return p, nil
 }
 
-func (pR personaRepository) Borra(id string) error {
+func (pR personaRepository) Borra(id int) error {
 
 	stmt, err := pR.db.Prepare("DELETE FROM persona WHERE id = ?;")
 	if err != nil {
@@ -84,22 +83,22 @@ func (pR personaRepository) Borra(id string) error {
 	return nil
 }
 
-func (pR personaRepository) BuscaTodo() ([]model.Persona, error) {
+func (pR personaRepository) BuscaTodo() ([]domain.Persona, error) {
 
 	rows, err := pR.db.Query("SELECT id, nombre, apellido, fecha_nacimiento FROM persona;")
 	if err != nil {
-		return []model.Persona{}, err
+		return nil, err
 	}
 	defer rows.Close()
 
-	var rP []model.Persona
+	var rP []domain.Persona
 	var p persona
 
 	var fecha string
 	for rows.Next() {
 		err = rows.Scan(&p.ID, &p.Nombre, &p.Apellido, &p.FechaNacimiento)
 		if err != nil {
-			return []model.Persona{}, err
+			return nil, err
 		}
 
 		if p.FechaNacimiento.Valid == true {
@@ -108,7 +107,7 @@ func (pR personaRepository) BuscaTodo() ([]model.Persona, error) {
 			fecha = ""
 		}
 
-		per := model.Persona{ID: strconv.Itoa(p.ID),
+		per := domain.Persona{ID: p.ID,
 			Nombre:          p.Nombre,
 			Apellido:        p.Apellido,
 			FechaNacimiento: fecha,
@@ -120,12 +119,12 @@ func (pR personaRepository) BuscaTodo() ([]model.Persona, error) {
 	return rP, nil
 }
 
-func (pR personaRepository) BuscaPorID(id string) (*model.Persona, error) {
+func (pR personaRepository) BuscaPorID(id int) (*domain.Persona, error) {
 	var p persona
 	err := pR.db.QueryRow("SELECT id, nombre, apellido, fecha_nacimiento FROM persona WHERE id = ?;", id).
 		Scan(&p.ID, &p.Nombre, &p.Apellido, &p.FechaNacimiento)
 	if err != nil {
-		return &model.Persona{}, err
+		return nil, err
 	}
 
 	var fecha string
@@ -134,15 +133,15 @@ func (pR personaRepository) BuscaPorID(id string) (*model.Persona, error) {
 	} else {
 		fecha = ""
 	}
-	perM := model.Persona{ID: strconv.Itoa(p.ID),
+	per := &domain.Persona{ID: p.ID,
 		Nombre:          p.Nombre,
 		Apellido:        p.Apellido,
 		FechaNacimiento: fecha,
 	}
-	return &perM, nil
+	return per, nil
 }
 
-func (pR personaRepository) Actualiza(p *model.Persona) (*model.Persona, error) {
+func (pR personaRepository) Actualiza(p *domain.Persona) (*domain.Persona, error) {
 
 	//Inicio como nulo, si no lo es lo cambio
 	fechaNull := sql.NullTime{
@@ -152,7 +151,7 @@ func (pR personaRepository) Actualiza(p *model.Persona) (*model.Persona, error) 
 		fecha, err := time.Parse("02-01-2006", p.FechaNacimiento)
 		if err != nil {
 			log.Println("Error actualiza Persona con fecha:", err)
-			return &model.Persona{}, err
+			return nil, err
 		}
 		fechaNull = sql.NullTime{
 			Time:  fecha,
@@ -162,12 +161,12 @@ func (pR personaRepository) Actualiza(p *model.Persona) (*model.Persona, error) 
 
 	stmt, err := pR.db.Prepare("Update persona SET nombre=?, apellido=?, fecha_nacimiento=? WHERE id=?;")
 	if err != nil {
-		return &model.Persona{}, err
+		return nil, err
 	}
 
 	_, err = stmt.Exec(p.Nombre, p.Apellido, fechaNull, p.ID)
 	if err != nil {
-		return &model.Persona{}, err
+		return nil, err
 	}
 
 	return p, nil

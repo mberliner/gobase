@@ -7,10 +7,16 @@ import (
 	"github.com/mberliner/gobase/10-servicios_rest/entities_service/controller"
 )
 
-var router *gin.Engine
+var (
+	router            *gin.Engine
+	userController    controller.UserController
+	personaController controller.PersonaController
+)
 
 func init() {
 	router = gin.Default()
+	userController = controller.UserC
+	personaController = controller.PersonaC
 }
 
 //StartApp Inicia la aplicación, setea el server y las URLs
@@ -23,15 +29,20 @@ func StartApp() {
 
 func mapUrls() {
 	router.GET("/ping", ping)
-	router.POST("/user", controller.Crear)
-	router.POST("/user/login", controller.Login)
+
+	router.POST("/users", userController.Crear)
+	router.POST("/users/login", userController.Login)
+
+	router.POST("/personas", personaController.Crear)
+	router.GET("/personas/:id", personaController.BuscarPorId)
+	router.GET("/personas", personaController.BuscarTodo)
+	router.DELETE("/personas/:id", personaController.Borrar)
+	router.PUT("/personas/:id", personaController.Actualizar)
 	/*
 
-		router.GET("/users/:user_id", users.Get)
-		router.PUT("/users/:user_id", users.Actualizar)
-		router.PATCH("/users/:user_id", users.ActualizarParcial)
-		router.DELETE("/users/:user_id", users.Borrar)
-		router.GET("/internal/users/search", users.Buscar)
+		router.PATCH("/personas/:id", personaController.ActualizarParcial)
+
+		router.GET("/personas/search", personaController.Buscar)
 
 	*/
 }
