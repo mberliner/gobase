@@ -38,9 +38,10 @@ func mapUrls() {
 	router.GET("/personas", personaController.BuscarTodo)
 	router.DELETE("/personas/:id", personaController.Borrar)
 	router.PUT("/personas/:id", personaController.Actualizar)
+	router.PATCH("/personas/:id", personaController.ActualizarParcial)
 	/*
 
-		router.PATCH("/personas/:id", personaController.ActualizarParcial)
+
 
 		router.GET("/personas/search", personaController.Buscar)
 

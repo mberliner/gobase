@@ -17,6 +17,7 @@ type PersonaController interface {
 	BuscarPorId(c *gin.Context)
 	Borrar(c *gin.Context)
 	Actualizar(c *gin.Context)
+	ActualizarParcial(c *gin.Context)
 }
 
 type personaController struct {
@@ -112,6 +113,34 @@ func (pC personaController) Actualizar(c *gin.Context) {
 	}
 	persona.ID = id
 	p, err := pC.personaService.Actualiza(&persona)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, p)
+
+}
+
+func (pC personaController) ActualizarParcial(c *gin.Context) {
+	log.Println("Borrar  en Actualizar persona 1:")
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		sError := rest_errors.NewBadRequestError("Error al convertir ID al Actualizar Parcial" + err.Error())
+		c.JSON(http.StatusInternalServerError, sError)
+		return
+	}
+
+	var persona domain.Persona
+	log.Println("Borrar  en Actualizar persona:", err, "param:", persona)
+
+	if err := c.ShouldBindJSON(&persona); err != nil {
+		log.Println("Error en Actualizar Parcial persona:", err, "param:", persona)
+		restErr := rest_errors.NewBadRequestError("invalid json body " + err.Error())
+		c.JSON(restErr.Status(), restErr)
+		return
+	}
+	persona.ID = id
+	p, err := pC.personaService.ActualizaParcial(&persona)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return

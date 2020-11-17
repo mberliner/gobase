@@ -15,9 +15,10 @@ type personaService struct {
 type PersonaService interface {
 	CreaPersona(*domain.Persona) (*domain.Persona, error)
 	BuscaTodo() ([]domain.Persona, error)
-	Borra(id int) error
+	Borra(int) error
 	BuscaPersona(id int) (*domain.Persona, error)
 	Actualiza(*domain.Persona) (*domain.Persona, error)
+	ActualizaParcial(*domain.Persona) (*domain.Persona, error)
 }
 
 //NewPersonaService para obtener megocio de forma ordenada
@@ -74,6 +75,32 @@ func (pB personaService) Actualiza(per *domain.Persona) (*domain.Persona, error)
 	p, err := pB.personaRepo.Actualiza(per)
 	if err != nil {
 		log.Println("Error actualiza Persona:", err)
+		return nil, err
+	}
+
+	return p, nil
+}
+
+func (pB personaService) ActualizaParcial(per *domain.Persona) (*domain.Persona, error) {
+
+	pBuscada, err := pB.personaRepo.BuscaPorID(per.ID)
+	if err != nil {
+		log.Println("Error actualizar parcial Persona (buscar):", err)
+		return nil, err
+	}
+	if per.Apellido != "" {
+		pBuscada.Apellido = per.Apellido
+	}
+	if per.Nombre != "" {
+		pBuscada.Nombre = per.Nombre
+	}
+	if per.FechaNacimiento != "" {
+		pBuscada.FechaNacimiento = per.FechaNacimiento
+	}
+
+	p, err := pB.personaRepo.Actualiza(pBuscada)
+	if err != nil {
+		log.Println("Error actualizar parcial Persona:", err)
 		return nil, err
 	}
 
