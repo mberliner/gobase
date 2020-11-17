@@ -62,8 +62,7 @@ func (pC personaController) Crear(c *gin.Context) {
 }
 
 func (pC personaController) BuscarPorId(c *gin.Context) {
-	idS := c.Param("id")
-	id, err := strconv.Atoi(idS)
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		sError := rest_errors.NewBadRequestError("Error al convertir ID" + err.Error())
 		c.JSON(http.StatusInternalServerError, sError)
@@ -82,8 +81,7 @@ func (pC personaController) BuscarPorId(c *gin.Context) {
 }
 
 func (pC personaController) Borrar(c *gin.Context) {
-	idS := c.Param("id")
-	id, err := strconv.Atoi(idS)
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		sError := rest_errors.NewBadRequestError("Error al convertir ID" + err.Error())
 		c.JSON(http.StatusInternalServerError, sError)
@@ -97,6 +95,13 @@ func (pC personaController) Borrar(c *gin.Context) {
 }
 
 func (pC personaController) Actualizar(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		sError := rest_errors.NewBadRequestError("Error al convertir ID" + err.Error())
+		c.JSON(http.StatusInternalServerError, sError)
+		return
+	}
+
 	var persona domain.Persona
 
 	if err := c.ShouldBindJSON(&persona); err != nil {
@@ -105,6 +110,7 @@ func (pC personaController) Actualizar(c *gin.Context) {
 		c.JSON(restErr.Status(), restErr)
 		return
 	}
+	persona.ID = id
 	p, err := pC.personaService.Actualiza(&persona)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
