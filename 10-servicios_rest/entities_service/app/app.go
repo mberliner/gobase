@@ -37,7 +37,7 @@ func init() {
 
 //StartApp Inicia la aplicación, setea el server y las URLs
 func StartApp() {
-	mapUrls()
+	mapeaUrls()
 
 	//Server inicia en rutina separada
 	go func() {
@@ -57,7 +57,7 @@ func StartApp() {
 	//Bloquea hasta recibir mensaje(señal)
 	s := <-cancelar
 
-	logger.Info("Bajando server HTTP recibi senal " + s.String())
+	logger.Info("Bajando server HTTP recibi señal " + s.String())
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -65,30 +65,4 @@ func StartApp() {
 		log.Fatal("Server forced to shutdown:", err)
 	}
 
-}
-
-func mapUrls() {
-	router.GET("/ping", ping)
-
-	router.POST("/users", userController.Crear)
-	router.POST("/users/login", userController.Login)
-
-	router.POST("/personas", personaController.Crear)
-	router.GET("/personas/:id", personaController.BuscarPorId)
-	router.GET("/personas", personaController.BuscarTodo)
-	router.DELETE("/personas/:id", personaController.Borrar)
-	router.PUT("/personas/:id", personaController.Actualizar)
-	router.PATCH("/personas/:id", personaController.ActualizarParcial)
-	/*
-
-
-
-		router.GET("/personas/search", personaController.Buscar)
-
-	*/
-}
-
-//solo para probar la app
-func ping(c *gin.Context) {
-	c.String(http.StatusOK, "pong")
 }
