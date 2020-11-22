@@ -4,3 +4,4 @@ c.out
 *.pem
 *.key
 __debug_bin
+*.log
