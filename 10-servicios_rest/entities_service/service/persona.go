@@ -1,9 +1,8 @@
 package service
 
 import (
-	"log"
-
 	"github.com/mberliner/gobase/10-servicios_rest/entities_service/domain"
+	"github.com/mberliner/gobase/10-servicios_rest/entities_service/logger"
 	"github.com/mberliner/gobase/10-servicios_rest/entities_service/repository"
 )
 
@@ -26,11 +25,10 @@ func NewPersonaService(pR repository.PersonaRepository) PersonaService {
 	return &personaService{pR}
 }
 
-func (pB personaService) CreaPersona(per *domain.Persona) (*domain.Persona, error) {
+func (pS personaService) CreaPersona(per *domain.Persona) (*domain.Persona, error) {
 
-	p, err := pB.personaRepo.Persiste(per)
+	p, err := pS.personaRepo.Persiste(per)
 	if err != nil {
-		log.Println("Error persiste Pesona:", err)
 		return nil, err
 	}
 
@@ -41,7 +39,6 @@ func (pS personaService) BuscaTodo() ([]domain.Persona, error) {
 
 	ps, err := pS.personaRepo.BuscaTodo()
 	if err != nil {
-		log.Println("Error buscaTodo:", err)
 		return nil, err
 	}
 
@@ -52,40 +49,38 @@ func (pS personaService) Borra(id int) error {
 
 	err := pS.personaRepo.Borra(id)
 	if err != nil {
-		log.Println("Error borraPersona:", err, id)
 		return err
 	}
 
 	return nil
 }
 
-func (pB personaService) BuscaPersona(id int) (*domain.Persona, error) {
+func (pS personaService) BuscaPersona(id int) (*domain.Persona, error) {
 
-	p, err := pB.personaRepo.BuscaPorID(id)
+	p, err := pS.personaRepo.BuscaPorID(id)
 	if err != nil {
-		log.Println("Error BuscaPersona:", err, "id:", id)
+		logger.Error("Error BuscaPersona: id:", err)
 		return nil, err
 	}
 
 	return p, nil
 }
 
-func (pB personaService) Actualiza(per *domain.Persona) (*domain.Persona, error) {
+func (pS personaService) Actualiza(per *domain.Persona) (*domain.Persona, error) {
 
-	p, err := pB.personaRepo.Actualiza(per)
+	p, err := pS.personaRepo.Actualiza(per)
 	if err != nil {
-		log.Println("Error actualiza Persona:", err)
 		return nil, err
 	}
 
 	return p, nil
 }
 
-func (pB personaService) ActualizaParcial(per *domain.Persona) (*domain.Persona, error) {
+func (pS personaService) ActualizaParcial(per *domain.Persona) (*domain.Persona, error) {
 
-	pBuscada, err := pB.personaRepo.BuscaPorID(per.ID)
+	pBuscada, err := pS.personaRepo.BuscaPorID(per.ID)
 	if err != nil {
-		log.Println("Error actualizar parcial Persona (buscar):", err)
+		logger.Error("Error actualizar parcial Persona (BuscaPorId):", err)
 		return nil, err
 	}
 	if per.Apellido != "" {
@@ -98,9 +93,9 @@ func (pB personaService) ActualizaParcial(per *domain.Persona) (*domain.Persona,
 		pBuscada.FechaNacimiento = per.FechaNacimiento
 	}
 
-	p, err := pB.personaRepo.Actualiza(pBuscada)
+	p, err := pS.personaRepo.Actualiza(pBuscada)
 	if err != nil {
-		log.Println("Error actualizar parcial Persona:", err)
+		logger.Error("Error actualizar parcial Persona (Actualiza):", err)
 		return nil, err
 	}
 

@@ -1,9 +1,9 @@
 package logger
 
 import (
+	"errors"
 	"fmt"
 	"os"
-	"strings"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -38,7 +38,7 @@ func init() {
 
 	var err error
 	if loggerImpl.log, err = logConfig.Build(); err != nil {
-		panic(err)
+		panic("Imposible iniciar logger: " + err.Error())
 	}
 }
 
@@ -56,7 +56,7 @@ func getLevel() zapcore.Level {
 }
 
 func getOutput() string {
-	output := strings.TrimSpace(os.Getenv("SALIDA_LOG"))
+	output := os.Getenv("SALIDA_LOG")
 	if output == "" {
 		return "stdout"
 	}
@@ -79,8 +79,11 @@ func Info(msg string) {
 	loggerImpl.log.Sync()
 }
 
-//Error Log errro abstrae la utilidad de log implementada
+//Error Log error abstrae la utilidad de log implementada
 func Error(msg string, err error) {
+	if err == nil {
+		err = errors.New("")
+	}
 	loggerImpl.log.Error(msg, zap.NamedError("error", err))
 	loggerImpl.log.Sync()
 }

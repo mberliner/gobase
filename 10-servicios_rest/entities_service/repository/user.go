@@ -2,10 +2,10 @@ package repository
 
 import (
 	"database/sql"
-	"log"
 	"strconv"
 
 	"github.com/mberliner/gobase/10-servicios_rest/entities_service/domain"
+	"github.com/mberliner/gobase/10-servicios_rest/entities_service/logger"
 )
 
 //TODO agregar los null
@@ -40,7 +40,7 @@ func (uR userRepository) Persiste(u *domain.User) (*domain.User, error) {
 	if u.Edad != "" {
 		edadI, err := strconv.Atoi(u.Edad)
 		if err != nil {
-			log.Println("Error edad debe ser numerico:", err)
+			logger.Error("Error edad debe ser numerico:", err)
 			return &domain.User{}, err
 		}
 		edadNull = sql.NullInt64{
@@ -51,11 +51,13 @@ func (uR userRepository) Persiste(u *domain.User) (*domain.User, error) {
 
 	stmt, err := uR.db.Prepare("INSERT into user(usuario, nombre, apellido, edad, password) VALUES(?,?,?,?, ?);")
 	if err != nil {
+		logger.Error("Error en prepare insert user:", err)
 		return &domain.User{}, err
 	}
 
 	_, err = stmt.Exec(u.Usuario, u.Nombre, u.Apellido, edadNull, u.Password)
 	if err != nil {
+		logger.Error("Error en exec insert user:", err)
 		return &domain.User{}, err
 	}
 
@@ -66,6 +68,7 @@ func (uR userRepository) BuscaPorUsuario(usu string) (*domain.User, error) {
 	//usuario es unique
 	rows, err := uR.db.Query("SELECT id, usuario, edad, nombre, apellido, password  FROM user WHERE usuario = ?;", usu)
 	if err != nil {
+		logger.Error("Error en Busca por user:", err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -76,6 +79,7 @@ func (uR userRepository) BuscaPorUsuario(usu string) (*domain.User, error) {
 	for rows.Next() {
 		err = rows.Scan(&u.ID, &u.Usuario, &u.Edad, &u.Nombre, &u.Apellido, &u.Password)
 		if err != nil {
+			logger.Error("Error en Busca por user Scan:", err)
 			return nil, err
 		}
 

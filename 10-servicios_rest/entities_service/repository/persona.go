@@ -2,10 +2,10 @@ package repository
 
 import (
 	"database/sql"
-	"log"
 	"time"
 
 	"github.com/mberliner/gobase/10-servicios_rest/entities_service/domain"
+	"github.com/mberliner/gobase/10-servicios_rest/entities_service/logger"
 )
 
 //TODO agregar los null
@@ -41,7 +41,7 @@ func (pR personaRepository) Persiste(p *domain.Persona) (*domain.Persona, error)
 	if p.FechaNacimiento != "" {
 		fecha, err := time.Parse("02-01-2006", p.FechaNacimiento)
 		if err != nil {
-			log.Println("Error persiste Persona con fecha:", err)
+			logger.Error("Error persiste Persona con fecha:", err)
 			return nil, err
 		}
 		fechaNull = sql.NullTime{
@@ -51,16 +51,19 @@ func (pR personaRepository) Persiste(p *domain.Persona) (*domain.Persona, error)
 	}
 	stmt, err := pR.db.Prepare("INSERT into persona(nombre, apellido, fecha_nacimiento) VALUES(?,?,?);")
 	if err != nil {
+		logger.Error("Error persiste Persona prepare:", err)
 		return nil, err
 	}
 
 	res, err := stmt.Exec(p.Nombre, p.Apellido, fechaNull)
 	if err != nil {
+		logger.Error("Error persiste Persona exec:", err)
 		return nil, err
 	}
 
 	id, err := res.LastInsertId()
 	if err != nil {
+		logger.Error("Error persiste Persona last insert:", err)
 		return nil, err
 	}
 	p.ID = int(id)
@@ -72,11 +75,13 @@ func (pR personaRepository) Borra(id int) error {
 
 	stmt, err := pR.db.Prepare("DELETE FROM persona WHERE id = ?;")
 	if err != nil {
+		logger.Error("Error borra Persona prepare:", err)
 		return err
 	}
 
 	_, err = stmt.Exec(id)
 	if err != nil {
+		logger.Error("Error borra Persona exec:", err)
 		return err
 	}
 
@@ -87,6 +92,7 @@ func (pR personaRepository) BuscaTodo() ([]domain.Persona, error) {
 
 	rows, err := pR.db.Query("SELECT id, nombre, apellido, fecha_nacimiento FROM persona;")
 	if err != nil {
+		logger.Error("Error buscaTodo Persona Query:", err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -98,6 +104,7 @@ func (pR personaRepository) BuscaTodo() ([]domain.Persona, error) {
 	for rows.Next() {
 		err = rows.Scan(&p.ID, &p.Nombre, &p.Apellido, &p.FechaNacimiento)
 		if err != nil {
+			logger.Error("Error borra Persona scan:", err)
 			return nil, err
 		}
 
@@ -124,6 +131,7 @@ func (pR personaRepository) BuscaPorID(id int) (*domain.Persona, error) {
 	err := pR.db.QueryRow("SELECT id, nombre, apellido, fecha_nacimiento FROM persona WHERE id = ?;", id).
 		Scan(&p.ID, &p.Nombre, &p.Apellido, &p.FechaNacimiento)
 	if err != nil {
+		logger.Error("Error buscaporId Persona QueryRow:", err)
 		return nil, err
 	}
 
@@ -150,7 +158,7 @@ func (pR personaRepository) Actualiza(p *domain.Persona) (*domain.Persona, error
 	if p.FechaNacimiento != "" {
 		fecha, err := time.Parse("02-01-2006", p.FechaNacimiento)
 		if err != nil {
-			log.Println("Error actualiza Persona con fecha:", err)
+			logger.Error("Error actualiza Persona con fecha:", err)
 			return nil, err
 		}
 		fechaNull = sql.NullTime{
@@ -161,11 +169,13 @@ func (pR personaRepository) Actualiza(p *domain.Persona) (*domain.Persona, error
 
 	stmt, err := pR.db.Prepare("Update persona SET nombre=?, apellido=?, fecha_nacimiento=? WHERE id=?;")
 	if err != nil {
+		logger.Error("Error actualiza Persona prepare:", err)
 		return nil, err
 	}
 
 	_, err = stmt.Exec(p.Nombre, p.Apellido, fechaNull, p.ID)
 	if err != nil {
+		logger.Error("Error borra Persona exec:", err)
 		return nil, err
 	}
 

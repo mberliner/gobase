@@ -1,12 +1,12 @@
 package controller
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mberliner/gobase/10-servicios_rest/entities_service/domain"
+	"github.com/mberliner/gobase/10-servicios_rest/entities_service/logger"
 	"github.com/mberliner/gobase/10-servicios_rest/entities_service/service"
 )
 
@@ -46,8 +46,8 @@ func (pC personaController) Crear(c *gin.Context) {
 	var persona domain.Persona
 
 	if err := c.ShouldBindJSON(&persona); err != nil {
-		log.Println("Error en Crear persona:", err, "param:", persona)
-		restErr := NewBadRequestError("invalid json body " + err.Error())
+		logger.Error("Error en Crear persona con parametros:", err)
+		restErr := NewBadRequestError("invalid json body")
 		c.JSON(restErr.Status(), restErr)
 		return
 	}
@@ -66,7 +66,8 @@ func (pC personaController) Crear(c *gin.Context) {
 func (pC personaController) BuscarPorId(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		sError := NewBadRequestError("Error al convertir ID" + err.Error())
+		logger.Error("Error al convertir ID", err)
+		sError := NewBadRequestError("Error al convertir ID")
 		c.JSON(http.StatusInternalServerError, sError)
 		return
 	}
@@ -85,7 +86,8 @@ func (pC personaController) BuscarPorId(c *gin.Context) {
 func (pC personaController) Borrar(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		sError := NewBadRequestError("Error al convertir ID" + err.Error())
+		logger.Error("Error al convertir ID", err)
+		sError := NewBadRequestError("Error al convertir ID, Borrar")
 		c.JSON(http.StatusInternalServerError, sError)
 		return
 	}
@@ -99,7 +101,8 @@ func (pC personaController) Borrar(c *gin.Context) {
 func (pC personaController) Actualizar(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		sError := NewBadRequestError("Error al convertir ID" + err.Error())
+		logger.Error("Error al convertir ID, Actualizar", err)
+		sError := NewBadRequestError("Error al convertir ID")
 		c.JSON(http.StatusInternalServerError, sError)
 		return
 	}
@@ -107,8 +110,8 @@ func (pC personaController) Actualizar(c *gin.Context) {
 	var persona domain.Persona
 
 	if err := c.ShouldBindJSON(&persona); err != nil {
-		log.Println("Error en Actualizar persona:", err, "param:", persona)
-		restErr := NewBadRequestError("invalid json body " + err.Error())
+		logger.Error("Error en Actualizar persona, parametros", err)
+		restErr := NewBadRequestError("invalid json body")
 		c.JSON(restErr.Status(), restErr)
 		return
 	}
@@ -123,20 +126,19 @@ func (pC personaController) Actualizar(c *gin.Context) {
 }
 
 func (pC personaController) ActualizarParcial(c *gin.Context) {
-	log.Println("Borrar  en Actualizar persona 1:")
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		sError := NewBadRequestError("Error al convertir ID al Actualizar Parcial" + err.Error())
+		logger.Error("Error en Actualizar Parcial persona, id", err)
+		sError := NewBadRequestError("Error ID")
 		c.JSON(http.StatusInternalServerError, sError)
 		return
 	}
 
 	var persona domain.Persona
-	log.Println("Borrar  en Actualizar persona:", err, "param:", persona)
 
 	if err := c.ShouldBindJSON(&persona); err != nil {
-		log.Println("Error en Actualizar Parcial persona:", err, "param:", persona)
-		restErr := NewBadRequestError("invalid json body " + err.Error())
+		logger.Error("Error en Actualizar Parcial persona, parametros", err)
+		restErr := NewBadRequestError("invalid json body")
 		c.JSON(restErr.Status(), restErr)
 		return
 	}
