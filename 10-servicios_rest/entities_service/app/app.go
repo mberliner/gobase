@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -15,7 +16,8 @@ import (
 )
 
 const (
-	puerto = "8080"
+	puerto  = "8080"
+	logHTTP = "../http.log"
 )
 
 var (
@@ -26,13 +28,25 @@ var (
 )
 
 func init() {
+
+	f, err := os.Create(logHTTP)
+	if err != nil {
+		panic("Error al inciar server, no puedo crear log HTTP" + err.Error())
+	}
+	// Log a stdout y archivo.
+	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
+	gin.DefaultErrorWriter = io.MultiWriter(f, os.Stdout)
+
 	router = gin.Default()
+
 	userController = controller.UserC
 	personaController = controller.PersonaC
+
 	server = &http.Server{
 		Addr:    ":" + puerto,
 		Handler: router,
 	}
+
 }
 
 //StartApp Inicia la aplicación, setea el server y las URLs
@@ -50,7 +64,7 @@ func StartApp() {
 
 	logger.Info("Iniciado server HTTP")
 
-	//canal para señales sigint y sigterm
+	//canal para señales interrupted(2) y terminated(15)
 	cancelar := make(chan os.Signal)
 	signal.Notify(cancelar, syscall.SIGINT, syscall.SIGTERM)
 
