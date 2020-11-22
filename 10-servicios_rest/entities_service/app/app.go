@@ -21,10 +21,11 @@ const (
 )
 
 var (
-	router            *gin.Engine
+	router *gin.Engine
+	server *http.Server
+
 	userController    controller.UserController
 	personaController controller.PersonaController
-	server            *http.Server
 )
 
 func init() {
@@ -39,13 +40,13 @@ func init() {
 
 	router = gin.Default()
 
-	userController = controller.UserC
-	personaController = controller.PersonaC
-
 	server = &http.Server{
 		Addr:    ":" + puerto,
 		Handler: router,
 	}
+
+	userController = controller.UserC
+	personaController = controller.PersonaC
 
 }
 
