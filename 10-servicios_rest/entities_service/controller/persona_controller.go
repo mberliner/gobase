@@ -125,11 +125,11 @@ func (pC personaController) Actualizar(c *gin.Context) {
 	p, err := pC.personaService.Actualiza(&persona)
 	if err != nil {
 		if strings.Contains(err.Error(), "Not Found") {
-			sError := NewNotFoundError("Error al buscar Persona por ID, Not Found")
+			sError := NewNotFoundError("Error al Actualizar Persona por ID, Not Found")
 			c.JSON(sError.Status(), sError)
 
 		} else {
-			sError := NewInternalServerError("Error al buscar Persona por ID", err)
+			sError := NewInternalServerError("Error al Actualizar Persona por ID", err)
 			c.JSON(sError.Status(), sError)
 		}
 		return
@@ -160,11 +160,11 @@ func (pC personaController) ActualizarParcial(c *gin.Context) {
 	p, err := pC.personaService.ActualizaParcial(&persona)
 	if err != nil {
 		if strings.Contains(err.Error(), "Not Found") {
-			sError := NewNotFoundError("Error al buscar Persona por ID, Not Found")
+			sError := NewNotFoundError("Error al Actualizar Parcial Persona por ID, Not Found")
 			c.JSON(sError.Status(), sError)
 
 		} else {
-			sError := NewInternalServerError("Error al buscar Persona por ID", err)
+			sError := NewInternalServerError("Error al Actualizar Parcial Persona por ID", err)
 			c.JSON(sError.Status(), sError)
 		}
 		return
