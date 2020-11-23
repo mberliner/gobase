@@ -59,7 +59,6 @@ func (pS personaService) BuscaPersona(id int) (*domain.Persona, error) {
 
 	p, err := pS.personaRepo.BuscaPorID(id)
 	if err != nil {
-		logger.Error("Error BuscaPersona: id:", err)
 		return nil, err
 	}
 

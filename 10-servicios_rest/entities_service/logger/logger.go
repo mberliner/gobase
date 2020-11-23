@@ -80,10 +80,14 @@ func Info(msg string) {
 }
 
 //Error Log error abstrae la utilidad de log implementada
-func Error(msg string, err error) {
+func Error(msg string, err error, v ...interface{}) {
 	if err == nil {
 		err = errors.New("")
 	}
-	loggerImpl.log.Error(msg, zap.NamedError("error", err))
+	if len(v) > 0 {
+		loggerImpl.log.Error(msg, zap.NamedError("error", err), zap.String("param", fmt.Sprintf("%v", v)))
+	} else {
+		loggerImpl.log.Error(msg, zap.NamedError("error", err))
+	}
 	loggerImpl.log.Sync()
 }

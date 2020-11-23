@@ -2,6 +2,9 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/mberliner/gobase/10-servicios_rest/entities_service/domain"
@@ -131,7 +134,12 @@ func (pR personaRepository) BuscaPorID(id int) (*domain.Persona, error) {
 	err := pR.db.QueryRow("SELECT id, nombre, apellido, fecha_nacimiento FROM persona WHERE id = ?;", id).
 		Scan(&p.ID, &p.Nombre, &p.Apellido, &p.FechaNacimiento)
 	if err != nil {
-		logger.Error("Error buscaporId Persona QueryRow:", err)
+		if strings.Contains(err.Error(), "sql: no rows") {
+			logger.Info(fmt.Sprintf("Not found buscaporId Persona Id: %v", id))
+			err = errors.New("Not Found")
+		} else {
+			logger.Error("Error buscaporId Persona QueryRow:", err, id)
+		}
 		return nil, err
 	}
 
@@ -173,10 +181,19 @@ func (pR personaRepository) Actualiza(p *domain.Persona) (*domain.Persona, error
 		return nil, err
 	}
 
-	_, err = stmt.Exec(p.Nombre, p.Apellido, fechaNull, p.ID)
+	s, err := stmt.Exec(p.Nombre, p.Apellido, fechaNull, p.ID)
 	if err != nil {
-		logger.Error("Error borra Persona exec:", err)
+		logger.Error("Error actualiza Persona exec:", err)
 		return nil, err
+	}
+	rows, err := s.RowsAffected()
+	if err != nil {
+		logger.Error("Error actualiza Persona Rows:", err)
+		return nil, err
+	}
+	if rows == 0 {
+		logger.Info(fmt.Sprintf("Error actualiza Persona Not Found: %v", *p))
+		return nil, errors.New("Not Found")
 	}
 
 	return p, nil

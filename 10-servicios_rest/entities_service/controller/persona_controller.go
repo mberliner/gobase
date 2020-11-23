@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mberliner/gobase/10-servicios_rest/entities_service/domain"
@@ -35,7 +36,7 @@ func (pC personaController) BuscarTodo(c *gin.Context) {
 
 	if err != nil {
 		sError := NewInternalServerError("Error al buscar Personas", err)
-		c.JSON(http.StatusInternalServerError, sError)
+		c.JSON(sError.Status(), sError)
 		return
 	}
 	c.JSON(http.StatusOK, personas)
@@ -44,9 +45,8 @@ func (pC personaController) BuscarTodo(c *gin.Context) {
 
 func (pC personaController) Crear(c *gin.Context) {
 	var persona domain.Persona
-
 	if err := c.ShouldBindJSON(&persona); err != nil {
-		logger.Error("Error en Crear persona con parametros:", err)
+		logger.Error("Error en Crear persona con parametros:", err, persona)
 		restErr := NewBadRequestError("invalid json body")
 		c.JSON(restErr.Status(), restErr)
 		return
@@ -55,7 +55,7 @@ func (pC personaController) Crear(c *gin.Context) {
 	p, err := pC.personaService.CreaPersona(&persona)
 	if err != nil {
 		sError := NewInternalServerError("Error al crear Persona", err)
-		c.JSON(http.StatusInternalServerError, sError)
+		c.JSON(sError.Status(), sError)
 		return
 	}
 
@@ -66,16 +66,22 @@ func (pC personaController) Crear(c *gin.Context) {
 func (pC personaController) BuscarPorId(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		logger.Error("Error al convertir ID", err)
+		logger.Error("Error al convertir ID", err, id)
 		sError := NewBadRequestError("Error al convertir ID")
-		c.JSON(http.StatusInternalServerError, sError)
+		c.JSON(sError.Status(), sError)
 		return
 	}
 
 	p, err := pC.personaService.BuscaPersona(id)
 	if err != nil {
-		sError := NewInternalServerError("Error al buscar Persona por ID", err)
-		c.JSON(http.StatusInternalServerError, sError)
+		if strings.Contains(err.Error(), "Not Found") {
+			sError := NewNotFoundError("Error al buscar Persona por ID, Not Found")
+			c.JSON(sError.Status(), sError)
+
+		} else {
+			sError := NewInternalServerError("Error al buscar Persona por ID", err)
+			c.JSON(sError.Status(), sError)
+		}
 		return
 	}
 
@@ -86,9 +92,9 @@ func (pC personaController) BuscarPorId(c *gin.Context) {
 func (pC personaController) Borrar(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		logger.Error("Error al convertir ID", err)
+		logger.Error("Error al convertir ID", err, id)
 		sError := NewBadRequestError("Error al convertir ID, Borrar")
-		c.JSON(http.StatusInternalServerError, sError)
+		c.JSON(sError.Status(), sError)
 		return
 	}
 	if err := pC.personaService.Borra(id); err != nil {
@@ -101,16 +107,16 @@ func (pC personaController) Borrar(c *gin.Context) {
 func (pC personaController) Actualizar(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		logger.Error("Error al convertir ID, Actualizar", err)
+		logger.Error("Error al convertir ID, Actualizar", err, id)
 		sError := NewBadRequestError("Error al convertir ID")
-		c.JSON(http.StatusInternalServerError, sError)
+		c.JSON(sError.Status(), sError)
 		return
 	}
 
 	var persona domain.Persona
 
 	if err := c.ShouldBindJSON(&persona); err != nil {
-		logger.Error("Error en Actualizar persona, parametros", err)
+		logger.Error("Error en Actualizar persona, parametros", err, persona)
 		restErr := NewBadRequestError("invalid json body")
 		c.JSON(restErr.Status(), restErr)
 		return
@@ -118,9 +124,17 @@ func (pC personaController) Actualizar(c *gin.Context) {
 	persona.ID = id
 	p, err := pC.personaService.Actualiza(&persona)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		if strings.Contains(err.Error(), "Not Found") {
+			sError := NewNotFoundError("Error al buscar Persona por ID, Not Found")
+			c.JSON(sError.Status(), sError)
+
+		} else {
+			sError := NewInternalServerError("Error al buscar Persona por ID", err)
+			c.JSON(sError.Status(), sError)
+		}
 		return
 	}
+
 	c.JSON(http.StatusOK, p)
 
 }
@@ -128,16 +142,16 @@ func (pC personaController) Actualizar(c *gin.Context) {
 func (pC personaController) ActualizarParcial(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		logger.Error("Error en Actualizar Parcial persona, id", err)
+		logger.Error("Error en Actualizar Parcial persona, id", err, id)
 		sError := NewBadRequestError("Error ID")
-		c.JSON(http.StatusInternalServerError, sError)
+		c.JSON(sError.Status(), sError)
 		return
 	}
 
 	var persona domain.Persona
 
 	if err := c.ShouldBindJSON(&persona); err != nil {
-		logger.Error("Error en Actualizar Parcial persona, parametros", err)
+		logger.Error("Error en Actualizar Parcial persona, parametros", err, persona)
 		restErr := NewBadRequestError("invalid json body")
 		c.JSON(restErr.Status(), restErr)
 		return
@@ -145,9 +159,17 @@ func (pC personaController) ActualizarParcial(c *gin.Context) {
 	persona.ID = id
 	p, err := pC.personaService.ActualizaParcial(&persona)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		if strings.Contains(err.Error(), "Not Found") {
+			sError := NewNotFoundError("Error al buscar Persona por ID, Not Found")
+			c.JSON(sError.Status(), sError)
+
+		} else {
+			sError := NewInternalServerError("Error al buscar Persona por ID", err)
+			c.JSON(sError.Status(), sError)
+		}
 		return
 	}
+
 	c.JSON(http.StatusOK, p)
 
 }

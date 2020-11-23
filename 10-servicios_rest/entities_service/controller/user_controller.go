@@ -33,7 +33,7 @@ func (uC userController) Crear(c *gin.Context) {
 	rUser, err := uC.userService.CreaUsuario(&user)
 	if err != nil {
 		sError := NewInternalServerError("Error al crear usuario", err)
-		c.JSON(http.StatusInternalServerError, sError)
+		c.JSON(sError.Status(), sError)
 		return
 	}
 	c.JSON(http.StatusCreated, rUser)
