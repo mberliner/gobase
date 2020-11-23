@@ -3,7 +3,7 @@ package repository
 import (
 	"database/sql"
 
-	_ "github.com/go-sql-driver/mysql" //Sólo para iniciar database/sql
+	"github.com/go-sql-driver/mysql"
 	"github.com/mberliner/gobase/10-servicios_rest/entities_service/logger"
 )
 
@@ -27,6 +27,8 @@ func init() {
 		logger.Error("Error Ping:", err)
 		panic(err)
 	}
+	mysql.SetLogger(logger.GetLogger())
+
 	logger.Info("Conectado a Mysql")
 
 	UserRepo = NewUserRepository(db)
