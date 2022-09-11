@@ -9,13 +9,13 @@ import (
 //Ejemplo para usar ok
 //go run usar_args.go -arg1=1 -arg2=estea -arg3=false -arg4=100
 
-//Con error:
-//go run usar_args.go -arg1=x -arg2=estea -arg3=false -arg4=100
+// Con error:
+// go run usar_args.go -arg1=x -arg2=estea -arg3=false -arg4=100
 func main() {
 	//Son punteros
 	arg1 := flag.Int("arg1", 100, "Primer parámetro")
 	arg2 := flag.String("arg2", "Default string", "2do parámetro")
-	arg3 := flag.Bool("arg3", true, "3er parámetro")
+	arg3 := flag.Float64("arg3", 99.0, "3er parámetro")
 
 	//Otra forma usando la variable en lugar del puntero
 	var arg4 int
@@ -28,8 +28,8 @@ func main() {
 
 	flag.Parse()
 
-	fmt.Println("arg1:", *arg1)
-	fmt.Println("arg2:", *arg2)
-	fmt.Println("arg3:", *arg3)
-	fmt.Println("arg4:", arg4)
+	fmt.Printf("arg1: %v, tipo: %T\n", *arg1, *arg1)
+	fmt.Printf("arg1: %v, tipo: %T\n", *arg2, *arg2)
+	fmt.Printf("arg1: %v, tipo: %T\n", *arg3, *arg3)
+	fmt.Printf("arg1: %v, tipo: %T\n", arg4, arg4)
 }

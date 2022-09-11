@@ -9,6 +9,10 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+const (
+	nombreLog = "EntitiesRest.log"
+)
+
 var (
 	loggerImpl logger
 )
@@ -56,10 +60,11 @@ func getLevel() zapcore.Level {
 }
 
 func getOutput() string {
-	output := os.Getenv("SALIDA_LOG")
-	if output == "" {
+	path := os.Getenv("PATH_LOG")
+	if path == "" {
 		return "stdout"
 	}
+	output := path + string(os.PathSeparator) + nombreLog
 	return output
 }
 

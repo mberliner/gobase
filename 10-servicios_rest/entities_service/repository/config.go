@@ -36,6 +36,10 @@ func initRepo() {
 		logger.Error("Error Ping:", err)
 		panic(err)
 	}
-	mysql.SetLogger(logger.GetLogger())
+	err = mysql.SetLogger(logger.GetLogger())
+	if err != nil {
+		logger.Error("Error seteando logger a Mysql", err)
+	}
+
 	logger.Info("Conectado a Mysql")
 }

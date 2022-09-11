@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -9,7 +10,7 @@ func main() {
 	s := `abcasda`
 
 	//Hay que instalar el paquete previamente
-	//go get golang.org/x/crypto/bcrypt
+	//go get -u golang.org/x/crypto/bcrypt
 	bs, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.MinCost)
 	if err != nil {
 		fmt.Println(err)
