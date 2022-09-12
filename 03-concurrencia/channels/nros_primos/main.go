@@ -18,7 +18,7 @@ func main() {
 
 func genera(ch chan<- int) {
 	for i := 2; ; i++ {
-		fmt.Println("Genera: ", i)
+		//		fmt.Println("Genera: ", i)
 		ch <- i
 	}
 }
@@ -27,7 +27,7 @@ func genera(ch chan<- int) {
 func filtra(in <-chan int, out chan<- int, primo int) {
 	for {
 		i := <-in
-		fmt.Println("Filtra: ", i, primo, i%primo)
+		//		fmt.Println("Filtra: ", i, primo, i%primo)
 		if i%primo != 0 {
 			out <- i
 		}
