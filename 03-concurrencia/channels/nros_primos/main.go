@@ -7,7 +7,7 @@ func main() {
 	ch := make(chan int)
 	go genera(ch)
 
-	for i := 1; i <= 100; i++ {
+	for i := 1; i <= 10; i++ {
 		primo := <-ch
 		fmt.Println("Numero Primo", i, "es:", primo)
 		ch1 := make(chan int)
@@ -18,6 +18,7 @@ func main() {
 
 func genera(ch chan<- int) {
 	for i := 2; ; i++ {
+		fmt.Println("Genera: ", i)
 		ch <- i
 	}
 }
@@ -26,6 +27,7 @@ func genera(ch chan<- int) {
 func filtra(in <-chan int, out chan<- int, primo int) {
 	for {
 		i := <-in
+		fmt.Println("Filtra: ", i, primo, i%primo)
 		if i%primo != 0 {
 			out <- i
 		}
