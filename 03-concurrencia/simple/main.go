@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"runtime"
+	"strconv"
 	"sync"
 )
 
@@ -36,7 +38,16 @@ func reparte() int {
 }
 
 func trabaja(i int) {
-	fmt.Println("Proceso cada paquete por rutinas concurrentes, paquete: ", i)
+	fmt.Println("Proceso cada paquete por rutinas concurrentes, paquete: ", i, "ID Goroutine: ", getGID())
 	runtime.Gosched()
 	concurr.Done()
+}
+
+func getGID() uint64 {
+	b := make([]byte, 64)
+	b = b[:runtime.Stack(b, false)]
+	b = bytes.TrimPrefix(b, []byte("goroutine "))
+	b = b[:bytes.IndexByte(b, ' ')]
+	n, _ := strconv.ParseUint(string(b), 10, 64)
+	return n
 }
