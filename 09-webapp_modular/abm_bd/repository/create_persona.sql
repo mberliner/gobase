@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS persona;
 CREATE TABLE IF NOT EXISTS persona (
 id bigint(20) NOT NULL AUTO_INCREMENT,
 nombre varchar(100) NOT NULL,
