@@ -22,7 +22,7 @@ func newPersonaRepository(db *sql.DB) *personaRepository {
 	return &personaRepository{db}
 }
 
-func (pR personaRepository) presentaTodo() []persona {
+func (pR personaRepository) traeTodas() []persona {
 
 	var p persona
 	rows, err := pR.db.Query("SELECT id, edad, nombre, apellido FROM persona;")
@@ -88,7 +88,7 @@ func (pR personaRepository) actualiza(p persona) persona {
 	return p
 }
 
-//Sólo para mostrar una transacción con varias operaciones
+// Sólo para mostrar una transacción con varias operaciones
 func (pR personaRepository) operacionesComplejas(p persona) {
 	ctx := context.Background()
 	tx, err := pR.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
