@@ -1,4 +1,4 @@
-package business
+package service
 
 import (
 	"log"
@@ -7,12 +7,12 @@ import (
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository"
 )
 
-type personaBusiness struct {
+type personaService struct {
 	personaRepo repository.PersonaRepository
 }
 
-//PersonaBusiness interface para poder realizar tests del negocio de persona
-type PersonaBusiness interface {
+// PersonaService interface para poder realizar tests del negocio de persona
+type PersonaService interface {
 	CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas
 	BuscaTodo() model.Personas
 	BorraPersona(id string) model.Personas
@@ -20,12 +20,12 @@ type PersonaBusiness interface {
 	ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas
 }
 
-//NewPersonaBusiness para obtener megocio de forma ordenada
-func NewPersonaBusiness(pR repository.PersonaRepository) PersonaBusiness {
-	return &personaBusiness{pR}
+// NewPersonaService para obtener megocio de forma ordenada
+func NewPersonaService(pR repository.PersonaRepository) PersonaService {
+	return &personaService{pR}
 }
 
-func (pB personaBusiness) CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
+func (pB personaService) CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
 
 	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento}
 	p, err := pB.personaRepo.Persiste(p)
@@ -46,7 +46,7 @@ func (pB personaBusiness) CreaPersona(nom string, ape string, fechaNacimiento st
 	return mP
 }
 
-func (pB personaBusiness) BuscaTodo() model.Personas {
+func (pB personaService) BuscaTodo() model.Personas {
 
 	ps, err := pB.personaRepo.BuscaTodo()
 	if err != nil {
@@ -65,7 +65,7 @@ func (pB personaBusiness) BuscaTodo() model.Personas {
 	return mP
 }
 
-func (pB personaBusiness) BorraPersona(id string) model.Personas {
+func (pB personaService) BorraPersona(id string) model.Personas {
 
 	err := pB.personaRepo.Borra(id)
 	if err != nil {
@@ -91,7 +91,7 @@ func (pB personaBusiness) BorraPersona(id string) model.Personas {
 	return mP
 }
 
-func (pB personaBusiness) BuscaPersona(id string) model.Personas {
+func (pB personaService) BuscaPersona(id string) model.Personas {
 
 	p, err := pB.personaRepo.BuscaPorID(id)
 	if err != nil {
@@ -109,7 +109,7 @@ func (pB personaBusiness) BuscaPersona(id string) model.Personas {
 	return mP
 }
 
-func (pB personaBusiness) ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas {
+func (pB personaService) ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas {
 
 	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento, ID: id}
 	p, err := pB.personaRepo.Actualiza(p)
