@@ -1,17 +1,18 @@
 package business
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/model"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/repository"
+	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/repository/mongoDB"
 )
 
 type personaBusiness struct {
-	personaRepo repository.PersonaRepository
+	personaRepo mongoDB.PersonaRepository
 }
 
-//PersonaBusiness interface para poder realizar tests del negocio de persona
+// PersonaBusiness interface para poder realizar tests del negocio de persona
 type PersonaBusiness interface {
 	CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas
 	BuscaTodo() model.Personas
@@ -20,8 +21,8 @@ type PersonaBusiness interface {
 	ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas
 }
 
-//NewPersonaBusiness para obtener megocio de forma ordenada
-func NewPersonaBusiness(pR repository.PersonaRepository) PersonaBusiness {
+// NewPersonaBusiness para obtener megocio de forma ordenada
+func NewPersonaBusiness(pR mongoDB.PersonaRepository) PersonaBusiness {
 	return &personaBusiness{pR}
 }
 func (pB personaBusiness) CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
@@ -42,6 +43,7 @@ func (pB personaBusiness) CreaPersona(nom string, ape string, fechaNacimiento st
 		Error:     nil,
 		Mensaje:   "Persona Creada Ok",
 	}
+	fmt.Println("crearPersona: ", mP)
 	return mP
 }
 

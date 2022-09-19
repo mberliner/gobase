@@ -1,4 +1,4 @@
-package repository
+package mongoDBOld
 
 import (
 	"github.com/globalsign/mgo"
@@ -15,13 +15,13 @@ type user struct {
 	Password string        //`json:"Password" bson:"Password"`
 }
 
-//UserRepository interface para acceso a datos de User
+// UserRepository interface para acceso a datos de User
 type UserRepository interface {
 	Persiste(u *model.User) (*model.User, error)
 	BuscaPorUsuario(usu string) ([]model.User, error)
 }
 
-//NewUserRepository para obtener repositorio de manera ordenada
+// NewUserRepository para obtener repositorio de manera ordenada
 func NewUserRepository(db *mgo.Database) UserRepository {
 	return &userRepository{db}
 }

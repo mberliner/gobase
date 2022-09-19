@@ -5,26 +5,26 @@ import (
 	"log"
 
 	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/model"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/repository"
+	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/repository/mongoDB"
 	"golang.org/x/crypto/bcrypt"
 )
 
-//UserBusiness interface para exponer manejo de User
+// UserBusiness interface para exponer manejo de User
 type UserBusiness interface {
 	CreaUsuario(usu string, pass string, nom string, ape string) model.User
 	Autentica(usu string, pass string) (model.User, bool)
 	BuscaPorUsuario(usu string) model.User
 }
 
-//NewUserBusiness para obtener repositorio de manera ordenada
-func NewUserBusiness(uR repository.UserRepository) UserBusiness {
+// NewUserBusiness para obtener repositorio de manera ordenada
+func NewUserBusiness(uR mongoDB.UserRepository) UserBusiness {
 	return &userService{
 		userRepo: uR,
 	}
 }
 
 type userService struct {
-	userRepo repository.UserRepository
+	userRepo mongoDB.UserRepository
 }
 
 func (userS userService) CreaUsuario(usu string, pass string, nom string, ape string) model.User {

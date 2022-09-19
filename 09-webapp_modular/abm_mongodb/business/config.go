@@ -1,7 +1,7 @@
 package business
 
 import (
-	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/repository"
+	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/repository/mongoDB"
 )
 
 var (
@@ -13,7 +13,7 @@ var (
 
 func init() {
 
-	UserB = NewUserBusiness(repository.UserRepo)
-	PersonaB = NewPersonaBusiness(repository.PersonaRepo)
+	UserB = NewUserBusiness(mongoDB.UserRepo)
+	PersonaB = NewPersonaBusiness(mongoDB.PersonaRepo)
 
 }

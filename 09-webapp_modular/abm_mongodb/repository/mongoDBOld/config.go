@@ -1,4 +1,4 @@
-package repository
+package mongoDBOld
 
 import (
 	"fmt"
@@ -21,7 +21,7 @@ var (
 func init() {
 
 	var err error
-
+	fmt.Println("Inicio MongoDB, antiguo driver")
 	s, err := mgo.Dial("mongodb://test:test987@localhost/go_test")
 	if err != nil {
 		panic(err)

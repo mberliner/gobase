@@ -1,4 +1,4 @@
-package repository
+package mongoDBOld
 
 import (
 	"strings"
@@ -15,7 +15,7 @@ type persona struct {
 	FechaNacimiento string        //`json:"FechaNacimiento" bson:"FechaNacimiento"`
 }
 
-//PersonaRepository interface para manejo de acceso a datos de Persona
+// PersonaRepository interface para manejo de acceso a datos de Persona
 type PersonaRepository interface {
 	Persiste(p *model.Persona) (*model.Persona, error)
 	Borra(id string) error
@@ -24,7 +24,7 @@ type PersonaRepository interface {
 	Actualiza(p *model.Persona) (*model.Persona, error)
 }
 
-//NewPersonaRepository para obtener repositorio de manera ordenada
+// NewPersonaRepository para obtener repositorio de manera ordenada
 func NewPersonaRepository(db *mgo.Database) PersonaRepository {
 	return &personaRepository{db}
 }

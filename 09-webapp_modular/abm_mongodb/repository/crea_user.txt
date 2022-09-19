@@ -4,8 +4,14 @@ db.createUser(
   {
     user: "test",
     pwd: "test987",
-    roles: [ { role: "readWrite", db: "bookstore" } ]
+    roles: [ { role: "readWrite", db: "go_test" } ]
   }
 )
 
 db.user.createIndex( { "usuario" : 1 }, { unique : true } )
+
+db.runCommand(
+   {
+     dropUser: "test"
+   }
+)
