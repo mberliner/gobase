@@ -3,8 +3,8 @@ package controller
 import (
 	"net/http"
 
-	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/business"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/model"
+	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/service"
 )
 
 const sessionCookie string = "session"
@@ -20,7 +20,7 @@ func getUser(res http.ResponseWriter, req *http.Request) model.User {
 	}
 	// Si existe lo tomo de la sesion
 	if usu, ok := dbSessions[c.Value]; ok {
-		u = business.UserB.BuscaPorUsuario(usu)
+		u = service.UserB.BuscaPorUsuario(usu)
 	}
 	return u
 }
@@ -32,7 +32,7 @@ func estaLogueado(req *http.Request) bool {
 	}
 	usu := dbSessions[c.Value]
 
-	u := business.UserB.BuscaPorUsuario(usu)
+	u := service.UserB.BuscaPorUsuario(usu)
 	if u.Error != nil {
 		return false
 	}

@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/business"
 	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/model"
+	business "github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/service"
 )
 
 func AbmPersona(res http.ResponseWriter, req *http.Request) {
