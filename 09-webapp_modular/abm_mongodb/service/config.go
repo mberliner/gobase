@@ -5,15 +5,15 @@ import (
 )
 
 var (
-	//UserB para manejo del negocio de Usuario
-	UserB UserBusiness
-	//PersonaB para manejo del negocio de Persona
-	PersonaB PersonaBusiness
+	//UserS para manejo del negocio de Usuario
+	UserS UserService
+	//PersonaS para manejo del negocio de Persona
+	PersonaS PersonaService
 )
 
 func init() {
 
-	UserB = NewUserBusiness(mongoDB.UserRepo)
-	PersonaB = NewPersonaBusiness(mongoDB.PersonaRepo)
+	UserS = NewUserService(mongoDB.UserRepo)
+	PersonaS = NewPersonaService(mongoDB.PersonaRepo)
 
 }

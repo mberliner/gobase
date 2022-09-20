@@ -9,15 +9,15 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// UserBusiness interface para exponer manejo de User
-type UserBusiness interface {
+// UserService interface para exponer manejo de User
+type UserService interface {
 	CreaUsuario(usu string, pass string, nom string, ape string) model.User
 	Autentica(usu string, pass string) (model.User, bool)
 	BuscaPorUsuario(usu string) model.User
 }
 
-// NewUserBusiness para obtener repositorio de manera ordenada
-func NewUserBusiness(uR mongoDB.UserRepository) UserBusiness {
+// NewUserService para obtener repositorio de manera ordenada
+func NewUserService(uR mongoDB.UserRepository) UserService {
 	return &userService{
 		userRepo: uR,
 	}
@@ -32,7 +32,7 @@ func (userS userService) CreaUsuario(usu string, pass string, nom string, ape st
 	sU, err := userS.userRepo.BuscaPorUsuario(usu)
 	if len(sU) > 0 {
 		mU := model.User{}
-		mU.Error = errors.New("El usuario ya existe, elija otro nombre ")
+		mU.Error = errors.New("el usuario ya existe, elija otro nombre ")
 		return mU
 	}
 	if err != nil {
@@ -79,14 +79,14 @@ func (userS userService) Autentica(usu string, pass string) (model.User, bool) {
 	}
 	if len(sU) == 0 {
 		mU := model.User{}
-		mU.Error = errors.New("El usuario o password es incorrecto ")
+		mU.Error = errors.New("el usuario o password es incorrecto ")
 		return mU, false
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(sU[0].Password), []byte(pass))
 	if err != nil {
 		mU := model.User{}
-		mU.Error = errors.New("El usuario o password es incorrecto ")
+		mU.Error = errors.New("el usuario o password es incorrecto ")
 		return mU, false
 
 	}
@@ -108,7 +108,7 @@ func (userS userService) BuscaPorUsuario(usu string) model.User {
 	sU, err := userS.userRepo.BuscaPorUsuario(usu)
 	if err != nil || len(sU) == 0 {
 		mU := model.User{}
-		mU.Error = errors.New("Usuario no encontrado")
+		mU.Error = errors.New("usuario no encontrado")
 		return mU
 		//TODO log y revisar
 	}

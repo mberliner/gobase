@@ -20,7 +20,7 @@ func getUser(res http.ResponseWriter, req *http.Request) model.User {
 	}
 	// Si existe lo tomo de la sesion
 	if usu, ok := dbSessions[c.Value]; ok {
-		u = service.UserB.BuscaPorUsuario(usu)
+		u = service.UserS.BuscaPorUsuario(usu)
 	}
 	return u
 }
@@ -32,7 +32,7 @@ func estaLogueado(req *http.Request) bool {
 	}
 	usu := dbSessions[c.Value]
 
-	u := service.UserB.BuscaPorUsuario(usu)
+	u := service.UserS.BuscaPorUsuario(usu)
 	if u.Error != nil {
 		return false
 	}

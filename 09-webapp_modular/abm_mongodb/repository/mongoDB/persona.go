@@ -72,7 +72,6 @@ func (pR personaRepository) Borra(id string) error {
 func (pR personaRepository) BuscaTodo() ([]model.Persona, error) {
 
 	cursor, err := pR.db.Collection("persona").Find(pR.ctx, bson.M{})
-	fmt.Println("Busca todo1: ", cursor)
 	if err != nil {
 		return []model.Persona{}, err
 	}
@@ -86,7 +85,6 @@ func (pR personaRepository) BuscaTodo() ([]model.Persona, error) {
 		}
 
 		idd := strings.Split(p.ID.String(), `"`)
-		fmt.Println("Busca todo3: ", idd[1])
 		pM := model.Persona{ID: idd[1],
 			Nombre:          p.Nombre,
 			Apellido:        p.Apellido,
