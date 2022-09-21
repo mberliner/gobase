@@ -25,10 +25,10 @@ func NewPersonaService(pR mongoDB.PersonaRepository) PersonaService {
 	return &personaService{pR}
 }
 
-func (pB personaService) CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
+func (pS personaService) CreaPersona(nom string, ape string, fechaNacimiento string) model.Personas {
 
 	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento}
-	p, err := pB.personaRepo.Persiste(p)
+	p, err := pS.personaRepo.Persiste(p)
 	if err != nil {
 		log.Println("Error persiste Pesona:", err)
 		mP := model.Personas{}
@@ -46,9 +46,9 @@ func (pB personaService) CreaPersona(nom string, ape string, fechaNacimiento str
 	return mP
 }
 
-func (pB personaService) BuscaTodo() model.Personas {
+func (pS personaService) BuscaTodo() model.Personas {
 
-	ps, err := pB.personaRepo.BuscaTodo()
+	ps, err := pS.personaRepo.BuscaTodo()
 	if err != nil {
 		log.Println("Error buscaTodo:", err)
 		mP := model.Personas{}
@@ -65,9 +65,9 @@ func (pB personaService) BuscaTodo() model.Personas {
 	return mP
 }
 
-func (pB personaService) BorraPersona(id string) model.Personas {
+func (pS personaService) BorraPersona(id string) model.Personas {
 
-	err := pB.personaRepo.Borra(id)
+	err := pS.personaRepo.Borra(id)
 	if err != nil {
 		log.Println("Error borraPersona:", err)
 		mP := model.Personas{}
@@ -91,9 +91,9 @@ func (pB personaService) BorraPersona(id string) model.Personas {
 	return mP
 }
 
-func (pB personaService) BuscaPersona(id string) model.Personas {
+func (pS personaService) BuscaPersona(id string) model.Personas {
 
-	p, err := pB.personaRepo.BuscaPorID(id)
+	p, err := pS.personaRepo.BuscaPorID(id)
 	if err != nil {
 		log.Println("Error buscaPersona:", err)
 		mP := model.Personas{}
@@ -109,10 +109,10 @@ func (pB personaService) BuscaPersona(id string) model.Personas {
 	return mP
 }
 
-func (pB personaService) ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas {
+func (pS personaService) ActualizaPersona(id string, nom string, ape string, fechaNacimiento string) model.Personas {
 
 	p := &model.Persona{Nombre: nom, Apellido: ape, FechaNacimiento: fechaNacimiento, ID: id}
-	p, err := pB.personaRepo.Actualiza(p)
+	p, err := pS.personaRepo.Actualiza(p)
 	if err != nil {
 		log.Println("Error actualiza Pesona:", err)
 		mP := model.Personas{}

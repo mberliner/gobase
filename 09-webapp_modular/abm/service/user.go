@@ -50,7 +50,7 @@ func (uS userService) CreaUsuario(usu string, pass string, nom string, ape strin
 	}
 
 	u := &model.User{Usuario: usu, Nombre: nom, Apellido: ape, Password: string(encrPass)}
-	u, err = mongoDB.UserRepo.Persiste(u)
+	u, err = uS.userRepo.Persiste(u)
 	if err != nil {
 		log.Println("Error persiste:", err)
 		mU := model.User{}
