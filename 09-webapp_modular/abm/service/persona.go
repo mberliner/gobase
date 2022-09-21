@@ -3,8 +3,8 @@ package service
 import (
 	"log"
 
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository/mongoDB"
+	"github.com/mberliner/gobase/09-webapp_modular/abm/model"
+	"github.com/mberliner/gobase/09-webapp_modular/abm/repository/mongoDB"
 )
 
 type personaService struct {

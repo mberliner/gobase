@@ -5,7 +5,7 @@ import (
 
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
+	"github.com/mberliner/gobase/09-webapp_modular/abm/model"
 )
 
 type persona struct {

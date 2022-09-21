@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
+	"github.com/mberliner/gobase/09-webapp_modular/abm/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

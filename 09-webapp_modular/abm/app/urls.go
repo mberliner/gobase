@@ -3,7 +3,7 @@ package app
 import (
 	"net/http"
 
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/controller"
+	"github.com/mberliner/gobase/09-webapp_modular/abm/controller"
 )
 
 func mapUrls() {

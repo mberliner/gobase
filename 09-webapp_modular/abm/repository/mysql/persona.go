@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
+	"github.com/mberliner/gobase/09-webapp_modular/abm/model"
 )
 
 // TODO agregar los null

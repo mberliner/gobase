@@ -3,8 +3,8 @@ package controller
 import (
 	"net/http"
 
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/service"
+	"github.com/mberliner/gobase/09-webapp_modular/abm/model"
+	"github.com/mberliner/gobase/09-webapp_modular/abm/service"
 )
 
 const sessionCookie string = "session"

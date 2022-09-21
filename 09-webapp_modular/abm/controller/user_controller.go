@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/service"
+	"github.com/mberliner/gobase/09-webapp_modular/abm/model"
+	"github.com/mberliner/gobase/09-webapp_modular/abm/service"
 )
 
 func AltaUser(res http.ResponseWriter, req *http.Request) {
