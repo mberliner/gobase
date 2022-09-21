@@ -5,18 +5,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/mberliner/gobase/09-webapp_modular/abm_mongodb/model"
+	"github.com/mberliner/gobase/09-webapp_modular/abm/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var (
-
-	//UserRepo Repositorio para manejo de acceso a datos de usuario
-	//UserRepo UserRepository
-	//PersonaRepo Repositorio para manejo de acceso a datos de persona
-	//PersonaRepo PersonaRepository
 	ctx context.Context
 )
 
@@ -37,9 +32,6 @@ func init() {
 
 	fmt.Println("Conectado a Mongodb: ", col)
 
-	//	UserRepo = NewUserRepository(db)
-	//	PersonaRepo = NewPersonaRepository(db)
-
 	uC, e := getAll(col)
 	if e != nil {
 		panic(e)
@@ -50,6 +42,8 @@ func init() {
 	}
 
 }
+
+// Sólo para pruebas
 func main() {
 	fmt.Println("Conectado a Mongodb")
 }
@@ -76,7 +70,6 @@ func getAll(col *mongo.Collection) ([]*model.User, error) {
 		return users, err
 	}
 
-	// once exhausted, close the cursor
 	cur.Close(ctx)
 	/*
 		if len(users) == 0 {
