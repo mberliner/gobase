@@ -1,6 +1,6 @@
 package service
 
-import "github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository"
+import "github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository/mysql"
 
 var (
 	//UserS para manejo del negocio de Usuario
@@ -11,7 +11,7 @@ var (
 
 func init() {
 
-	UserS = NewUserService(repository.UserRepo)
-	PersonaS = NewPersonaService(repository.PersonaRepo)
+	UserS = NewUserService(mysql.UserRepo)
+	PersonaS = NewPersonaService(mysql.PersonaRepo)
 
 }

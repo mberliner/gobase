@@ -1,4 +1,4 @@
-package repository
+package mysql
 
 import (
 	"database/sql"
@@ -9,8 +9,8 @@ import (
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
 )
 
-//TODO agregar los null
-//y unique a Usuario en BD
+// TODO agregar los null
+// y unique a Usuario en BD
 type persona struct {
 	ID              int
 	Nombre          string

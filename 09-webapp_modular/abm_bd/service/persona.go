@@ -4,11 +4,11 @@ import (
 	"log"
 
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository"
+	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository/mysql"
 )
 
 type personaService struct {
-	personaRepo repository.PersonaRepository
+	personaRepo mysql.PersonaRepository
 }
 
 // PersonaService interface para poder realizar tests del negocio de persona
@@ -21,7 +21,7 @@ type PersonaService interface {
 }
 
 // NewPersonaService para obtener megocio de forma ordenada
-func NewPersonaService(pR repository.PersonaRepository) PersonaService {
+func NewPersonaService(pR mysql.PersonaRepository) PersonaService {
 	return &personaService{pR}
 }
 

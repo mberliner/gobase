@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/model"
-	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository"
+	"github.com/mberliner/gobase/09-webapp_modular/abm_bd/repository/mysql"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -17,14 +17,14 @@ type UserService interface {
 }
 
 // NewUserService para obtener repositorio de manera ordenada
-func NewUserService(uR repository.UserRepository) UserService {
+func NewUserService(uR mysql.UserRepository) UserService {
 	return &userService{
 		userRepo: uR,
 	}
 }
 
 type userService struct {
-	userRepo repository.UserRepository
+	userRepo mysql.UserRepository
 }
 
 func (uS userService) CreaUsuario(usu string, pass string, nom string, ape string) model.User {
@@ -50,7 +50,7 @@ func (uS userService) CreaUsuario(usu string, pass string, nom string, ape strin
 	}
 
 	u := &model.User{Usuario: usu, Nombre: nom, Apellido: ape, Password: string(encrPass)}
-	u, err = repository.UserRepo.Persiste(u)
+	u, err = mysql.UserRepo.Persiste(u)
 	if err != nil {
 		log.Println("Error persiste:", err)
 		mU := model.User{}
