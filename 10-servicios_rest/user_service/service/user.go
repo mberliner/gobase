@@ -3,20 +3,20 @@ package service
 import (
 	"errors"
 
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/domain"
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/logger"
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/repository"
+	"github.com/mberliner/gobase/10-servicios_rest/user_service/domain"
+	"github.com/mberliner/gobase/10-servicios_rest/user_service/logger"
+	"github.com/mberliner/gobase/10-servicios_rest/user_service/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 
-//UserService interface para exponer manejo de User
+// UserService interface para exponer manejo de User
 type UserService interface {
 	CreaUsuario(*domain.User) (*domain.User, error)
 	Autentica(usu string, pass string) (*domain.User, error)
 	BuscaPorUsuario(usu string) (*domain.User, error)
 }
 
-//NewUserService para obtener repositorio de manera ordenada
+// NewUserService para obtener repositorio de manera ordenada
 func NewUserService(uR repository.UserRepository) UserService {
 	return &userService{
 		userRepo: uR,

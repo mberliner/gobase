@@ -7,12 +7,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/domain"
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/logger"
+	"github.com/mberliner/gobase/10-servicios_rest/persona_service/domain"
+	"github.com/mberliner/gobase/10-servicios_rest/persona_service/logger"
 )
 
-//TODO agregar los null
-//y unique a Usuario en BD
+// TODO agregar los null
+// y unique a Usuario en BD
 type persona struct {
 	ID              int
 	Nombre          string

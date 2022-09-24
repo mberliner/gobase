@@ -4,13 +4,11 @@ import (
 	"database/sql"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/logger"
+	"github.com/mberliner/gobase/10-servicios_rest/persona_service/logger"
 )
 
 var (
 	db *sql.DB
-	//UserRepo Repositorio para manejo de acceso a datos de usuario
-	UserRepo UserRepository
 	//PersonaRepo Repositorio para manejo de acceso a datos de persona
 	PersonaRepo PersonaRepository
 )
@@ -19,7 +17,6 @@ func init() {
 
 	initRepo()
 
-	UserRepo = NewUserRepository(db)
 	PersonaRepo = NewPersonaRepository(db)
 
 }

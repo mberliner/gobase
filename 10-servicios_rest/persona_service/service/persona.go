@@ -1,16 +1,16 @@
 package service
 
 import (
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/domain"
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/logger"
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/repository"
+	"github.com/mberliner/gobase/10-servicios_rest/persona_service/domain"
+	"github.com/mberliner/gobase/10-servicios_rest/persona_service/logger"
+	"github.com/mberliner/gobase/10-servicios_rest/persona_service/repository"
 )
 
 type personaService struct {
 	personaRepo repository.PersonaRepository
 }
 
-//PersonaService interface para poder realizar tests del negocio de persona
+// PersonaService interface para poder realizar tests del negocio de persona
 type PersonaService interface {
 	CreaPersona(*domain.Persona) (*domain.Persona, error)
 	BuscaTodo() ([]domain.Persona, error)
@@ -20,7 +20,7 @@ type PersonaService interface {
 	ActualizaParcial(*domain.Persona) (*domain.Persona, error)
 }
 
-//NewPersonaService para obtener megocio de forma ordenada
+// NewPersonaService para obtener megocio de forma ordenada
 func NewPersonaService(pR repository.PersonaRepository) PersonaService {
 	return &personaService{pR}
 }

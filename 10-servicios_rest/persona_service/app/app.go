@@ -10,20 +10,19 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/controller"
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/logger"
+	"github.com/mberliner/gobase/10-servicios_rest/persona_service/controller"
+	"github.com/mberliner/gobase/10-servicios_rest/persona_service/logger"
 )
 
 const (
-	puerto  = "8080"
-	logHTTP = "../http.log"
+	puerto  = "8081"
+	logHTTP = "../persona_http.log"
 )
 
 var (
 	router *gin.Engine
 	server *http.Server
 
-	userController    controller.UserController
 	personaController controller.PersonaController
 )
 
@@ -44,12 +43,11 @@ func init() {
 		Handler: router,
 	}
 
-	userController = controller.UserC
 	personaController = controller.PersonaC
 
 }
 
-//StartApp Inicia la aplicación, setea el server y las URLs
+// StartApp Inicia la aplicación, setea el server y las URLs
 func StartApp() {
 	mapeaUrls()
 

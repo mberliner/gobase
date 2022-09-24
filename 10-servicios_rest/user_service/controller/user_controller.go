@@ -4,11 +4,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/domain"
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/service"
+	"github.com/mberliner/gobase/10-servicios_rest/user_service/domain"
+	"github.com/mberliner/gobase/10-servicios_rest/user_service/service"
 )
 
-//UserController interface del controller de User
+// UserController interface del controller de User
 type UserController interface {
 	Crear(c *gin.Context)
 	Login(c *gin.Context)
@@ -18,7 +18,7 @@ type userController struct {
 	userService service.UserService
 }
 
-//NewUserController para acceder a controller de user de forma ordenada
+// NewUserController para acceder a controller de user de forma ordenada
 func NewUserController(uS service.UserService) UserController {
 	return &userController{uS}
 }

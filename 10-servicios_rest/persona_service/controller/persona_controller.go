@@ -6,12 +6,12 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/domain"
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/logger"
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/service"
+	"github.com/mberliner/gobase/10-servicios_rest/persona_service/domain"
+	"github.com/mberliner/gobase/10-servicios_rest/persona_service/logger"
+	"github.com/mberliner/gobase/10-servicios_rest/persona_service/service"
 )
 
-//PersonaController interface del controller de Persona
+// PersonaController interface del controller de Persona
 type PersonaController interface {
 	BuscarTodo(c *gin.Context)
 	Crear(c *gin.Context)
@@ -25,7 +25,7 @@ type personaController struct {
 	personaService service.PersonaService
 }
 
-//NewPersonaController para acceder a controller de persona de forma ordenada
+// NewPersonaController para acceder a controller de persona de forma ordenada
 func NewPersonaController(pS service.PersonaService) PersonaController {
 	return &personaController{pS}
 }

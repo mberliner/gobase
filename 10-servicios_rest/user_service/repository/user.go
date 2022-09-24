@@ -4,12 +4,12 @@ import (
 	"database/sql"
 	"strconv"
 
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/domain"
-	"github.com/mberliner/gobase/10-servicios_rest/entities_service/logger"
+	"github.com/mberliner/gobase/10-servicios_rest/user_service/domain"
+	"github.com/mberliner/gobase/10-servicios_rest/user_service/logger"
 )
 
-//TODO agregar los null
-//y unique a Usuario en BD
+// TODO agregar los null
+// y unique a Usuario en BD
 type user struct {
 	ID       int
 	Usuario  string

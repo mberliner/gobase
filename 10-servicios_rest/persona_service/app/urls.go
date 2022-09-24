@@ -9,9 +9,6 @@ import (
 func mapeaUrls() {
 	router.GET("/ping", ping)
 
-	router.POST("/users", userController.Crear)
-	router.POST("/users/login", userController.Login)
-
 	router.POST("/personas", personaController.Crear)
 	router.GET("/personas/:id", personaController.BuscarPorId)
 	router.GET("/personas", personaController.BuscarTodo)
@@ -27,7 +24,7 @@ func mapeaUrls() {
 	*/
 }
 
-//solo para probar la app
+// solo para probar la app
 func ping(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
 }
