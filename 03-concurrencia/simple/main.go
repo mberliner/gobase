@@ -8,7 +8,8 @@ import (
 	"sync"
 )
 
-var concurr sync.WaitGroup
+var trabajadores sync.WaitGroup
+var trabajo []string
 
 func main() {
 	fmt.Println("OS       ", runtime.GOOS)
@@ -18,31 +19,38 @@ func main() {
 	fmt.Println("\nGoroutine", runtime.NumGoroutine())
 
 	//Trabajo concurrente a la vieja usanza sin estructuras comunes (sin race conditions)
-	rp := reparte()
-	concurr.Add(rp)
+	cantTrabajo := reparte(10)
+	trabajadores.Add(cantTrabajo)
 
-	for i := rp; i > 0; i-- {
+	for i := 0; i < cantTrabajo; i++ {
 		fmt.Println("Paquete: ", i)
 		go trabaja(i)
 	}
-	fmt.Println("Goroutine", runtime.NumGoroutine())
+	fmt.Println("Goroutines al fin envio trabajo: ", runtime.NumGoroutine())
 
-	concurr.Wait()
-	fmt.Println("Goroutine", runtime.NumGoroutine())
+	trabajadores.Wait()
+	fmt.Println("Goroutine Final", runtime.NumGoroutine())
 
 }
 
-func reparte() int {
-	fmt.Println("Selecciono y envio paquetes a procesar")
-	return 100
+func reparte(cant int) int {
+	fmt.Println("Selecciono y envio ", cant, " paquetes a procesar")
+	var i int
+	for i = 0; i < cant; i++ {
+		trabajo = append(trabajo, fmt.Sprint("string ----> ", i))
+	}
+	return i
 }
 
-func trabaja(i int) {
-	fmt.Println("Proceso cada paquete por rutinas concurrentes, paquete: ", i, "ID Goroutine: ", getGID())
+func trabaja(paq int) {
+	fmt.Println("Proceso cada paquete por rutinas concurrentes, paquete: ", trabajo[paq], "ID Goroutine: ", getGID())
 	runtime.Gosched()
-	concurr.Done()
+	//Decrementa cant trbajos hechos
+	trabajadores.Done()
 }
 
+// Solo para saber que id tiene la goroutine
+// es completamente innecesario
 func getGID() uint64 {
 	b := make([]byte, 64)
 	b = b[:runtime.Stack(b, false)]

@@ -6,21 +6,23 @@ import (
 	"sync"
 )
 
-var concurr sync.WaitGroup
+var trabajadores sync.WaitGroup
 
 type trabajo struct {
 	contador int
+	etiqueta []string
 }
 
-type control struct {
+type sincro struct {
 	bloqueo sync.Mutex
 }
 
 var miTrabajo = trabajo{
 	contador: 0,
+	etiqueta: []string{},
 }
 
-var miControl = control{}
+var sincroTrabajo = sincro{}
 
 func main() {
 	fmt.Println("OS       ", runtime.GOOS)
@@ -30,31 +32,36 @@ func main() {
 	fmt.Println("\nGoroutine", runtime.NumGoroutine())
 
 	//Trabajo concurrente con estructuras comunes (race conditions sobre miTrabajo) y mutex para evitarlas
-	rp := reparte()
-	concurr.Add(rp)
+	cantTrabajo := reparte(10)
+	trabajadores.Add(cantTrabajo)
 
-	for i := rp; i > 0; i-- {
+	fmt.Println("Comienza el trabajo: ", miTrabajo)
+	for i := 0; i < cantTrabajo; i++ {
 		fmt.Println("Paquete: ", i)
 		go trabaja(i)
 	}
 
-	concurr.Wait()
+	trabajadores.Wait()
 	fmt.Println("Goroutine", runtime.NumGoroutine())
 	fmt.Println("Goroutine", runtime.NumGoroutine(), "Contador: ", miTrabajo.contador)
 }
 
-func reparte() int {
-	fmt.Println("Selecciono y envio paquetes a procesar")
-	return 100
+func reparte(cant int) int {
+	fmt.Println("Selecciono y envio ", cant, " paquetes a procesar")
+	var i int
+	for i = 0; i < cant; i++ {
+		miTrabajo.etiqueta = append(miTrabajo.etiqueta, fmt.Sprint("string ----> ", i))
+	}
+	return i
 }
 
 func trabaja(i int) {
-	miControl.bloqueo.Lock()
+	sincroTrabajo.bloqueo.Lock()
 	v := miTrabajo.contador
-	fmt.Println("Proceso cada paquete por rutinas concurrentes, paquete: ", i)
+	fmt.Println("Proceso cada paquete por rutinas concurrentes, paquete: ", i, "mitrabajo: ", miTrabajo.etiqueta[i])
 	runtime.Gosched()
 	v++
 	miTrabajo.contador = v
-	miControl.bloqueo.Unlock()
-	concurr.Done()
+	sincroTrabajo.bloqueo.Unlock()
+	trabajadores.Done()
 }
