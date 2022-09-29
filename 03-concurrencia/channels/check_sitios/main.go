@@ -36,6 +36,7 @@ func main() {
 			//Sleep para no llamar tan seguido a las verificaciones, si estuviese fuera de una func literal
 			// deberia esperar a la respuesta de cada sitio antes de llamar al siguiente
 			time.Sleep(10 * time.Second)
+
 			verificaSitio(sitio, canal)
 		}(sitiotemp)
 
@@ -44,8 +45,9 @@ func main() {
 }
 
 func verificaSitio(sitio string, canal chan string) {
+	antes := time.Now().UnixNano()
 	resp, error := http.Get(sitio)
-
+	despues := time.Now().UnixNano()
 	if error != nil {
 		fmt.Println(sitio, "no funciona: ", error)
 		fmt.Println()
@@ -55,6 +57,7 @@ func verificaSitio(sitio string, canal chan string) {
 
 	fmt.Println(sitio, "Respuesta:")
 	fmt.Println("Estado: ", resp.Status, resp.StatusCode)
+	fmt.Println("Demora: ", (despues-antes)/1000000, "ms")
 	//fmt.Println(resp)
 
 	/* Leer el Header
